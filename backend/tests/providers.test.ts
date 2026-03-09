@@ -1,14 +1,23 @@
 // backend/tests/providers.test.ts
-// Wave 0 stub. Tests filled in Plan 02 when provider files exist.
-
-describe('Provider factory — config.ts', () => {
-  it.todo('AI_PROVIDER=gemini returns GeminiProvider instance');
-  it.todo('AI_PROVIDER=openai returns OpenAIProvider instance');
-  it.todo('Default (no AI_PROVIDER env) returns GeminiProvider');
-});
+import { OpenAIProvider } from '../src/providers/openai.js';
+import { OpenAISearchProvider } from '../src/providers/openai-search.js';
 
 describe('OpenAI stub — throws NotImplementedError', () => {
-  it.todo('OpenAIProvider.streamChat() throws with message containing "not yet implemented"');
-  it.todo('OpenAIProvider.simplify() throws with message containing "not yet implemented"');
-  it.todo('OpenAISearchProvider.findSources() throws with message containing "not yet implemented"');
+  const provider = new OpenAIProvider();
+  const searchProvider = new OpenAISearchProvider();
+
+  it('OpenAIProvider.streamChat() throws with "not yet implemented"', () => {
+    expect(() => provider.streamChat([], '', () => {}, () => {}, () => {}))
+      .toThrow(/not yet implemented/i);
+  });
+
+  it('OpenAIProvider.simplify() throws with "not yet implemented"', () => {
+    expect(() => provider.simplify('text', 'simpler'))
+      .toThrow(/not yet implemented/i);
+  });
+
+  it('OpenAISearchProvider.findSources() throws with "not yet implemented"', () => {
+    expect(() => searchProvider.findSources('query'))
+      .toThrow(/not yet implemented/i);
+  });
 });
