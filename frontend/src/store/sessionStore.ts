@@ -26,6 +26,8 @@ interface SessionState {
   setScrollPosition: (threadId: string, position: number) => void;
   setThreadTitle: (threadId: string, title: string) => void;
   deleteThread: (threadId: string) => void;
+  summarizeThread: (threadId: string) => void;
+  compactThread: (threadId: string) => void;
 }
 
 export const useSessionStore = create<SessionState>()((set, get) => ({
@@ -223,6 +225,17 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
 
       return { threads: newThreads, messages: newMessages, activeThreadId: newActiveThreadId };
     });
+  },
+
+  summarizeThread: (threadId: string) => {
+    // TODO: Phase 5 — call backend /api/summarize endpoint, replace messages with summary
+    // Stub: mark thread with a flag or log — no-op for now
+    console.log('[summarizeThread] threadId:', threadId);
+  },
+
+  compactThread: (threadId: string) => {
+    // TODO: Phase 5 — call backend /api/compact endpoint, condense older messages
+    console.log('[compactThread] threadId:', threadId);
   },
 }));
 

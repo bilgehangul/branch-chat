@@ -11,6 +11,8 @@ export function AppShell() {
   const activeThreadId = useSessionStore(s => s.activeThreadId);
   const setActiveThread = useSessionStore(s => s.setActiveThread);
   const deleteThread = useSessionStore(s => s.deleteThread);
+  const summarizeThread = useSessionStore(s => s.summarizeThread);
+  const compactThread = useSessionStore(s => s.compactThread);
 
   // Ancestry = [root, ...ancestors, current] — exclude current (last element)
   const ancestry = activeThreadId ? selectThreadAncestry(threads, activeThreadId) : [];
@@ -35,6 +37,8 @@ export function AppShell() {
             onClick={() => setActiveThread(thread.id)}
             onNavigate={setActiveThread}
             onDelete={deleteThread}
+            onSummarize={summarizeThread}
+            onCompact={compactThread}
           />
         );
       })}

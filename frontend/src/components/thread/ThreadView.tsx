@@ -34,6 +34,8 @@ export function ThreadView() {
   const addChildLead = useSessionStore(s => s.addChildLead);
   const setActiveThread = useSessionStore(s => s.setActiveThread);
   const deleteThread = useSessionStore(s => s.deleteThread);
+  const summarizeThread = useSessionStore(s => s.summarizeThread);
+  const compactThread = useSessionStore(s => s.compactThread);
 
   const { sendMessage, abort, isStreaming } = useStreamingChat(getToken);
 
@@ -197,6 +199,8 @@ export function ThreadView() {
               messages={messages}
               onNavigate={setActiveThread}
               onDeleteThread={deleteThread}
+              onSummarize={summarizeThread}
+              onCompact={compactThread}
             />
           )}
         </div>
