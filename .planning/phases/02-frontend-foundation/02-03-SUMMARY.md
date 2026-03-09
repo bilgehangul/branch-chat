@@ -17,6 +17,7 @@ provides:
   - simplifyText() stub wrapping apiRequest -> POST /api/simplify
   - searchSources() stub wrapping apiRequest -> POST /api/find-sources
   - 5 api.chat tests; 28 total tests green
+  - Human-verified Clerk auth flow: guest DemoChat, sign-in modal (no URL change), AppShell, sign-out returns to DemoChat
 
 affects:
   - phase-03-chat-ui (useStreamingChat hook consumes streamChat() directly)
@@ -44,6 +45,9 @@ key-decisions:
   - "getToken passed as function parameter into all api/ modules — hooks never called inside api layer"
   - "backend route is /api/find-sources (not /api/search) in search.ts — matches Phase 1 router"
   - "DONE sentinel checked before JSON.parse — avoids JSON.parse('[DONE]') throw"
+  - "Clerk sign-out uses SignOutButton component + Zustand cleared reactively on isSignedIn change — avoids async signOut race condition"
+
+requirements-completed: [AUTH-01, AUTH-02, AUTH-05]
 
 # Metrics
 duration: 10min
@@ -56,10 +60,10 @@ completed: 2026-03-09
 
 ## Performance
 
-- **Duration:** ~10 min
+- **Duration:** ~45 min (including checkpoint fixes and human verification)
 - **Completed:** 2026-03-09
-- **Tasks:** 1 of 2 complete (Task 2 is human-verify checkpoint — pending)
-- **Files created:** 5
+- **Tasks:** 2 of 2 complete (Task 1 auto + checkpoint:human-verify approved)
+- **Files created/modified:** 6
 
 ## Accomplishments
 
@@ -71,8 +75,11 @@ completed: 2026-03-09
 
 ## Task Commits
 
-1. **Task 1: API client modules + tests** - `2af42f0` (feat)
-   - TDD: RED (todo stubs replaced with real failing tests) -> GREEN (4 api modules implemented)
+1. **Task 1: API client modules + tests** - `2af42f0` (feat) — TDD: RED then GREEN, 5 SSE tests pass
+2. **Fix: sign-out drop afterSignOutUrl, fix async call** - `554d14a` (fix)
+3. **Fix: use Clerk SignOutButton component** - `e968b62` (fix)
+4. **Fix: clear Zustand on isSignedIn change** - `72dc102` (fix)
+5. **Checkpoint pause doc** - `0632e5b` (docs)
 
 ## Files Created/Modified
 
@@ -81,6 +88,7 @@ completed: 2026-03-09
 - `frontend/src/api/simplify.ts` — `simplifyText()` stub
 - `frontend/src/api/search.ts` — `searchSources()` stub
 - `frontend/tests/unit/api.chat.test.ts` — 5 tests: onChunk, onDone/DONE sentinel, onError HTTP, split-chunk buffer, malformed JSON skip
+- `frontend/src/App.tsx` — sign-out fixed: uses Clerk SignOutButton, Zustand cleared on isSignedIn change
 
 ## Decisions Made
 
@@ -91,11 +99,28 @@ completed: 2026-03-09
 
 ## Deviations from Plan
 
-None — plan executed exactly as written. The 28-test total (vs. planned 23) reflects additional tests added by plans 02-01 and 02-02 during their execution; all pass.
+### Auto-fixed Issues
 
-## Checkpoint Status
+**1. [Rule 1 - Bug] Fixed Clerk sign-out not clearing Zustand state**
+- **Found during:** Checkpoint:human-verify (browser auth flow)
+- **Issue:** Custom sign-out button used `signOut({ afterSignOutUrl: '/' })` — `afterSignOutUrl` is not valid for the imperative `signOut()` API; async invocation also incorrect. Result: sign-out failed to return user to DemoChat.
+- **Fix:** Three-step fix: (1) dropped invalid param, fixed async call; (2) replaced custom button with Clerk `<SignOutButton>` component; (3) cleared Zustand store reactively on `isSignedIn` change via `useEffect`
+- **Files modified:** `frontend/src/App.tsx`
+- **Verification:** Human-verified — sign-out returns to DemoChat guest view with store cleared
+- **Committed in:** `554d14a`, `e968b62`, `72dc102`
 
-Task 2 (human-verify checkpoint) is pending — requires Clerk publishable key and browser verification of full Phase 2 auth flow. See checkpoint details in 02-03-PLAN.md.
+---
+
+**Total deviations:** 1 auto-fixed (Rule 1 - Bug)
+**Impact on plan:** Fix was necessary for checkpoint approval. No scope creep — stayed within App.tsx.
+
+## Checkpoint: APPROVED
+
+Human-verify checkpoint approved. All 15 browser checks passed:
+- Guest view: DemoChat with hardcoded messages, disabled input, sign-in prompt
+- Clerk modal: opens without URL change, backdrop dismissal works
+- Google OAuth: Continue with Google button present
+- Authenticated: AppShell appears after sign-in, sign-out returns to DemoChat
 
 ## Self-Check: PASSED
 
