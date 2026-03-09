@@ -141,6 +141,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 06-polish-and-deployment P01 | 3 | 2 tasks | 11 files |
 | Phase 06-polish-and-deployment P02 | 8 | 2 tasks | 7 files |
 | Phase 06-polish-and-deployment P03 | 8 | 2 tasks | 9 files |
+| Phase 06-polish-and-deployment P05 | 25 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -215,6 +216,12 @@ Recent decisions affecting current work:
 - [Phase 05-06]: SimplificationBlock onSelectMode with mode picker; mode key stored in annotation.originalText
 - [Phase 05-06]: doFetch closure captures retry logic — retryFn calls same closure without rebinding params
 - [Phase 05-inline-annotations]: All 8 INLINE requirements verified by human in live browser before Phase 5 declared complete
+- [Phase 06-05]: page.route() mocks all API endpoints (chat, find-sources, simplify) — E2E suite is fully deterministic with zero real network calls
+- [Phase 06-05]: AUTH-03 guest access enables all 6 E2E specs to run without Clerk authentication
+- [Phase 06-05]: CitationBlock collapsed by default (CONTEXT.md override); find-sources spec expands via aria-label="Expand sources" before asserting title
+- [Phase 06-05]: ActionBubble button text has Unicode prefix chars (→, 🔍, ✺); use .filter({ hasText }) not getByRole name for reliable matching
+- [Phase 06-05]: waitForTimeout(300) after mouse drag required because useTextSelection wraps handler in setTimeout(0)
+- [Phase 06-05]: await expect(textarea).toBeEnabled() guards selection — streaming disables textarea, waiting for re-enable confirms stream complete
 - [Phase 06-04]: frontend/vercel.json placed inside frontend/ subdir — Vercel Root Directory set to frontend/ in dashboard
 - [Phase 06-04]: VITE_API_BASE_URL defaults to empty string in dev — Vite proxy handles /api routing transparently
 - [Phase 06-04]: render.yaml CLIENT_ORIGIN uses sync:false — must be set in Render dashboard after first Vercel deploy
@@ -244,6 +251,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T21:13:45.908Z
-Stopped at: Completed 06-03-PLAN.md — Error states: NetworkBanner, AuthExpiredBanner, RateLimitBanner, mid-stream failure + retry
+Last session: 2026-03-09T21:05:00.000Z
+Stopped at: Completed 06-05-PLAN.md — all 6 Playwright E2E specs implemented with mocked APIs
 Resume file: None

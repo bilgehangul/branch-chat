@@ -133,7 +133,7 @@ Plans:
 - [ ] 06-02-PLAN.md — Theme system: FOUC script, ThemeContext, ThemeToggle, light theme CSS, accent palette adaptation
 - [ ] 06-03-PLAN.md — Error states: NetworkBanner, AuthExpiredBanner, RateLimitBanner, mid-stream failure + retry
 - [ ] 06-04-PLAN.md — Deployment config: .env.example, render.yaml, vercel.json, CI workflow, VITE_API_BASE_URL fix
-- [ ] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
+- [x] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
 - [ ] 06-06-PLAN.md — Deployment checkpoint: Vercel + Render live, CORS wired (depends on 06-04, 06-05)
 
 ## Progress
@@ -148,4 +148,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
 | 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
-| 6. Polish and Deployment | 4/6 | In Progress|  |
+| 6. Polish and Deployment | 5/6 | In Progress|  |
