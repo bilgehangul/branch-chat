@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 03-05-PLAN.md (BreadcrumbBar + SpineStrip navigation chrome)
-last_updated: "2026-03-09T14:39:45.688Z"
+stopped_at: Completed 03-06-PLAN.md — Phase 3 checkpoint, awaiting human browser verification
+last_updated: "2026-03-09T14:45:50.616Z"
 last_activity: 2026-03-09 — Plans 02-01 and 02-02 complete (parallel Wave 1)
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 ---
@@ -76,6 +76,7 @@ Progress: [███░░░░░░░] ~33% (Phase 02 in progress)
 | Phase 03-core-thread-ui P03 | 8 | 2 tasks | 8 files |
 | Phase 03-core-thread-ui P04 | 3 | 2 tasks | 7 files |
 | Phase 03-core-thread-ui P05 | 3 | 2 tasks | 4 files |
+| Phase 03-core-thread-ui P06 | 8 | 1 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -121,6 +122,8 @@ Recent decisions affecting current work:
 - [Phase 03-05]: ResizeObserver guarded with typeof check — jsdom does not define ResizeObserver, avoiding ReferenceError in tests
 - [Phase 03-05]: BreadcrumbBar collapse is data-length-based (ancestry.length > 3), deterministic and testable without layout engine
 - [Phase 03-05]: SpineStrip only calls setActiveThread — ThreadView cleanup useEffect handles scroll save, no scrollRef prop threading needed
+- [Phase 03-06]: tsconfig.app.json types array blocks @types/* autodiscovery — must explicitly add react-syntax-highlighter when using deep ESM sub-path imports
+- [Phase 03-06]: react-markdown v10 code component prop: use HTMLAttributes<HTMLElement> with optional node, not custom CodeProps with index signature
 
 ### Pending Todos
 
@@ -133,6 +136,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T14:39:35.705Z
-Stopped at: Completed 03-05-PLAN.md (BreadcrumbBar + SpineStrip navigation chrome)
+Last session: 2026-03-09T14:45:50.613Z
+Stopped at: Completed 03-06-PLAN.md — Phase 3 checkpoint, awaiting human browser verification
 Resume file: None
