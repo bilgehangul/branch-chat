@@ -181,6 +181,12 @@ Recent decisions affecting current work:
 
 None yet.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | add delete thread confirmation dialog | 2026-03-09 | 8a1d9f1 | [1-add-delete-thread-confirmation-dialog](.planning/quick/1-add-delete-thread-confirmation-dialog/) |
+
 ### Blockers/Concerns
 
 - [Phase 4]: ResizeObserver + React state update timing is highest-risk interaction — spike warranted before gutter positioning ships
@@ -188,6 +194,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T16:24:51.277Z
-Stopped at: Completed 04-06-PLAN.md — GutterColumn lead pills + hover preview + ThreadView integration
+Last session: 2026-03-09T18:00:00.000Z
+Stopped at: Phase 4 complete (UAT 8/8 passed). Quick task 1: delete confirmation dialog added.
 Resume file: None
