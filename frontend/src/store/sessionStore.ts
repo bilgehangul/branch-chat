@@ -24,6 +24,7 @@ interface SessionState {
   addChildLead: (messageId: string, lead: ChildLead) => void;
   addAnnotation: (messageId: string, annotation: Annotation) => void;
   setScrollPosition: (threadId: string, position: number) => void;
+  setThreadTitle: (threadId: string, title: string) => void;
 }
 
 export const useSessionStore = create<SessionState>()((set, get) => ({
@@ -166,6 +167,15 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
           ...state.threads[threadId]!,
           scrollPosition: position,
         },
+      },
+    }));
+  },
+
+  setThreadTitle: (threadId: string, title: string) => {
+    set((state) => ({
+      threads: {
+        ...state.threads,
+        [threadId]: { ...state.threads[threadId]!, title },
       },
     }));
   },

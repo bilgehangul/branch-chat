@@ -1,12 +1,13 @@
 import type { SseEvent } from '../../../shared/types';
 
 export async function streamChat(
-  body: { messages: Array<{ role: string; content: string }> },
+  body: { messages: Array<{ role: string; content: string }>; signal?: AbortSignal },
   getToken: () => Promise<string | null>,
   onChunk: (text: string) => void,
   onDone: () => void,
   onError: (message: string) => void
 ): Promise<void> {
+  try {
   const token = await getToken();
   const res = await fetch('/api/chat', {
     method: 'POST',
@@ -14,7 +15,8 @@ export async function streamChat(
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ messages: body.messages }),
+    signal: body.signal,
   });
 
   if (!res.ok || !res.body) {
@@ -49,5 +51,15 @@ export async function streamChat(
         // skip malformed lines silently
       }
     }
+  }
+  } catch (err) {
+    const isAbort =
+      (err instanceof Error && err.name === 'AbortError') ||
+      (err instanceof DOMException && (err.name === 'AbortError' || err.code === 20));
+    if (isAbort) {
+      onDone();
+      return;
+    }
+    throw err;
   }
 }
