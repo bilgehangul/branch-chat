@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-05-PLAN.md — SimplificationBlock indigo-tinted presentational component
-last_updated: "2026-03-09T19:09:12.963Z"
+stopped_at: Completed 05-06-PLAN.md — Full annotation integration flow (Find Sources, Simplify, retry, persistence)
+last_updated: "2026-03-09T19:17:26.564Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 27
-  completed_plans: 24
+  completed_plans: 25
 ---
 
 ---
@@ -135,6 +135,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 05-inline-annotations P03 | 3 | 2 tasks | 4 files |
 | Phase 05-inline-annotations P04 | 2 | 2 tasks | 3 files |
 | Phase 05-inline-annotations P05 | 2 | 1 tasks | 2 files |
+| Phase 05-inline-annotations P06 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -205,6 +206,9 @@ Recent decisions affecting current work:
 - [Phase 05-inline-annotations]: CitationBlock default collapsed per CONTEXT.md user decision (overrides REQUIREMENTS.md default-expanded)
 - [Phase 05-inline-annotations]: No superscript badge on paragraph text per CONTEXT.md override of INLINE-02 — citation block IS the full annotation UI
 - [Phase 05-inline-annotations]: SimplificationBlock accepts explicit modeLabel prop to avoid coupling to 05-06 annotation storage convention
+- [Phase 05-06]: pendingAnnotation/errorAnnotation as local useState in ThreadView (ephemeral, not Zustand)
+- [Phase 05-06]: SimplificationBlock onSelectMode with mode picker; mode key stored in annotation.originalText
+- [Phase 05-06]: doFetch closure captures retry logic — retryFn calls same closure without rebinding params
 
 ### Pending Todos
 
@@ -224,6 +228,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T19:09:12.960Z
-Stopped at: Completed 05-05-PLAN.md — SimplificationBlock indigo-tinted presentational component
+Last session: 2026-03-09T19:17:26.561Z
+Stopped at: Completed 05-06-PLAN.md — Full annotation integration flow (Find Sources, Simplify, retry, persistence)
 Resume file: None
