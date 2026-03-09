@@ -139,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
-| 5. Inline Annotations | 4/7 | In Progress|  |
+| 5. Inline Annotations | 5/7 | In Progress|  |
 | 6. Polish and Deployment | 0/TBD | Not started | - |
