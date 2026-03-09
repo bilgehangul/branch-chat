@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useSessionStore } from '../store/sessionStore';
 import { streamChat } from '../api/chat';
 import type { Message } from '../types/index';
@@ -21,6 +21,8 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
   const store = useSessionStore();
   const accRef = useRef('');
   const abortRef = useRef<(() => void) | null>(null);
+  const [rateLimitReset, setRateLimitReset] = useState<number | null>(null); // epoch ms
+  const [streamError, setStreamError] = useState<{ messageId: string; retry: () => void } | null>(null);
 
   const { threads, messages, activeThreadId } = store;
   const activeThread = activeThreadId ? threads[activeThreadId] : null;
@@ -33,6 +35,10 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
   async function sendMessage(text: string): Promise<void> {
     if (!activeThreadId || !activeThread) return;
     if (!text.trim()) return;
+
+    // Clear previous error state on new send
+    setStreamError(null);
+    setRateLimitReset(null);
 
     // Reset accumulator at the start of each message (prevents content bleed)
     accRef.current = '';
@@ -110,8 +116,22 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
           accRef.current = '';
         },
         (errMsg: string) => {
-          // onError
-          store.updateMessage(aiMsgId, { content: `Error: ${errMsg}`, isStreaming: false });
+          // onError — mid-stream failure (non-429)
+          // Partial content stays visible; add error signal to message
+          store.setMessageStreaming(aiMsgId, false);
+          accRef.current = '';
+          // Only set streamError if it's not a 429 (handled by onRateLimit)
+          if (!errMsg.includes('429')) {
+            setStreamError({
+              messageId: aiMsgId,
+              retry: () => void sendMessage(text),
+            });
+          }
+        },
+        (resetEpochMs: number) => {
+          // onRateLimit
+          setRateLimitReset(resetEpochMs);
+          store.setMessageStreaming(aiMsgId, false);
           accRef.current = '';
         }
       );
@@ -126,5 +146,10 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     }
   }
 
-  return { sendMessage, abort, isStreaming };
+  // Compute minutes remaining from rateLimitReset
+  const rateLimitMinutes = rateLimitReset
+    ? Math.max(0, Math.ceil((rateLimitReset - Date.now()) / 60000))
+    : null;
+
+  return { sendMessage, abort, isStreaming, rateLimitMinutes, streamError };
 }

@@ -52,7 +52,7 @@ export function ThreadView() {
   const addAnnotation = useSessionStore(s => s.addAnnotation);
   const updateAnnotation = useSessionStore(s => s.updateAnnotation);
 
-  const { sendMessage, abort, isStreaming } = useStreamingChat(getToken);
+  const { sendMessage, abort, isStreaming, rateLimitMinutes, streamError } = useStreamingChat(getToken);
 
   // Derive current thread and ordered messages
   const activeThread = activeThreadId ? threads[activeThreadId] : null;
@@ -375,6 +375,8 @@ export function ThreadView() {
         onSend={sendMessage}
         onStop={abort}
         isStreaming={isStreaming}
+        rateLimitMinutes={rateLimitMinutes}
+        streamError={streamError}
       />
     </div>
   );
