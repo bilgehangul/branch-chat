@@ -19,14 +19,16 @@ export function AppShell() {
     <div className="flex h-screen bg-slate-50 text-slate-900">
       {/* Ancestor peek panels — oldest to newest, left to right */}
       {ancestors.map((thread, idx) => {
-        // immediate parent (last) = 160px, one before = 96px, rest = 64px
         const distFromParent = ancestors.length - 1 - idx;
-        const w = distFromParent === 0 ? 160 : distFromParent === 1 ? 96 : 64;
+        const w = distFromParent === 0 ? 180 : distFromParent === 1 ? 110 : 68;
+        // The next thread in the ancestry chain tells us which message was selected in this ancestor
+        const nextThread = ancestry[idx + 1];
         return (
           <AncestorPeekPanel
             key={thread.id}
             thread={thread}
             allMessages={messages}
+            highlightMessageId={nextThread?.parentMessageId ?? undefined}
             width={w}
             onClick={() => setActiveThread(thread.id)}
           />

@@ -36,18 +36,59 @@ function measurePillTop(
 
 // ── Sub-components ─────────────────────────────────────────────────────────
 
+// Recursively renders a thread's descendants as nested pills (no DOM positioning needed)
+function DescendantPill({
+  threadId,
+  threads,
+  onNavigate,
+  depth,
+}: {
+  threadId: string;
+  threads: Record<string, Thread>;
+  onNavigate: (threadId: string) => void;
+  depth: number;
+}) {
+  const thread = threads[threadId];
+  if (!thread || depth > 3) return null;
+  return (
+    <div style={{ paddingLeft: depth * 10 }}>
+      <button
+        className="flex items-center gap-1 w-full px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100 text-left transition-colors cursor-pointer"
+        onClick={e => { e.stopPropagation(); onNavigate(threadId); }}
+      >
+        <span className="text-slate-300 flex-shrink-0 text-[10px]">↳</span>
+        <span className="truncate flex-1 min-w-0">{thread.title.slice(0, 28)}</span>
+        <span className="text-[10px] text-slate-400 flex-shrink-0">{thread.messageIds.length}</span>
+        <span
+          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+          style={{ backgroundColor: thread.accentColor }}
+        />
+      </button>
+      {thread.childThreadIds.map(childId => (
+        <DescendantPill
+          key={childId}
+          threadId={childId}
+          threads={threads}
+          onNavigate={onNavigate}
+          depth={depth + 1}
+        />
+      ))}
+    </div>
+  );
+}
+
 interface LeadPillProps {
   lead: ChildLead;
   thread: Thread;
+  allThreads: Record<string, Thread>;
   messages: Record<string, Message>;
   top: number;
   onNavigate: (threadId: string) => void;
 }
 
-function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
+function LeadPill({ lead, thread, allThreads, messages, top, onNavigate }: LeadPillProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Preview card data: first user message + first AI line from the child thread
   const childMessages = thread.messageIds
     .map(id => messages[id])
     .filter(Boolean) as Message[];
@@ -57,9 +98,7 @@ function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
   const firstAiLine = firstAiMsg ? firstAiMsg.content.split('\n')[0] : '';
 
   return (
-    <div
-      style={{ position: 'absolute', top, left: 8, right: 8 }}
-    >
+    <div style={{ position: 'absolute', top, left: 8, right: 8 }}>
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
@@ -68,20 +107,9 @@ function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Directional arrow */}
         <span className="text-slate-400 flex-shrink-0">→</span>
-
-        {/* Thread title (max 32 chars) */}
-        <span className="text-slate-800 truncate flex-1 min-w-0">
-          {thread.title.slice(0, 32)}
-        </span>
-
-        {/* Message count badge */}
-        <span className="text-xs text-slate-400 flex-shrink-0">
-          {thread.messageIds.length}
-        </span>
-
-        {/* Accent color pip */}
+        <span className="text-slate-800 truncate flex-1 min-w-0">{thread.title.slice(0, 32)}</span>
+        <span className="text-xs text-slate-400 flex-shrink-0">{thread.messageIds.length}</span>
         <span
           data-testid="accent-pip"
           className="w-2 h-2 rounded-full flex-shrink-0"
@@ -89,24 +117,34 @@ function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
         />
       </button>
 
+      {/* Descendant threads nested below the pill */}
+      {thread.childThreadIds.length > 0 && (
+        <div className="mt-0.5 border-l border-slate-200 ml-2">
+          {thread.childThreadIds.map(childId => (
+            <DescendantPill
+              key={childId}
+              threadId={childId}
+              threads={allThreads}
+              onNavigate={onNavigate}
+              depth={1}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Preview card on hover */}
       {isHovered && (
         <div
           className="absolute right-0 top-full mt-1 z-50 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-xs text-slate-700 space-y-2"
           data-testid="preview-card"
         >
-          {/* Anchor text */}
           <div className="text-slate-500 italic truncate">{lead.anchorText}</div>
-
-          {/* First user message */}
           {firstUserMsg && (
             <div className="text-slate-700 truncate">
               <span className="text-slate-500">You: </span>
               {firstUserMsg.content}
             </div>
           )}
-
-          {/* First AI line */}
           {firstAiLine && (
             <div className="text-slate-500 truncate">
               <span className="text-slate-500">AI: </span>
@@ -213,6 +251,7 @@ export function GutterColumn({
             key={lead.threadId}
             lead={lead}
             thread={childThread}
+            allThreads={threads}
             messages={messages}
             top={top}
             onNavigate={onNavigate}
