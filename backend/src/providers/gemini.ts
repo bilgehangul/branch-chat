@@ -28,7 +28,7 @@ export class GeminiProvider implements AIProvider {
       }));
 
       const response = await ai.models.generateContentStream({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-3.1-flash-lite-preview',
         contents,
         config: { systemInstruction: systemPrompt || undefined },
       });
@@ -47,7 +47,7 @@ export class GeminiProvider implements AIProvider {
   async simplify(text: string, mode: string): Promise<string> {
     const instruction = SIMPLIFY_PROMPTS[mode] ?? SIMPLIFY_PROMPTS['simpler'];
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-3.1-flash-lite-preview',
       contents: `${instruction}\n\nText to rewrite:\n${text}`,
       config: { systemInstruction: 'You are a writing assistant. Return only the rewritten text, no preamble.' },
     });

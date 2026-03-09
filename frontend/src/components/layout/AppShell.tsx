@@ -1,3 +1,4 @@
+import { UserButton } from '@clerk/clerk-react';
 import { ThreadView } from '../thread/ThreadView';
 import { BreadcrumbBar } from './BreadcrumbBar';
 import { SpineStrip } from './SpineStrip';
@@ -10,8 +11,11 @@ export function AppShell() {
       {/* Main content area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Breadcrumb bar */}
-        <header className="h-12 border-b border-zinc-800 flex items-center px-4 flex-shrink-0">
-          <BreadcrumbBar />
+        <header className="h-12 border-b border-zinc-800 flex items-center px-4 flex-shrink-0 gap-2">
+          <div className="flex-1 min-w-0">
+            <BreadcrumbBar />
+          </div>
+          <UserButton />
         </header>
         {/* Thread view fills remaining height */}
         <main className="flex-1 overflow-hidden">

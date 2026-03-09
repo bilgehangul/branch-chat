@@ -30,9 +30,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **BRANCH-02**: A floating action bubble appears within 100ms of releasing the mouse after a valid selection, positioned 8px above the top-right corner of the selection
 - [x] **BRANCH-03**: The action bubble contains three actions: Go Deeper, Find Sources, Simplify
 - [x] **BRANCH-04**: User can click "Go Deeper" to create a child thread anchored to the selected paragraph; the new thread opens with a slide-right transition
-- [ ] **BRANCH-05**: Each new child thread is auto-assigned an accent color from the 8-color palette (cycling in creation order)
-- [ ] **BRANCH-06**: Each new child thread is auto-titled using a client-side heuristic (first 6 words of anchor text)
-- [ ] **BRANCH-07**: The anchor paragraph receives a persistent colored underline in the thread's accent color
+- [x] **BRANCH-05**: Each new child thread is auto-assigned an accent color from the 8-color palette (cycling in creation order)
+- [x] **BRANCH-06**: Each new child thread is auto-titled using a client-side heuristic (first 6 words of anchor text)
+- [x] **BRANCH-07**: The anchor paragraph receives a persistent colored underline in the thread's accent color
 - [x] **BRANCH-08**: A child lead pill tag appears in the right gutter at the vertical position of the anchor paragraph
 - [x] **BRANCH-09**: Child lead shows: directional arrow, thread title (max 32 chars), live message count, accent color pip
 - [x] **BRANCH-10**: Child lead hover shows a preview card (anchor text + first user message + first line of AI response)
@@ -133,9 +133,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRANCH-02 | Phase 4 | Complete |
 | BRANCH-03 | Phase 4 | Complete |
 | BRANCH-04 | Phase 4 | Complete |
-| BRANCH-05 | Phase 4 | Pending |
-| BRANCH-06 | Phase 4 | Pending |
-| BRANCH-07 | Phase 4 | Pending |
+| BRANCH-05 | Phase 4 | Complete |
+| BRANCH-06 | Phase 4 | Complete |
+| BRANCH-07 | Phase 4 | Complete |
 | BRANCH-08 | Phase 4 | Complete |
 | BRANCH-09 | Phase 4 | Complete |
 | BRANCH-10 | Phase 4 | Complete |
