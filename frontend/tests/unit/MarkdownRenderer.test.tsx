@@ -60,4 +60,45 @@ describe('MarkdownRenderer', () => {
     expect(code).toBeInTheDocument();
     expect(code).toHaveTextContent('const');
   });
+
+  // BRANCH-01: rehype plugin assigns data-paragraph-id to block elements
+  it('assigns sequential data-paragraph-id to block elements', () => {
+    const content = `First paragraph.\n\nSecond paragraph.\n\nThird paragraph.`;
+    const { container } = render(<MarkdownRenderer content={content} />);
+    const blocks = container.querySelectorAll('[data-paragraph-id]');
+    expect(blocks.length).toBeGreaterThanOrEqual(3);
+    // IDs should be sequential integers starting from "0"
+    expect(blocks[0].getAttribute('data-paragraph-id')).toBe('0');
+    expect(blocks[1].getAttribute('data-paragraph-id')).toBe('1');
+    expect(blocks[2].getAttribute('data-paragraph-id')).toBe('2');
+  });
+
+  it('assigns data-paragraph-id to heading elements', () => {
+    const content = '# Heading One\n\nParagraph below.';
+    const { container } = render(<MarkdownRenderer content={content} />);
+    const h1 = container.querySelector('h1');
+    expect(h1).toBeInTheDocument();
+    expect(h1?.getAttribute('data-paragraph-id')).toBe('0');
+  });
+
+  it('assigns data-paragraph-id to ul but not nested li elements', () => {
+    const content = '- Item one\n- Item two';
+    const { container } = render(<MarkdownRenderer content={content} />);
+    const ul = container.querySelector('ul');
+    expect(ul).toBeInTheDocument();
+    expect(ul?.getAttribute('data-paragraph-id')).toBe('0');
+    // li elements should NOT have data-paragraph-id (not top-level blocks)
+    const liElements = container.querySelectorAll('li');
+    liElements.forEach(li => {
+      expect(li.getAttribute('data-paragraph-id')).toBeNull();
+    });
+  });
+
+  it('assigns data-paragraph-id to table element', () => {
+    const content = `| A | B |\n|---|---|\n| 1 | 2 |`;
+    const { container } = render(<MarkdownRenderer content={content} />);
+    const table = container.querySelector('table');
+    expect(table).toBeInTheDocument();
+    expect(table?.getAttribute('data-paragraph-id')).toBe('0');
+  });
 });

@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { visit } from 'unist-util-visit';
+import type { Root, Element } from 'hast';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/prism-light';
 import oneDark from 'react-syntax-highlighter/dist/esm/styles/prism/one-dark';
 
@@ -19,6 +21,26 @@ SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('bash', bash);
 SyntaxHighlighter.registerLanguage('json', json);
 
+// Block tags that receive data-paragraph-id for selection anchoring (BRANCH-01)
+const BLOCK_TAGS = new Set([
+  'p', 'pre', 'ul', 'ol', 'table', 'blockquote',
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+]);
+
+// Defined outside the component for a stable reference — no re-creation on render
+function rehypeAddParagraphIds() {
+  return (tree: Root) => {
+    let blockIndex = 0;
+    visit(tree, 'element', (node: Element) => {
+      if (BLOCK_TAGS.has(node.tagName)) {
+        node.properties = node.properties ?? {};
+        // hast camelCase 'dataParagraphId' maps to HTML attribute 'data-paragraph-id'
+        node.properties['dataParagraphId'] = String(blockIndex++);
+      }
+    });
+  };
+}
+
 export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   content,
 }: {
@@ -28,6 +50,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
     <div className="prose prose-invert prose-zinc max-w-none text-zinc-100">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeAddParagraphIds]}
       components={{
         code({ className, children, node: _node, ...props }: React.HTMLAttributes<HTMLElement> & { node?: unknown }) {
           const match = /language-(\w+)/.exec(className ?? '');
