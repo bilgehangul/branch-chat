@@ -10,6 +10,19 @@ import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
 import { GutterColumn } from '../branching/GutterColumn';
+import { searchSources, toSourceResult } from '../../api/search';
+import { simplifyText } from '../../api/simplify';
+import type { Annotation } from '../../types/index';
+
+type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
+
+// Ephemeral UI state — NOT in Zustand (loading/error do not survive thread switch; that's correct)
+type PendingAnnotation = {
+  type: 'source' | 'simplification';
+  paragraphId: string;
+  messageId: string;
+};
+type ErrorAnnotation = PendingAnnotation & { retryFn: () => void };
 
 /**
  * ThreadView
@@ -36,6 +49,8 @@ export function ThreadView() {
   const deleteThread = useSessionStore(s => s.deleteThread);
   const summarizeThread = useSessionStore(s => s.summarizeThread);
   const compactThread = useSessionStore(s => s.compactThread);
+  const addAnnotation = useSessionStore(s => s.addAnnotation);
+  const updateAnnotation = useSessionStore(s => s.updateAnnotation);
 
   const { sendMessage, abort, isStreaming } = useStreamingChat(getToken);
 
@@ -59,15 +74,121 @@ export function ThreadView() {
   // Text selection bubble state
   const { bubble, clearBubble } = useTextSelection(scrollRef);
 
-  // Stub handlers for Phase 5 annotation actions — real implementation in plan 05-06
-  function handleFindSources(anchorText: string, paragraphId: string, messageId: string) {
-    // TODO 05-06: call searchSources(), manage loading/error/retry state, dispatch addAnnotation
-    console.log('[handleFindSources] anchorText:', anchorText, 'paragraphId:', paragraphId, 'messageId:', messageId);
+  // Ephemeral annotation UI state (NOT in Zustand — doesn't survive thread nav, that's correct)
+  const [pendingAnnotation, setPendingAnnotation] = useState<PendingAnnotation | null>(null);
+  const [errorAnnotation, setErrorAnnotation] = useState<ErrorAnnotation | null>(null);
+
+  // Real handleFindSources — calls searchSources API, manages loading/error/retry state
+  async function handleFindSources(anchorText: string, paragraphId: string, messageId: string) {
+    setErrorAnnotation(null);
+    setPendingAnnotation({ type: 'source', paragraphId, messageId });
+
+    const doFetch = async () => {
+      setPendingAnnotation({ type: 'source', paragraphId, messageId });
+      setErrorAnnotation(null);
+
+      const response = await searchSources({ query: anchorText }, getToken);
+
+      if (response.error || !response.data) {
+        setPendingAnnotation(null);
+        setErrorAnnotation({
+          type: 'source',
+          paragraphId,
+          messageId,
+          retryFn: doFetch,
+        });
+        return;
+      }
+
+      const { results, citationNote } = response.data;
+      const annotation: Annotation = {
+        id: crypto.randomUUID(),
+        type: 'source',
+        targetText: anchorText,
+        paragraphIndex: Number(paragraphId),
+        originalText: anchorText,
+        replacementText: null,
+        citationNote: citationNote ?? null,
+        sources: results.map(toSourceResult),
+        isShowingOriginal: false,
+      };
+      addAnnotation(messageId, annotation);
+      setPendingAnnotation(null);
+    };
+
+    await doFetch();
   }
 
-  function handleSimplify(anchorText: string, paragraphId: string, messageId: string, mode: string) {
-    // TODO 05-06: call simplifyText(), manage loading/error/retry state, dispatch addAnnotation/updateAnnotation
-    console.log('[handleSimplify] mode:', mode, 'anchorText:', anchorText, 'messageId:', messageId);
+  // Real handleSimplify — calls simplifyText API, handles addAnnotation vs updateAnnotation
+  async function handleSimplify(
+    anchorText: string,
+    paragraphId: string,
+    messageId: string,
+    mode: SimplifyMode
+  ) {
+    setErrorAnnotation(null);
+    setPendingAnnotation({ type: 'simplification', paragraphId, messageId });
+
+    const doFetch = async () => {
+      setPendingAnnotation({ type: 'simplification', paragraphId, messageId });
+      setErrorAnnotation(null);
+
+      const response = await simplifyText({ text: anchorText, mode }, getToken);
+
+      if (response.error || !response.data) {
+        setPendingAnnotation(null);
+        setErrorAnnotation({
+          type: 'simplification',
+          paragraphId,
+          messageId,
+          retryFn: doFetch,
+        });
+        return;
+      }
+
+      const { rewritten } = response.data;
+
+      // Check for existing simplification annotation on this paragraph (INLINE-07 / no-duplicate rule)
+      const msgState = useSessionStore.getState().messages[messageId];
+      const existing = msgState?.annotations.find(
+        a => a.type === 'simplification' && a.paragraphIndex === Number(paragraphId)
+      );
+
+      if (existing) {
+        // Update in place — "Try another mode" case; no duplicate block
+        updateAnnotation(messageId, existing.id, {
+          replacementText: rewritten,
+          originalText: mode, // update mode key stored in originalText
+        });
+      } else {
+        const annotation: Annotation = {
+          id: crypto.randomUUID(),
+          type: 'simplification',
+          targetText: anchorText,
+          paragraphIndex: Number(paragraphId),
+          originalText: mode,        // stores the mode key (e.g. 'simpler') — used by SimplificationBlock
+          replacementText: rewritten,
+          citationNote: null,
+          sources: [],
+          isShowingOriginal: false,
+        };
+        addAnnotation(messageId, annotation);
+      }
+      setPendingAnnotation(null);
+    };
+
+    await doFetch();
+  }
+
+  // handleTryAnother — re-calls handleSimplify with new mode (SimplificationBlock "Try another mode" flow)
+  function handleTryAnother(
+    messageId: string,
+    _annotationId: string,
+    anchorText: string,
+    paragraphId: string,
+    mode: SimplifyMode
+  ) {
+    void handleSimplify(anchorText, paragraphId, messageId, mode);
   }
 
   // Handle Go Deeper click: create child thread using bubble.messageId directly
@@ -182,7 +303,13 @@ export function ThreadView() {
           >
             {activeThread ? (
               orderedMessages.length > 0 ? (
-                <MessageList messages={orderedMessages} thread={activeThread} />
+                <MessageList
+                  messages={orderedMessages}
+                  thread={activeThread}
+                  onTryAnother={handleTryAnother}
+                  pendingAnnotation={pendingAnnotation}
+                  errorAnnotation={errorAnnotation}
+                />
               ) : (
                 <>
                   {/* Always show anchor context for child threads even before first message */}
@@ -223,8 +350,12 @@ export function ThreadView() {
           bubble={bubble}
           isAtMaxDepth={isAtMaxDepth(activeThread)}
           onGoDeeper={handleGoDeeper}
-          onFindSources={handleFindSources}
-          onSimplify={handleSimplify}
+          onFindSources={(anchorText, paragraphId, messageId) =>
+            void handleFindSources(anchorText, paragraphId, messageId)
+          }
+          onSimplify={(anchorText, paragraphId, messageId, mode) =>
+            void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
+          }
           onDismiss={clearBubble}
         />
       )}
