@@ -38,16 +38,16 @@ created: 2026-03-09
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 5-01-01 | 01 | 0 | INLINE-01, INLINE-02 | unit | `cd frontend && npx vitest run src/__tests__/CitationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-01-02 | 01 | 0 | INLINE-03, INLINE-04 | unit | `cd frontend && npx vitest run src/__tests__/SimplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-01-03 | 01 | 0 | INLINE-05 | unit | `cd frontend && npx vitest run src/__tests__/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
-| 5-02-01 | 02 | 1 | INLINE-01 | unit | `cd frontend && npx vitest run src/__tests__/CitationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-02-02 | 02 | 1 | INLINE-02 | unit | `cd frontend && npx vitest run src/__tests__/CitationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-02-03 | 02 | 1 | INLINE-06 | unit | `cd frontend && npx vitest run src/__tests__/CitationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-03-01 | 03 | 1 | INLINE-03 | unit | `cd frontend && npx vitest run src/__tests__/SimplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-03-02 | 03 | 1 | INLINE-04 | unit | `cd frontend && npx vitest run src/__tests__/SimplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
-| 5-04-01 | 04 | 1 | INLINE-05 | unit | `cd frontend && npx vitest run src/__tests__/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
-| 5-04-02 | 04 | 1 | INLINE-07 | unit | `cd frontend && npx vitest run src/__tests__/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
+| 5-01-01 | 01 | 0 | INLINE-01, INLINE-02 | unit | `cd frontend && npx vitest run src/tests/citationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-01-02 | 01 | 0 | INLINE-03, INLINE-04 | unit | `cd frontend && npx vitest run src/tests/simplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-01-03 | 01 | 0 | INLINE-05 | unit | `cd frontend && npx vitest run src/tests/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
+| 5-02-01 | 02 | 1 | INLINE-01 | unit | `cd frontend && npx vitest run src/tests/citationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-02-02 | 02 | 1 | INLINE-02 | unit | `cd frontend && npx vitest run src/tests/citationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-02-03 | 02 | 1 | INLINE-06 | unit | `cd frontend && npx vitest run src/tests/citationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-03-01 | 03 | 1 | INLINE-03 | unit | `cd frontend && npx vitest run src/tests/simplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-03-02 | 03 | 1 | INLINE-04 | unit | `cd frontend && npx vitest run src/tests/simplificationBlock.test.tsx 2>&1` | ❌ W0 | ⬜ pending |
+| 5-04-01 | 04 | 1 | INLINE-05 | unit | `cd frontend && npx vitest run src/tests/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
+| 5-04-02 | 04 | 1 | INLINE-07 | unit | `cd frontend && npx vitest run src/tests/sessionStore.annotations.test.ts 2>&1` | ❌ W0 | ⬜ pending |
 | 5-05-01 | 05 | 2 | INLINE-08 | manual | — | — | ⬜ pending |
 | 5-05-02 | 05 | 2 | INLINE-08 | manual | — | — | ⬜ pending |
 
@@ -57,9 +57,9 @@ created: 2026-03-09
 
 ## Wave 0 Requirements
 
-- [ ] `frontend/src/__tests__/CitationBlock.test.tsx` — stubs for INLINE-01, INLINE-02, INLINE-06
-- [ ] `frontend/src/__tests__/SimplificationBlock.test.tsx` — stubs for INLINE-03, INLINE-04
-- [ ] `frontend/src/__tests__/sessionStore.annotations.test.ts` — stubs for INLINE-05, INLINE-07
+- [ ] `frontend/src/tests/citationBlock.test.tsx` — stubs for INLINE-01, INLINE-02, INLINE-06
+- [ ] `frontend/src/tests/simplificationBlock.test.tsx` — stubs for INLINE-03, INLINE-04
+- [ ] `frontend/src/tests/sessionStore.annotations.test.ts` — stubs for INLINE-05, INLINE-07
 
 *vitest is already installed via the existing frontend setup; no new framework install needed.*
 
