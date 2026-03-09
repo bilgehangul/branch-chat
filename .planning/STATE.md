@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-PLAN.md (provider abstraction layer). Ready for Plan 01-03 (route handlers).
-last_updated: "2026-03-09T10:49:37.948Z"
+stopped_at: "01-03 CHECKPOINT: Tasks 1-2 complete (all 14 tests pass), awaiting human-verify checkpoint for manual SSE/JWT testing"
+last_updated: "2026-03-09T10:55:02.960Z"
 last_activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
   percent: 67
 ---
 
@@ -51,6 +51,7 @@ Progress: [███████░░░] 67%
 
 *Updated after each plan completion*
 | Phase 01-backend-proxy-shell P02 | 4 min | 2 tasks | 8 files |
+| Phase 01-backend-proxy-shell P03 | 3 min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 01-02]: Factory tests use jest.isolateModulesAsync() + constructor.name — avoids class identity mismatch after module cache reset
 - [Phase 01-02]: config.ts is the ONLY file reading AI_PROVIDER — route handlers import aiProvider/searchProvider singletons, never branch on provider type
 - [Phase 01-02]: tsconfig.json rootDir changed from ./src to . — fix for pre-existing TS6059 errors when tests/ included but outside rootDir
+- [Phase 01-03]: apiRouter.use(requireApiAuth) in routes/index.ts protects all sub-routes automatically — no per-route decoration needed
+- [Phase 01-03]: SSE flushHeaders() called before aiProvider.streamChat() — streaming headers must reach client before async work begins
+- [Phase 01-03]: @types/cors added as devDependency — cors package had no bundled types (Rule 3 auto-fix)
 
 ### Pending Todos
 
@@ -82,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T10:49:37.945Z
-Stopped at: Completed 01-02-PLAN.md (provider abstraction layer). Ready for Plan 01-03 (route handlers).
+Last session: 2026-03-09T10:55:02.957Z
+Stopped at: 01-03 CHECKPOINT: Tasks 1-2 complete (all 14 tests pass), awaiting human-verify checkpoint for manual SSE/JWT testing
 Resume file: None

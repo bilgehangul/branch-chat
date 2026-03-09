@@ -12,7 +12,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **AUTH-01**: User can sign up and sign in with email/password via Clerk
 - [ ] **AUTH-02**: User can sign in with Google OAuth via Clerk
 - [ ] **AUTH-03**: Login is optional — unauthenticated users can access and use the full chat interface
-- [ ] **AUTH-04**: If authenticated, every backend API call validates the Clerk JWT before processing
+- [x] **AUTH-04**: If authenticated, every backend API call validates the Clerk JWT before processing
 - [ ] **AUTH-05**: Logout clears all in-memory session state (thread tree, messages, annotations)
 
 ### Core Chat
@@ -64,7 +64,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **UI-01**: Default theme is dark; the app renders in dark mode on first load
 - [ ] **UI-02**: User can toggle to light theme; preference is stored in localStorage and restored on next visit
-- [ ] **UI-03**: Backend enforces per-user (or per-IP for unauthenticated) rate limiting on all API routes
+- [x] **UI-03**: Backend enforces per-user (or per-IP for unauthenticated) rate limiting on all API routes
 - [x] **UI-04**: AI provider is abstracted behind a service interface (`chat()`, `findSources()`, `simplify()`); switching between Gemini+Tavily and OpenAI+Responses API requires only an environment variable change
 
 ### Deployment
@@ -121,7 +121,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 2 | Pending |
 | CHAT-01 | Phase 3 | Pending |
 | CHAT-02 | Phase 3 | Pending |
@@ -158,7 +158,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INLINE-08 | Phase 5 | Pending |
 | UI-01 | Phase 6 | Pending |
 | UI-02 | Phase 6 | Pending |
-| UI-03 | Phase 1 | Pending |
+| UI-03 | Phase 1 | Complete |
 | UI-04 | Phase 1 | Complete |
 | DEPLOY-01 | Phase 6 | Pending |
 | DEPLOY-02 | Phase 6 | Pending |

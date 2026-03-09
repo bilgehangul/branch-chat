@@ -12,7 +12,7 @@ DeepDive Chat is built in six phases ordered by hard architectural dependencies.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction
+- [x] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction (completed 2026-03-09)
 - [ ] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client
 - [ ] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering
 - [ ] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Proxy Shell | 2/3 | In Progress|  |
+| 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
 | 2. Frontend Foundation | 0/TBD | Not started | - |
 | 3. Core Thread UI | 0/TBD | Not started | - |
 | 4. Branching | 0/TBD | Not started | - |
