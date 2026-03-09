@@ -1,7 +1,7 @@
 import type { SseEvent } from '../../../shared/types';
 
 export async function streamChat(
-  body: { messages: Array<{ role: string; content: string }>; signal?: AbortSignal },
+  body: { messages: Array<{ role: string; content: string }>; signal?: AbortSignal; systemInstruction?: string },
   getToken: () => Promise<string | null>,
   onChunk: (text: string) => void,
   onDone: () => void,
@@ -15,7 +15,10 @@ export async function streamChat(
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: JSON.stringify({ messages: body.messages }),
+    body: JSON.stringify({
+      messages: body.messages,
+      ...(body.systemInstruction ? { systemPrompt: body.systemInstruction } : {}),
+    }),
     signal: body.signal,
   });
 

@@ -166,4 +166,64 @@ describe('streamChat', () => {
     const fetchInit = fetchSpy.mock.calls[0][1] as RequestInit;
     expect(fetchInit.signal).toBe(abortController.signal);
   });
+
+  it('includes systemPrompt in fetch body when systemInstruction is provided', async () => {
+    const body = makeStream(['data: {"type":"done"}\n\n']);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(body, { status: 200 }),
+    );
+
+    await streamChat(
+      { messages: [], systemInstruction: 'You are focused on topic X.' },
+      noopGetToken,
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+    );
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const fetchInit = fetchSpy.mock.calls[0][1] as RequestInit;
+    const parsedBody = JSON.parse(fetchInit.body as string) as Record<string, unknown>;
+    expect(parsedBody.systemPrompt).toBe('You are focused on topic X.');
+  });
+
+  it('omits systemPrompt from fetch body when systemInstruction is absent', async () => {
+    const body = makeStream(['data: {"type":"done"}\n\n']);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(body, { status: 200 }),
+    );
+
+    await streamChat(
+      { messages: [] },
+      noopGetToken,
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+    );
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const fetchInit = fetchSpy.mock.calls[0][1] as RequestInit;
+    const parsedBody = JSON.parse(fetchInit.body as string) as Record<string, unknown>;
+    expect(parsedBody).not.toHaveProperty('systemPrompt');
+  });
+
+  it('omits systemPrompt from fetch body when systemInstruction is empty string', async () => {
+    const body = makeStream(['data: {"type":"done"}\n\n']);
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(body, { status: 200 }),
+    );
+
+    await streamChat(
+      { messages: [], systemInstruction: '' },
+      noopGetToken,
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+    );
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const fetchInit = fetchSpy.mock.calls[0][1] as RequestInit;
+    const parsedBody = JSON.parse(fetchInit.body as string) as Record<string, unknown>;
+    expect(parsedBody).not.toHaveProperty('systemPrompt');
+  });
 });
