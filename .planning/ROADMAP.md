@@ -13,7 +13,7 @@ DeepDive Chat is built in six phases ordered by hard architectural dependencies.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction (completed 2026-03-09)
-- [x] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client (completed 2026-03-09)
+- [x] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client (completed 2026-03-09)
 - [ ] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering
 - [ ] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit
 - [ ] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text
@@ -64,7 +64,15 @@ Plans:
   3. Text selection is disabled on a message while it is streaming and automatically re-enabled when the stream completes
   4. The breadcrumb bar is visible at the top of the screen showing the current thread path; clicking an ancestor navigates there with a slide-left transition
   5. The left spine strip appears when thread depth is 1 or greater and clicking it navigates to the parent thread
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0 test stubs for all 7 test files (CHAT + NAV requirements)
+- [ ] 03-02-PLAN.md — useStreamingChat hook, ChatInput, AbortSignal threading, setThreadTitle store action
+- [ ] 03-03-PLAN.md — MarkdownRenderer (react-markdown + Prism), StreamingCursor, MessageBlock, ContextCard
+- [ ] 03-04-PLAN.md — ThreadView (auto-scroll, slide transition, scroll restore), MessageList, App.tsx createSession fix
+- [ ] 03-05-PLAN.md — BreadcrumbBar (NAV-01/02/03 with overflow collapse), SpineStrip (NAV-04/05)
+- [ ] 03-06-PLAN.md — Human verification checkpoint (streaming, Markdown, Stop, navigation chrome)
 
 ### Phase 4: Branching
 **Goal**: Users can branch off any completed AI paragraph into a child thread, navigate the resulting thread tree, and see gutter lead pills showing where branches originated
@@ -110,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
 | 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
-| 3. Core Thread UI | 0/TBD | Not started | - |
+| 3. Core Thread UI | 0/6 | Not started | - |
 | 4. Branching | 0/TBD | Not started | - |
 | 5. Inline Annotations | 0/TBD | Not started | - |
 | 6. Polish and Deployment | 0/TBD | Not started | - |
