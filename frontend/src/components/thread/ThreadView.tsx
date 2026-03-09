@@ -8,6 +8,7 @@ import { MessageList } from './MessageList';
 import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
+import { GutterColumn } from '../branching/GutterColumn';
 
 /**
  * ThreadView
@@ -144,33 +145,47 @@ export function ThreadView() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Scroll container */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4"
-      >
-        {/* Slide transition wrapper */}
+      {/* Scroll area + gutter row */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Scroll container */}
         <div
-          className={`transition-transform duration-200 ease-out ${
-            isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-          }`}
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto px-4"
         >
-          {activeThread ? (
-            orderedMessages.length > 0 ? (
-              <MessageList messages={orderedMessages} thread={activeThread} />
+          {/* Slide transition wrapper */}
+          <div
+            className={`transition-transform duration-200 ease-out ${
+              isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
+            }`}
+          >
+            {activeThread ? (
+              orderedMessages.length > 0 ? (
+                <MessageList messages={orderedMessages} thread={activeThread} />
+              ) : (
+                <div className="flex items-center justify-center h-full min-h-[200px]">
+                  <p className="text-zinc-400 text-sm">Ask anything to begin</p>
+                </div>
+              )
             ) : (
               <div className="flex items-center justify-center h-full min-h-[200px]">
                 <p className="text-zinc-400 text-sm">Ask anything to begin</p>
               </div>
-            )
-          ) : (
-            <div className="flex items-center justify-center h-full min-h-[200px]">
-              <p className="text-zinc-400 text-sm">Ask anything to begin</p>
-            </div>
-          )}
-          {/* Bottom anchor for auto-scroll */}
-          <div ref={bottomAnchorRef} />
+            )}
+            {/* Bottom anchor for auto-scroll */}
+            <div ref={bottomAnchorRef} />
+          </div>
         </div>
+
+        {/* Gutter — only renders when thread has child branches */}
+        {activeThread && (
+          <GutterColumn
+            scrollContainerRef={scrollRef}
+            activeThread={activeThread}
+            threads={threads}
+            messages={messages}
+            onNavigate={setActiveThread}
+          />
+        )}
       </div>
 
       {/* ActionBubble: appears on valid text selection when not at max depth */}
