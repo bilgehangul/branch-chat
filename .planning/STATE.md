@@ -3,6 +3,21 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
+stopped_at: 02-03 Task 1 complete — awaiting human-verify checkpoint (Clerk browser flow)
+last_updated: "2026-03-09T12:35:46.925Z"
+last_activity: 2026-03-09 — Plans 02-01 and 02-02 complete (parallel Wave 1)
+progress:
+  total_phases: 6
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: in_progress
 stopped_at: Phase 02 Wave 1 complete — 02-01 (scaffold+auth) and 02-02 (Zustand store) done, 02-03 (API client) pending
 last_updated: "2026-03-09T13:00:00.000Z"
 last_activity: 2026-03-09 — Plan 02-02 complete (Zustand store, selectors, 16 tests pass)
@@ -84,6 +99,9 @@ Recent decisions affecting current work:
 - [Phase 02-02]: Messages locked flat in Record<string,Message> at store root — Thread.messageIds holds string[] references only (Zustand store shape, locked in 02-02)
 - [Phase 02-02]: Zustand v5 curried create<SessionState>()() pattern used — enables TypeScript generic inference without explicit type annotation on useStore call
 - [Phase 02-02]: Selector functions are pure (no store import) — accept data as parameters, usable outside React components
+- [Phase 02-03]: streamChat uses fetch+ReadableStream with remainder buffer — EventSource cannot send Authorization headers
+- [Phase 02-03]: getToken passed as function parameter into all api/ modules — no React hooks inside api layer
+- [Phase 02-03]: search.ts uses /api/find-sources route (not /api/search) — matches Phase 1 backend router
 
 ### Pending Todos
 
@@ -96,6 +114,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T13:00:00.000Z
-Stopped at: Phase 02 Wave 1 complete — 02-01 and 02-02 done, executing 02-03
-Resume file: .planning/phases/02-frontend-foundation/02-03-PLAN.md
+Last session: 2026-03-09T12:35:39.645Z
+Stopped at: 02-03 Task 1 complete — awaiting human-verify checkpoint (Clerk browser flow)
+Resume file: None
