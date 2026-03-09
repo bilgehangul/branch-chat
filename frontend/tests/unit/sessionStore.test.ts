@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { useSessionStore } from '@/store/sessionStore';
 import type { Message, ChildLead } from '@/types/index';
+import { ACCENT_PALETTE, getNextAccentColor } from '@/constants/theme';
 
 const initialState = useSessionStore.getState();
 afterEach(() => useSessionStore.setState(initialState, true));
@@ -190,5 +191,62 @@ describe('sessionStore actions', () => {
     expect(useSessionStore.getState().threads[threadId]?.title).toBe('Root');
     useSessionStore.getState().setThreadTitle(threadId, 'My New Title');
     expect(useSessionStore.getState().threads[threadId]?.title).toBe('My New Title');
+  });
+});
+
+describe('accent color cycling', () => {
+  it('ACCENT_PALETTE has 8 entries', () => {
+    expect(ACCENT_PALETTE).toHaveLength(8);
+  });
+
+  it('first child thread gets ACCENT_PALETTE[0]', () => {
+    useSessionStore.getState().createSession('user-abc');
+    const parentThreadId = useSessionStore.getState().activeThreadId!;
+    const parentThread = useSessionStore.getState().threads[parentThreadId]!;
+
+    const accentColor = getNextAccentColor(parentThread);
+    expect(accentColor).toBe(ACCENT_PALETTE[0]);
+  });
+
+  it('second child thread gets ACCENT_PALETTE[1]', () => {
+    useSessionStore.getState().createSession('user-abc');
+    const parentThreadId = useSessionStore.getState().activeThreadId!;
+
+    // Create first child
+    useSessionStore.getState().createThread({
+      parentThreadId,
+      anchorText: 'first anchor',
+      parentMessageId: null,
+      title: 'Child One',
+      accentColor: ACCENT_PALETTE[0]!,
+    });
+
+    // Now parent has 1 child; next color should be ACCENT_PALETTE[1]
+    const updatedParent = useSessionStore.getState().threads[parentThreadId]!;
+    const accentColor = getNextAccentColor(updatedParent);
+    expect(accentColor).toBe(ACCENT_PALETTE[1]);
+  });
+
+  it('accent color wraps around after 8 children (modulo)', () => {
+    useSessionStore.getState().createSession('user-abc');
+    const parentThreadId = useSessionStore.getState().activeThreadId!;
+
+    // Create 8 children so the 9th should cycle back to ACCENT_PALETTE[0]
+    for (let i = 0; i < 8; i++) {
+      const parent = useSessionStore.getState().threads[parentThreadId]!;
+      const color = getNextAccentColor(parent);
+      useSessionStore.getState().createThread({
+        parentThreadId,
+        anchorText: `anchor ${i}`,
+        parentMessageId: null,
+        title: `Child ${i}`,
+        accentColor: color,
+      });
+    }
+
+    const parent = useSessionStore.getState().threads[parentThreadId]!;
+    expect(parent.childThreadIds).toHaveLength(8);
+    const accentColor = getNextAccentColor(parent);
+    expect(accentColor).toBe(ACCENT_PALETTE[0]);
   });
 });

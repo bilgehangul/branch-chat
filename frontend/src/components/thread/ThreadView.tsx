@@ -2,18 +2,33 @@ import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSessionStore } from '../../store/sessionStore';
 import { useStreamingChat } from '../../hooks/useStreamingChat';
+import { useTextSelection } from '../../hooks/useTextSelection';
 import { ChatInput } from '../input/ChatInput';
 import { MessageList } from './MessageList';
+import { ActionBubble } from '../branching/ActionBubble';
+import { isAtMaxDepth } from '../../store/selectors';
+import { getNextAccentColor } from '../../constants/theme';
 
 /**
  * ThreadView
  *
  * Scroll container + auto-scroll + 200ms slide transition + ChatInput wiring.
+ * Also wires useTextSelection and ActionBubble for the "Go Deeper" branching flow.
+ *
  * This is the ONLY place useStreamingChat is called.
  */
 export function ThreadView() {
   const { getToken } = useAuth();
-  const { threads, messages, activeThreadId, setScrollPosition } = useSessionStore();
+
+  // Separate selector calls to avoid getSnapshot infinite loop (Phase 03-04 decision)
+  const threads = useSessionStore(s => s.threads);
+  const messages = useSessionStore(s => s.messages);
+  const activeThreadId = useSessionStore(s => s.activeThreadId);
+  const setScrollPosition = useSessionStore(s => s.setScrollPosition);
+  const createThread = useSessionStore(s => s.createThread);
+  const addChildLead = useSessionStore(s => s.addChildLead);
+  const setActiveThread = useSessionStore(s => s.setActiveThread);
+
   const { sendMessage, abort, isStreaming } = useStreamingChat(getToken);
 
   // Derive current thread and ordered messages
@@ -30,6 +45,35 @@ export function ThreadView() {
   // Slide transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prevActiveThreadIdRef = useRef(activeThreadId);
+
+  // Text selection bubble state
+  const { bubble, clearBubble } = useTextSelection(scrollRef);
+
+  // Handle Go Deeper click: create child thread using bubble.messageId directly
+  // IMPORTANT: bubble.messageId is used directly — NOT the last-AI-message heuristic.
+  function handleGoDeeper() {
+    if (!bubble || !activeThread || !activeThreadId) return;
+    const { anchorText, paragraphId, messageId } = bubble;
+    const accentColor = getNextAccentColor(activeThread);
+    const title = anchorText.split(' ').slice(0, 6).join(' ');
+    const newThreadId = createThread({
+      parentThreadId: activeThreadId,
+      anchorText,
+      parentMessageId: messageId || null,
+      title,
+      accentColor,
+    });
+    if (messageId) {
+      addChildLead(messageId, {
+        threadId: newThreadId,
+        paragraphIndex: Number(paragraphId),
+        anchorText,
+        messageCount: 0,
+      });
+    }
+    clearBubble();
+    setActiveThread(newThreadId);
+  }
 
   // Track activeThreadId changes for scroll save + slide transition
   useEffect(() => {
@@ -68,7 +112,9 @@ export function ThreadView() {
   // Auto-scroll: follow new messages only if user is already at the bottom
   useEffect(() => {
     if (isAtBottomRef.current && bottomAnchorRef.current) {
-      bottomAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
+      if (typeof bottomAnchorRef.current.scrollIntoView === 'function') {
+        bottomAnchorRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   }, [orderedMessages.length, orderedMessages[orderedMessages.length - 1]?.content]);
 
@@ -126,6 +172,16 @@ export function ThreadView() {
           <div ref={bottomAnchorRef} />
         </div>
       </div>
+
+      {/* ActionBubble: appears on valid text selection when not at max depth */}
+      {bubble && activeThread && (
+        <ActionBubble
+          bubble={bubble}
+          isAtMaxDepth={isAtMaxDepth(activeThread)}
+          onGoDeeper={handleGoDeeper}
+          onDismiss={clearBubble}
+        />
+      )}
 
       {/* Chat input at bottom */}
       <ChatInput
