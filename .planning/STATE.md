@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-03-PLAN.md — ActionBubble multi-mode expansion with onFindSources/onSimplify props
-last_updated: "2026-03-09T19:02:13.149Z"
+stopped_at: Completed 05-04-PLAN.md — CitationBlock collapsible citation block + AnnotationShimmer shimmer placeholder
+last_updated: "2026-03-09T19:06:04.080Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 27
-  completed_plans: 22
+  completed_plans: 23
 ---
 
 ---
@@ -133,6 +133,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 05-inline-annotations P01 | 3 | 2 tasks | 6 files |
 | Phase 05-inline-annotations P02 | 4 | 2 tasks | 8 files |
 | Phase 05-inline-annotations P03 | 3 | 2 tasks | 4 files |
+| Phase 05-inline-annotations P04 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,8 @@ Recent decisions affecting current work:
 - [Phase 05-inline-annotations]: toSourceResult() exported from search.ts — converts backend SearchResult to frontend SourceResult when constructing Annotation
 - [Phase 05-inline-annotations]: BubbleMode state ('default'|'simplify') is local to ActionBubble; useEffect resets on paragraphId change
 - [Phase 05-inline-annotations]: ThreadView stub handlers use console.log + TODO 05-06 — no async API logic until plan 05-06
+- [Phase 05-inline-annotations]: CitationBlock default collapsed per CONTEXT.md user decision (overrides REQUIREMENTS.md default-expanded)
+- [Phase 05-inline-annotations]: No superscript badge on paragraph text per CONTEXT.md override of INLINE-02 — citation block IS the full annotation UI
 
 ### Pending Todos
 
@@ -219,6 +222,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T19:02:06.273Z
-Stopped at: Completed 05-03-PLAN.md — ActionBubble multi-mode expansion with onFindSources/onSimplify props
+Last session: 2026-03-09T19:06:04.075Z
+Stopped at: Completed 05-04-PLAN.md — CitationBlock collapsible citation block + AnnotationShimmer shimmer placeholder
 Resume file: None
