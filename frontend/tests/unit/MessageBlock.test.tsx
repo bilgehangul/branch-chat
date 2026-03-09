@@ -1,12 +1,17 @@
 /**
  * Tests for MessageBlock component
- * Requirements: CHAT-06 (streaming visual state), CHAT-05 (role labels)
+ * Requirements: CHAT-06 (streaming visual state), CHAT-05 (role labels), BRANCH-07 (anchor underline)
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MessageBlock } from '../../src/components/thread/MessageBlock';
-import type { Message } from '../../src/types/index';
+import type { Message, Thread } from '../../src/types/index';
+
+// Mock sessionStore for underline tests
+vi.mock('../../src/store/sessionStore', () => ({
+  useSessionStore: vi.fn(),
+}));
 
 function makeMessage(overrides: Partial<Message> = {}): Message {
   return {
@@ -21,6 +26,17 @@ function makeMessage(overrides: Partial<Message> = {}): Message {
     ...overrides,
   };
 }
+
+// Setup mock store to return empty threads by default
+const mockUseSessionStore = vi.fn();
+beforeEach(async () => {
+  const { useSessionStore } = await import('../../src/store/sessionStore');
+  (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+    (selector: (state: { threads: Record<string, Partial<Thread>> }) => unknown) =>
+      selector({ threads: {} })
+  );
+  mockUseSessionStore;
+});
 
 describe('MessageBlock', () => {
   // CHAT-06: Streaming visual state
@@ -91,5 +107,106 @@ describe('MessageBlock', () => {
       />
     );
     expect(container.querySelector('strong')).toBeInTheDocument();
+  });
+});
+
+describe('MessageBlock anchor underline (BRANCH-07)', () => {
+  it('renders colored underline on paragraph matching childLead.paragraphIndex', async () => {
+    const { useSessionStore } = await import('../../src/store/sessionStore');
+    const childThreadId = 'child-thread-1';
+    const accentColor = '#C9A0A0'; // dusty rose from ACCENT_PALETTE
+
+    // Mock store to return a thread with known accentColor
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: { threads: Record<string, Partial<Thread>> }) => unknown) =>
+        selector({
+          threads: {
+            [childThreadId]: {
+              id: childThreadId,
+              accentColor,
+            } as Thread,
+          },
+        })
+    );
+
+    const message = makeMessage({
+      role: 'assistant',
+      content: 'First paragraph text.',
+      childLeads: [
+        {
+          threadId: childThreadId,
+          paragraphIndex: 0,
+          anchorText: 'First paragraph',
+          messageCount: 0,
+        },
+      ],
+    });
+
+    const { container } = render(<MessageBlock message={message} />);
+
+    // Find the paragraph with data-paragraph-id="0"
+    const para = container.querySelector('[data-paragraph-id="0"]') as HTMLElement | null;
+    expect(para).toBeInTheDocument();
+    expect(para?.style.textDecoration).toBe('underline');
+    // jsdom normalizes hex colors to rgb() — check that the color is set (non-empty)
+    expect(para?.style.textDecorationColor).toBeTruthy();
+  });
+
+  it('does not apply underline to paragraphs NOT in childLeads', async () => {
+    const { useSessionStore } = await import('../../src/store/sessionStore');
+    const childThreadId = 'child-thread-2';
+    const accentColor = '#8FAF8F';
+
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: { threads: Record<string, Partial<Thread>> }) => unknown) =>
+        selector({
+          threads: {
+            [childThreadId]: {
+              id: childThreadId,
+              accentColor,
+            } as Thread,
+          },
+        })
+    );
+
+    // childLead is for paragraphIndex=1, but content has only 1 paragraph (index 0)
+    const message = makeMessage({
+      role: 'assistant',
+      content: 'Only paragraph here.',
+      childLeads: [
+        {
+          threadId: childThreadId,
+          paragraphIndex: 1, // paragraph 1 — won't match index 0
+          anchorText: 'some text',
+          messageCount: 0,
+        },
+      ],
+    });
+
+    const { container } = render(<MessageBlock message={message} />);
+
+    const para = container.querySelector('[data-paragraph-id="0"]') as HTMLElement | null;
+    expect(para).toBeInTheDocument();
+    // Should NOT have underline style
+    expect(para?.style.textDecoration).toBeFalsy();
+  });
+
+  it('no underline when childLeads is empty', async () => {
+    const { useSessionStore } = await import('../../src/store/sessionStore');
+    (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: { threads: Record<string, Partial<Thread>> }) => unknown) =>
+        selector({ threads: {} })
+    );
+
+    const message = makeMessage({
+      role: 'assistant',
+      content: 'No leads here.',
+      childLeads: [],
+    });
+
+    const { container } = render(<MessageBlock message={message} />);
+    const para = container.querySelector('[data-paragraph-id="0"]') as HTMLElement | null;
+    expect(para).toBeInTheDocument();
+    expect(para?.style.textDecoration).toBeFalsy();
   });
 });

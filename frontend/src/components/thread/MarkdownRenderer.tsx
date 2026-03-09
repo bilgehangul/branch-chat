@@ -43,8 +43,10 @@ function rehypeAddParagraphIds() {
 
 export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   content,
+  underlineMap,
 }: {
   content: string;
+  underlineMap?: Record<number, string>;
 }) {
   return (
     <div className="prose prose-invert prose-zinc max-w-none text-zinc-100">
@@ -52,6 +54,20 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeAddParagraphIds]}
       components={{
+        p({ children, ...props }) {
+          const paragraphId = (props as Record<string, unknown>)['data-paragraph-id'];
+          const color = typeof paragraphId === 'string'
+            ? underlineMap?.[Number(paragraphId)]
+            : undefined;
+          return (
+            <p
+              {...props}
+              style={color ? { textDecoration: 'underline', textDecorationColor: color } : undefined}
+            >
+              {children}
+            </p>
+          );
+        },
         code({ className, children, node: _node, ...props }: React.HTMLAttributes<HTMLElement> & { node?: unknown }) {
           const match = /language-(\w+)/.exec(className ?? '');
           const isBlock = !!match;
