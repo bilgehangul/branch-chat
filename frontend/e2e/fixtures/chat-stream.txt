@@ -1,0 +1,16 @@
+data: {"type":"chunk","text":"**DeepDive**"}
+
+data: {"type":"chunk","text":" is a tool"}
+
+data: {"type":"chunk","text":" for research."}
+
+data: {"type":"chunk","text":"\n\nIt supports:"}
+
+data: {"type":"chunk","text":"\n- Branching"}
+
+data: {"type":"chunk","text":"\n- Annotations"}
+
+data: {"type":"done"}
+
+data: [DONE]
+
