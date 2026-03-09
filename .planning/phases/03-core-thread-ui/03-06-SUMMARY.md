@@ -63,21 +63,21 @@ completed: 2026-03-09
 
 # Phase 3 Plan 06: Human Verification Checkpoint Summary
 
-**Phase 3 automated suite fixed and passing (68 tests, tsc clean, vite build succeeds) — awaiting human browser verification of streaming chat, Markdown rendering, Stop button, and navigation chrome**
+**Phase 3 complete: 68 automated tests pass, production build clean, and human-verified streaming chat with Gemini SSE, GFM Markdown rendering, Stop button abort, multi-turn conversation, and navigation chrome all confirmed working in browser**
 
 ## Performance
 
 - **Duration:** ~8 min
 - **Started:** 2026-03-09T10:40:00Z
 - **Completed:** 2026-03-09T10:48:00Z
-- **Tasks:** 1 auto (complete) + 1 checkpoint (human verification)
+- **Tasks:** 1 auto (complete) + 1 checkpoint (APPROVED by user)
 - **Files modified:** 7
 
 ## Accomplishments
 - Fixed all TypeScript build errors that blocked `npm run build` (tsc -b mode)
 - 68 automated tests pass, 3 test.todo stubs remain as planned
 - Production build passes (509 kB bundle, expected for syntax highlighting library)
-- Human checkpoint presented for browser verification of full Phase 3 feature set
+- Human checkpoint APPROVED: streaming chat token-by-token, GFM Markdown with syntax-highlighted code blocks, multi-turn conversation, Stop button aborting stream, auto-scroll behavior, breadcrumb bar with UserButton, and spine strip all verified working in browser
 
 ## Task Commits
 
@@ -123,23 +123,10 @@ Each task was committed atomically:
 None - no external service configuration required.
 
 ## Next Phase Readiness
-- Phase 3 automated quality gate: PASSED
-- Human verification checkpoint: SEE BELOW
-- Phase 4 (branching/gutter pills) can begin once human checkpoint approved
-
----
-
-### Checkpoint: Human Verification Required
-
-Start both servers to verify the full Phase 3 feature set in a browser:
-
-**Backend:** `cd "C:/gmu/coding/GenAI Web interface/child_chats_v1/backend" && npm run dev`
-
-**Frontend:** `cd "C:/gmu/coding/GenAI Web interface/child_chats_v1/frontend" && npm run dev`
-
-**Open:** http://localhost:5173
-
-Verification steps are in the plan file at `.planning/phases/03-core-thread-ui/03-06-PLAN.md` (Task 2 checkpoint section).
+- Phase 3 automated quality gate: PASSED (68 tests, tsc clean, vite build)
+- Human verification checkpoint: APPROVED by user 2026-03-09
+- Verified in browser: streaming chat, GFM Markdown, Stop button, multi-turn conversation, auto-scroll, breadcrumb bar, spine strip, sign-out
+- Phase 4 (branching/gutter pills) is fully unblocked
 
 ---
 *Phase: 03-core-thread-ui*
