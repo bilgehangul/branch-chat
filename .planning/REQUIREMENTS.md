@@ -26,18 +26,18 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Branching
 
-- [ ] **BRANCH-01**: User can click and drag to select up to one paragraph of text in any AI response; selection is capped to the paragraph where the drag began
-- [ ] **BRANCH-02**: A floating action bubble appears within 100ms of releasing the mouse after a valid selection, positioned 8px above the top-right corner of the selection
-- [ ] **BRANCH-03**: The action bubble contains three actions: Go Deeper, Find Sources, Simplify
+- [x] **BRANCH-01**: User can click and drag to select up to one paragraph of text in any AI response; selection is capped to the paragraph where the drag began
+- [x] **BRANCH-02**: A floating action bubble appears within 100ms of releasing the mouse after a valid selection, positioned 8px above the top-right corner of the selection
+- [x] **BRANCH-03**: The action bubble contains three actions: Go Deeper, Find Sources, Simplify
 - [x] **BRANCH-04**: User can click "Go Deeper" to create a child thread anchored to the selected paragraph; the new thread opens with a slide-right transition
 - [ ] **BRANCH-05**: Each new child thread is auto-assigned an accent color from the 8-color palette (cycling in creation order)
 - [ ] **BRANCH-06**: Each new child thread is auto-titled using a client-side heuristic (first 6 words of anchor text)
 - [ ] **BRANCH-07**: The anchor paragraph receives a persistent colored underline in the thread's accent color
-- [ ] **BRANCH-08**: A child lead pill tag appears in the right gutter at the vertical position of the anchor paragraph
-- [ ] **BRANCH-09**: Child lead shows: directional arrow, thread title (max 32 chars), live message count, accent color pip
-- [ ] **BRANCH-10**: Child lead hover shows a preview card (anchor text + first user message + first line of AI response)
-- [ ] **BRANCH-11**: Clicking a child lead navigates into that child thread (slide-right transition)
-- [ ] **BRANCH-12**: Thread depth is limited to 5 levels (depth 0–4); "Go Deeper" is disabled and shows a tooltip at depth 4
+- [x] **BRANCH-08**: A child lead pill tag appears in the right gutter at the vertical position of the anchor paragraph
+- [x] **BRANCH-09**: Child lead shows: directional arrow, thread title (max 32 chars), live message count, accent color pip
+- [x] **BRANCH-10**: Child lead hover shows a preview card (anchor text + first user message + first line of AI response)
+- [x] **BRANCH-11**: Clicking a child lead navigates into that child thread (slide-right transition)
+- [x] **BRANCH-12**: Thread depth is limited to 5 levels (depth 0–4); "Go Deeper" is disabled and shows a tooltip at depth 4
 
 ### Navigation
 
@@ -129,18 +129,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHAT-04 | Phase 3 | Complete |
 | CHAT-05 | Phase 3 | Complete |
 | CHAT-06 | Phase 3 | Complete |
-| BRANCH-01 | Phase 4 | Pending |
-| BRANCH-02 | Phase 4 | Pending |
-| BRANCH-03 | Phase 4 | Pending |
+| BRANCH-01 | Phase 4 | Complete |
+| BRANCH-02 | Phase 4 | Complete |
+| BRANCH-03 | Phase 4 | Complete |
 | BRANCH-04 | Phase 4 | Complete |
 | BRANCH-05 | Phase 4 | Pending |
 | BRANCH-06 | Phase 4 | Pending |
 | BRANCH-07 | Phase 4 | Pending |
-| BRANCH-08 | Phase 4 | Pending |
-| BRANCH-09 | Phase 4 | Pending |
-| BRANCH-10 | Phase 4 | Pending |
-| BRANCH-11 | Phase 4 | Pending |
-| BRANCH-12 | Phase 4 | Pending |
+| BRANCH-08 | Phase 4 | Complete |
+| BRANCH-09 | Phase 4 | Complete |
+| BRANCH-10 | Phase 4 | Complete |
+| BRANCH-11 | Phase 4 | Complete |
+| BRANCH-12 | Phase 4 | Complete |
 | NAV-01 | Phase 3 | Complete |
 | NAV-02 | Phase 3 | Complete |
 | NAV-03 | Phase 3 | Complete |

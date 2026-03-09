@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-03-09T16:09:20.211Z"
+stopped_at: Completed 04-01-PLAN.md — Wave 0 stubs and deps
+last_updated: "2026-03-09T16:12:19.957Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 13
+  completed_plans: 15
   percent: 65
 ---
 
@@ -109,6 +109,8 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 03-core-thread-ui P05 | 3 | 2 tasks | 4 files |
 | Phase 03-core-thread-ui P06 | 8 | 1 tasks | 7 files |
 | Phase 04-branching P03 | 2 | 2 tasks | 4 files |
+| Phase 04-branching P02 | 5 | 2 tasks | 5 files |
+| Phase 04-branching P01 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -158,6 +160,10 @@ Recent decisions affecting current work:
 - [Phase 03-06]: react-markdown v10 code component prop: use HTMLAttributes<HTMLElement> with optional node, not custom CodeProps with index signature
 - [Phase 04-branching]: Frontend parameter named systemInstruction; serialized as systemPrompt in JSON body to match existing backend req.body.systemPrompt
 - [Phase 04-branching]: buildChildSystemPrompt exported as pure function from useStreamingChat.ts for direct unit testing without hook harness
+- [Phase 04-branching]: Text node closest() fallback: anchorNode may be Text node without closest(); hook uses parentElement?.closest() when closest is absent
+- [Phase 04-branching]: rehypeAddParagraphIds defined outside React.memo component — stable reference, no re-creation on render
+- [Phase 04-branching]: unist-util-visit added as explicit direct dep — prevents brittleness if remark-gfm drops it as transitive
+- [Phase 04-branching]: Wave 0 stubs use import-free test.todo() — ActionBubble and GutterColumn stubs safe before modules exist
 
 ### Pending Todos
 
@@ -170,6 +176,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T16:09:11.734Z
-Stopped at: Completed 04-03-PLAN.md
+Last session: 2026-03-09T16:12:19.952Z
+Stopped at: Completed 04-01-PLAN.md — Wave 0 stubs and deps
 Resume file: None
