@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 04-05-PLAN.md — Go Deeper wiring + anchor underline
-last_updated: "2026-03-09T16:19:57.328Z"
+stopped_at: Completed 04-07-PLAN.md — ContextCard accentColor + MessageList integration
+last_updated: "2026-03-09T16:22:37.398Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
   percent: 65
 ---
 
@@ -113,6 +113,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 04-branching P01 | 5 | 2 tasks | 3 files |
 | Phase 04-branching P04 | 2 | 1 tasks | 2 files |
 | Phase 04-branching P05 | 4 | 2 tasks | 5 files |
+| Phase 04-branching P07 | 2 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -170,6 +171,8 @@ Recent decisions affecting current work:
 - [Phase 04-branching]: All ActionBubble buttons call onMouseDown preventDefault to prevent focus steal that collapses browser selection before click fires
 - [Phase 04-branching]: ACCENT_PALETTE and getNextAccentColor extracted to src/constants/theme.ts — shared between ThreadView and tests
 - [Phase 04-branching]: bubble.messageId used directly for addChildLead — no last-AI-message heuristic
+- [Phase 04-branching]: ContextCard accepts full Thread prop (not individual props) — component owns its own depth/null guard
+- [Phase 04-branching]: MessageList renders ContextCard unconditionally; ContextCard returns null for depth 0 — single responsibility
 
 ### Pending Todos
 
@@ -182,6 +185,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T16:19:57.323Z
-Stopped at: Completed 04-05-PLAN.md — Go Deeper wiring + anchor underline
+Last session: 2026-03-09T16:22:26.759Z
+Stopped at: Completed 04-07-PLAN.md — ContextCard accentColor + MessageList integration
 Resume file: None
