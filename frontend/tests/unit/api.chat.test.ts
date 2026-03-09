@@ -120,4 +120,50 @@ describe('streamChat', () => {
     expect(onChunk).toHaveBeenCalledWith('ok');
     expect(onError).not.toHaveBeenCalled();
   });
+
+  it('treats AbortError as clean stop — calls onDone, not onError', async () => {
+    const abortController = new AbortController();
+
+    vi.spyOn(globalThis, 'fetch').mockImplementationOnce(async () => {
+      abortController.abort();
+      const err = new DOMException('The user aborted a request.', 'AbortError');
+      throw err;
+    });
+
+    const onChunk = vi.fn();
+    const onDone = vi.fn();
+    const onError = vi.fn();
+
+    await streamChat(
+      { messages: [], signal: abortController.signal },
+      noopGetToken,
+      onChunk,
+      onDone,
+      onError,
+    );
+
+    expect(onDone).toHaveBeenCalledTimes(1);
+    expect(onError).not.toHaveBeenCalled();
+  });
+
+  it('passes AbortSignal to fetch options', async () => {
+    const abortController = new AbortController();
+    const body = makeStream(['data: {"type":"chunk","text":"hi"}\n\n']);
+
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(body, { status: 200 }),
+    );
+
+    await streamChat(
+      { messages: [], signal: abortController.signal },
+      noopGetToken,
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+    );
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const fetchInit = fetchSpy.mock.calls[0][1] as RequestInit;
+    expect(fetchInit.signal).toBe(abortController.signal);
+  });
 });

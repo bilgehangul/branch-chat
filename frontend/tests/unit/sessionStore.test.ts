@@ -183,4 +183,12 @@ describe('sessionStore actions', () => {
     useSessionStore.getState().setScrollPosition(threadId, 420);
     expect(useSessionStore.getState().threads[threadId]?.scrollPosition).toBe(420);
   });
+
+  it('setThreadTitle updates the thread title without affecting other threads', () => {
+    useSessionStore.getState().createSession('user-abc');
+    const threadId = useSessionStore.getState().activeThreadId!;
+    expect(useSessionStore.getState().threads[threadId]?.title).toBe('Root');
+    useSessionStore.getState().setThreadTitle(threadId, 'My New Title');
+    expect(useSessionStore.getState().threads[threadId]?.title).toBe('My New Title');
+  });
 });

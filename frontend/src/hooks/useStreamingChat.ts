@@ -1,0 +1,111 @@
+import { useRef } from 'react';
+import { useSessionStore } from '../store/sessionStore';
+import { streamChat } from '../api/chat';
+import type { Message } from '../types/index';
+
+/**
+ * useStreamingChat
+ *
+ * Wires user text → API call → Zustand store update.
+ * Uses an accumulator ref to build AI message content chunk-by-chunk.
+ */
+export function useStreamingChat(getToken: () => Promise<string | null>) {
+  const store = useSessionStore();
+  const accRef = useRef('');
+  const abortRef = useRef<(() => void) | null>(null);
+
+  const { threads, messages, activeThreadId } = store;
+  const activeThread = activeThreadId ? threads[activeThreadId] : null;
+
+  // isStreaming: true if any message in the active thread is currently streaming
+  const isStreaming = activeThread
+    ? activeThread.messageIds.some((id) => messages[id]?.isStreaming === true)
+    : false;
+
+  async function sendMessage(text: string): Promise<void> {
+    if (!activeThreadId || !activeThread) return;
+    if (!text.trim()) return;
+
+    // Reset accumulator at the start of each message (prevents content bleed)
+    accRef.current = '';
+
+    // Snapshot existing message IDs BEFORE any addMessage calls
+    const existingMessageIds = [...(activeThread.messageIds ?? [])];
+    const isFirstMessage = existingMessageIds.length === 0;
+
+    // Add user message
+    const userMsg: Message = {
+      id: crypto.randomUUID(),
+      threadId: activeThreadId,
+      role: 'user',
+      content: text,
+      annotations: [],
+      childLeads: [],
+      isStreaming: false,
+      createdAt: Date.now(),
+    };
+    store.addMessage(userMsg);
+
+    if (isFirstMessage) {
+      const title = text.split(' ').slice(0, 6).join(' ');
+      store.setThreadTitle(activeThreadId, title);
+    }
+
+    // Add empty AI placeholder message (streaming: true)
+    const aiMsgId = crypto.randomUUID();
+    const aiMsg: Message = {
+      id: aiMsgId,
+      threadId: activeThreadId,
+      role: 'assistant',
+      content: '',
+      annotations: [],
+      childLeads: [],
+      isStreaming: true,
+      createdAt: Date.now(),
+    };
+    store.addMessage(aiMsg);
+
+    // Build conversation history from snapshot (before addMessage calls) + new user message
+    const existingMsgs = existingMessageIds
+      .map((id) => messages[id])
+      .filter(Boolean)
+      .map((m) => ({ role: m!.role, content: m!.content }));
+
+    const history = [...existingMsgs, { role: 'user' as const, content: text }];
+
+    // Create abort controller
+    const controller = new AbortController();
+    abortRef.current = () => controller.abort();
+
+    try {
+      await streamChat(
+        { messages: history, signal: controller.signal },
+        getToken,
+        (chunk: string) => {
+          accRef.current += chunk;
+          store.updateMessage(aiMsgId, { content: accRef.current });
+        },
+        () => {
+          // onDone
+          store.setMessageStreaming(aiMsgId, false);
+          accRef.current = '';
+        },
+        (errMsg: string) => {
+          // onError
+          store.updateMessage(aiMsgId, { content: `Error: ${errMsg}`, isStreaming: false });
+          accRef.current = '';
+        }
+      );
+    } finally {
+      abortRef.current = null;
+    }
+  }
+
+  function abort() {
+    if (abortRef.current) {
+      abortRef.current();
+    }
+  }
+
+  return { sendMessage, abort, isStreaming };
+}
