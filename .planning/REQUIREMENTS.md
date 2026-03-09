@@ -17,12 +17,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Core Chat
 
-- [ ] **CHAT-01**: User can type a message in the root thread and receive a streaming Gemini response (token-by-token via SSE)
-- [ ] **CHAT-02**: AI responses render as Markdown with full GFM support (headers, bold, lists, code blocks with syntax highlighting)
-- [ ] **CHAT-03**: User can send follow-up messages in the root thread, continuing a multi-turn conversation
-- [ ] **CHAT-04**: User can send multiple follow-up messages in any child thread (child threads support multi-turn conversations)
-- [ ] **CHAT-05**: Child threads display a context card at the top showing the anchor text and which parent message it came from
-- [ ] **CHAT-06**: Text selection is disabled on a message while it is actively streaming; re-enabled when streaming completes
+- [x] **CHAT-01**: User can type a message in the root thread and receive a streaming Gemini response (token-by-token via SSE)
+- [x] **CHAT-02**: AI responses render as Markdown with full GFM support (headers, bold, lists, code blocks with syntax highlighting)
+- [x] **CHAT-03**: User can send follow-up messages in the root thread, continuing a multi-turn conversation
+- [x] **CHAT-04**: User can send multiple follow-up messages in any child thread (child threads support multi-turn conversations)
+- [x] **CHAT-05**: Child threads display a context card at the top showing the anchor text and which parent message it came from
+- [x] **CHAT-06**: Text selection is disabled on a message while it is actively streaming; re-enabled when streaming completes
 
 ### Branching
 
@@ -41,13 +41,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: A persistent breadcrumb bar (48px, top of screen) shows the full thread path from root to current thread
-- [ ] **NAV-02**: Each breadcrumb ancestor is clickable and navigates to that thread with a slide-left transition
-- [ ] **NAV-03**: When the full path overflows one line, middle crumbs collapse to `...`; clicking `...` shows a dropdown of the full path
-- [ ] **NAV-04**: A left spine strip (28px wide) is visible when current thread depth ≥ 1, showing parent thread title and accent color
-- [ ] **NAV-05**: Clicking the left spine navigates back to the immediate parent thread (slide-left transition)
-- [ ] **NAV-06**: All thread navigation uses 200ms ease-out directional slide transitions; going deeper slides right, going back slides left
-- [ ] **NAV-07**: When returning to a parent thread, the scroll position is restored to where the user was when they left
+- [x] **NAV-01**: A persistent breadcrumb bar (48px, top of screen) shows the full thread path from root to current thread
+- [x] **NAV-02**: Each breadcrumb ancestor is clickable and navigates to that thread with a slide-left transition
+- [x] **NAV-03**: When the full path overflows one line, middle crumbs collapse to `...`; clicking `...` shows a dropdown of the full path
+- [x] **NAV-04**: A left spine strip (28px wide) is visible when current thread depth ≥ 1, showing parent thread title and accent color
+- [x] **NAV-05**: Clicking the left spine navigates back to the immediate parent thread (slide-left transition)
+- [x] **NAV-06**: All thread navigation uses 200ms ease-out directional slide transitions; going deeper slides right, going back slides left
+- [x] **NAV-07**: When returning to a parent thread, the scroll position is restored to where the user was when they left
 
 ### Inline Actions
 
@@ -123,12 +123,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 2 | Complete |
-| CHAT-01 | Phase 3 | Pending |
-| CHAT-02 | Phase 3 | Pending |
-| CHAT-03 | Phase 3 | Pending |
-| CHAT-04 | Phase 3 | Pending |
-| CHAT-05 | Phase 3 | Pending |
-| CHAT-06 | Phase 3 | Pending |
+| CHAT-01 | Phase 3 | Complete |
+| CHAT-02 | Phase 3 | Complete |
+| CHAT-03 | Phase 3 | Complete |
+| CHAT-04 | Phase 3 | Complete |
+| CHAT-05 | Phase 3 | Complete |
+| CHAT-06 | Phase 3 | Complete |
 | BRANCH-01 | Phase 4 | Pending |
 | BRANCH-02 | Phase 4 | Pending |
 | BRANCH-03 | Phase 4 | Pending |
@@ -141,13 +141,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRANCH-10 | Phase 4 | Pending |
 | BRANCH-11 | Phase 4 | Pending |
 | BRANCH-12 | Phase 4 | Pending |
-| NAV-01 | Phase 3 | Pending |
-| NAV-02 | Phase 3 | Pending |
-| NAV-03 | Phase 3 | Pending |
-| NAV-04 | Phase 3 | Pending |
-| NAV-05 | Phase 3 | Pending |
-| NAV-06 | Phase 3 | Pending |
-| NAV-07 | Phase 3 | Pending |
+| NAV-01 | Phase 3 | Complete |
+| NAV-02 | Phase 3 | Complete |
+| NAV-03 | Phase 3 | Complete |
+| NAV-04 | Phase 3 | Complete |
+| NAV-05 | Phase 3 | Complete |
+| NAV-06 | Phase 3 | Complete |
+| NAV-07 | Phase 3 | Complete |
 | INLINE-01 | Phase 5 | Pending |
 | INLINE-02 | Phase 5 | Pending |
 | INLINE-03 | Phase 5 | Pending |
