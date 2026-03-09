@@ -43,10 +43,10 @@ created: 2026-03-09
 | 4-01-03 | 01 | 0 | BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11 | unit | `cd frontend && npx vitest run tests/unit/GutterColumn.test.tsx` | ❌ W0 | ⬜ pending |
 | 4-02-01 | 02 | 1 | BRANCH-01, BRANCH-04 | unit | `cd frontend && npx vitest run tests/unit/useTextSelection.test.ts` | ❌ W0 | ⬜ pending |
 | 4-02-02 | 02 | 1 | BRANCH-02, BRANCH-03 | unit | `cd frontend && npx vitest run tests/unit/ActionBubble.test.tsx` | ❌ W0 | ⬜ pending |
-| 4-03-01 | 03 | 2 | BRANCH-05, BRANCH-06 | unit | `cd frontend && npx vitest run tests/unit/sessionStore.test.ts` | ✅ extend | ⬜ pending |
-| 4-03-02 | 03 | 2 | BRANCH-07 | unit | `cd frontend && npx vitest run tests/unit/MessageBlock.test.tsx` | ✅ extend | ⬜ pending |
+| 4-05-01 | 05 | 2 | BRANCH-05, BRANCH-06 | unit | `cd frontend && npx vitest run tests/unit/sessionStore.test.ts` | ✅ extend | ⬜ pending |
+| 4-05-02 | 05 | 2 | BRANCH-07 | unit | `cd frontend && npx vitest run tests/unit/MessageBlock.test.tsx` | ✅ extend | ⬜ pending |
 | 4-04-01 | 04 | 2 | BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11 | unit | `cd frontend && npx vitest run tests/unit/GutterColumn.test.tsx` | ❌ W0 | ⬜ pending |
-| 4-05-01 | 05 | 2 | BRANCH-12 | unit | `cd frontend && npx vitest run tests/unit/ActionBubble.test.tsx` | ❌ W0 | ⬜ pending |
+| 4-05-03 | 05 | 2 | BRANCH-12 | unit | `cd frontend && npx vitest run tests/unit/ActionBubble.test.tsx` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -60,7 +60,7 @@ created: 2026-03-09
 - [ ] Verify `unist-util-visit` in `frontend/node_modules`; install as direct dep if missing
 - [ ] Verify `@types/hast` in `frontend/node_modules/@types`; install as dev dep if missing
 
-*Existing infrastructure (`sessionStore.test.ts`, `MessageBlock.test.tsx`) covers BRANCH-05, BRANCH-06, BRANCH-07 via extension.*
+*Existing infrastructure (`sessionStore.test.ts`, `MessageBlock.test.tsx`) covers BRANCH-05, BRANCH-06, BRANCH-07 via extension in plan 05.*
 
 ---
 
