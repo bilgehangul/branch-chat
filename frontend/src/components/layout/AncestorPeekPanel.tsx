@@ -20,6 +20,8 @@ function ContextMenu({
   x: number; y: number; threadId: string;
   onDelete: (id: string) => void; onClose: () => void;
 }) {
+  const [confirming, setConfirming] = useState(false);
+
   useEffect(() => {
     const handler = () => onClose();
     document.addEventListener('mousedown', handler);
@@ -32,12 +34,32 @@ function ContextMenu({
       className="bg-white border border-slate-200 rounded-lg shadow-xl py-1 min-w-[160px] text-sm"
       onMouseDown={e => e.stopPropagation()}
     >
-      <button
-        className="w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-50 transition-colors"
-        onClick={() => { onDelete(threadId); onClose(); }}
-      >
-        Delete thread
-      </button>
+      {confirming ? (
+        <>
+          <div className="text-xs text-slate-500 px-3 pt-1.5 pb-0.5">Are you sure?</div>
+          <div className="flex px-3 pb-1.5 gap-2">
+            <button
+              className="text-red-600 hover:bg-red-50 px-2 py-1 rounded transition-colors text-xs"
+              onClick={() => { onDelete(threadId); onClose(); }}
+            >
+              Confirm
+            </button>
+            <button
+              className="text-slate-500 hover:bg-slate-100 px-2 py-1 rounded transition-colors text-xs"
+              onClick={() => setConfirming(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </>
+      ) : (
+        <button
+          className="w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-50 transition-colors"
+          onClick={() => setConfirming(true)}
+        >
+          Delete thread
+        </button>
+      )}
       <button
         className="w-full text-left px-3 py-1.5 text-slate-400 cursor-not-allowed"
         onClick={() => alert('Summarize: coming soon')}
