@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 03-01-PLAN.md (Wave 0 test stubs)
-last_updated: "2026-03-09T14:13:44.147Z"
+stopped_at: Completed 03-02-PLAN.md (streaming hook + ChatInput)
+last_updated: "2026-03-09T14:22:53.080Z"
 last_activity: 2026-03-09 — Plans 02-01 and 02-02 complete (parallel Wave 1)
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 12
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 ---
@@ -72,6 +72,7 @@ Progress: [███░░░░░░░] ~33% (Phase 02 in progress)
 | Phase 02-frontend-foundation P02 | 8 min | 2 tasks | 7 files |
 | Phase 02-frontend-foundation P03 | 45 | 2 tasks | 6 files |
 | Phase 03-core-thread-ui P01 | 4 | 2 tasks | 7 files |
+| Phase 03-core-thread-ui P02 | 6 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,9 @@ Recent decisions affecting current work:
 - [Phase 02-03]: search.ts uses /api/find-sources route (not /api/search) — matches Phase 1 backend router
 - [Phase 02-03]: Clerk sign-out uses SignOutButton component + Zustand cleared reactively on isSignedIn change — avoids async signOut race condition
 - [Phase 03-core-thread-ui]: test.todo() chosen over test.skip() — avoids any import of non-existent modules while keeping stubs import-error-free
+- [Phase 03-core-thread-ui]: AbortError detection uses dual check (err.name==='AbortError' OR DOMException code 20) — jsdom DOMException is not instanceof Error in all environments
+- [Phase 03-core-thread-ui]: useStreamingChat snapshots messageIds BEFORE addMessage calls — prevents history double-counting in synchronous mock contexts
+- [Phase 03-core-thread-ui]: vi.mock hoisting in Vitest requires test file separation: AbortSignal tests in api.chat.test.ts, setThreadTitle in sessionStore.test.ts — cannot mix real+mocked imports for same module
 
 ### Pending Todos
 
@@ -118,6 +122,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T14:13:44.144Z
-Stopped at: Completed 03-01-PLAN.md (Wave 0 test stubs)
+Last session: 2026-03-09T14:22:53.077Z
+Stopped at: Completed 03-02-PLAN.md (streaming hook + ChatInput)
 Resume file: None
