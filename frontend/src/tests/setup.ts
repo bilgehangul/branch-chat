@@ -7,6 +7,7 @@ vi.mock('@clerk/clerk-react', () => ({
   SignedIn: ({ children }: { children: React.ReactNode }) => React.createElement(React.Fragment, null, children),
   SignedOut: ({ children }: { children: React.ReactNode }) => React.createElement(React.Fragment, null, children),
   SignIn: () => React.createElement('div', { 'data-testid': 'clerk-sign-in' }),
+  UserButton: () => React.createElement('div', { 'data-testid': 'clerk-user-button' }),
   useAuth: () => ({
     signOut: vi.fn(),
     getToken: vi.fn().mockResolvedValue('test-token'),
