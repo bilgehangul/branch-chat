@@ -9,9 +9,11 @@ describe('App auth routing', () => {
   });
 
   it('renders DemoChat when user is signed out', async () => {
-    vi.mocked(ClerkReact).SignedOut = ({ children }: { children: React.ReactNode }) =>
-      children as React.ReactElement;
-    vi.mocked(ClerkReact).SignedIn = () => null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedOut = (({ children }: { children: React.ReactNode }) =>
+      children as React.ReactElement) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedIn = (() => null) as any;
 
     const { App } = await import('../../src/App');
     render(<App />);
@@ -20,9 +22,11 @@ describe('App auth routing', () => {
   });
 
   it('renders AppShell when user is signed in', async () => {
-    vi.mocked(ClerkReact).SignedIn = ({ children }: { children: React.ReactNode }) =>
-      children as React.ReactElement;
-    vi.mocked(ClerkReact).SignedOut = () => null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedIn = (({ children }: { children: React.ReactNode }) =>
+      children as React.ReactElement) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedOut = (() => null) as any;
 
     const { App } = await import('../../src/App');
     render(<App />);
@@ -31,9 +35,11 @@ describe('App auth routing', () => {
   });
 
   it('Clerk SignIn component is present in the DOM when modal is open', async () => {
-    vi.mocked(ClerkReact).SignedOut = ({ children }: { children: React.ReactNode }) =>
-      children as React.ReactElement;
-    vi.mocked(ClerkReact).SignedIn = () => null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedOut = (({ children }: { children: React.ReactNode }) =>
+      children as React.ReactElement) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(ClerkReact).SignedIn = (() => null) as any;
 
     const { App } = await import('../../src/App');
     render(<App />);

@@ -19,7 +19,6 @@ const mockSetActiveThread = vi.fn();
 
 function makeThread(overrides: Partial<Thread> & { id: string }): Thread {
   return {
-    id: overrides.id,
     depth: 0,
     parentThreadId: null,
     anchorText: null,
@@ -34,7 +33,7 @@ function makeThread(overrides: Partial<Thread> & { id: string }): Thread {
 }
 
 function setupStore(threads: Record<string, Thread>, activeThreadId: string | null) {
-  (useSessionStore as ReturnType<typeof vi.fn>).mockImplementation((selector: (s: object) => unknown) => {
+  (useSessionStore as unknown as ReturnType<typeof vi.fn>).mockImplementation((selector: (s: object) => unknown) => {
     return selector({
       threads,
       activeThreadId,

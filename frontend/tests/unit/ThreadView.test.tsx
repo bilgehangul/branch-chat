@@ -6,7 +6,7 @@
  * This file must pass (with pending stubs) before the component is implemented.
  */
 
-import { describe } from 'vitest';
+import { describe, test } from 'vitest';
 
 describe('ThreadView', () => {
   // NAV-06: Slide animation

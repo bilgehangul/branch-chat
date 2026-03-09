@@ -19,13 +19,6 @@ SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('bash', bash);
 SyntaxHighlighter.registerLanguage('json', json);
 
-interface CodeProps {
-  node?: unknown;
-  className?: string;
-  children?: React.ReactNode;
-  [key: string]: unknown;
-}
-
 export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   content,
 }: {
@@ -36,7 +29,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        code({ className, children, ...props }: CodeProps) {
+        code({ className, children, node: _node, ...props }: React.HTMLAttributes<HTMLElement> & { node?: unknown }) {
           const match = /language-(\w+)/.exec(className ?? '');
           const isBlock = !!match;
           return isBlock ? (
