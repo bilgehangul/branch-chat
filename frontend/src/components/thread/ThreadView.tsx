@@ -163,12 +163,12 @@ export function ThreadView() {
                 <MessageList messages={orderedMessages} thread={activeThread} />
               ) : (
                 <div className="flex items-center justify-center h-full min-h-[200px]">
-                  <p className="text-zinc-400 text-sm">Ask anything to begin</p>
+                  <p className="text-slate-400 text-sm">Ask anything to begin</p>
                 </div>
               )
             ) : (
               <div className="flex items-center justify-center h-full min-h-[200px]">
-                <p className="text-zinc-400 text-sm">Ask anything to begin</p>
+                <p className="text-slate-400 text-sm">Ask anything to begin</p>
               </div>
             )}
             {/* Bottom anchor for auto-scroll */}

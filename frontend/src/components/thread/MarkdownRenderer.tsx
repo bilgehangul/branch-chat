@@ -49,7 +49,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   underlineMap?: Record<number, string>;
 }) {
   return (
-    <div className="prose prose-invert prose-zinc max-w-none text-zinc-100">
+    <div className="prose prose-slate max-w-none text-slate-900">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeAddParagraphIds]}
@@ -82,7 +82,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
             </SyntaxHighlighter>
           ) : (
             <code
-              className="bg-zinc-800 text-zinc-200 rounded px-1 py-0.5 text-sm font-mono"
+              className="bg-slate-100 text-slate-800 rounded px-1 py-0.5 text-sm font-mono"
               {...(props as React.HTMLAttributes<HTMLElement>)}
             >
               {children}

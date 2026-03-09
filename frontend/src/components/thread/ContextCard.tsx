@@ -5,11 +5,11 @@ export function ContextCard({ thread }: { thread: Thread }) {
 
   return (
     <div
-      className="max-w-[720px] mx-auto mb-8 px-4 py-3 bg-zinc-800 border-l-4 rounded-r"
+      className="max-w-[720px] mx-auto mb-8 px-4 py-3 bg-blue-50 border-l-4 rounded-r"
       style={{ borderColor: thread.accentColor }}
     >
-      <p className="text-xs text-zinc-400 mb-1">Branched from parent thread</p>
-      <p className="text-sm text-zinc-200 italic">"{thread.anchorText}"</p>
+      <p className="text-xs text-slate-700 mb-1">Branched from parent thread</p>
+      <p className="text-sm text-slate-600 italic">"{thread.anchorText}"</p>
     </div>
   );
 }
