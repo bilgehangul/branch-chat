@@ -42,7 +42,7 @@ describe('AnnotationError: inline error block rendering', () => {
     render(
       <MessageBlock
         message={msg}
-        errorAnnotation={{ type: 'source', messageId: 'msg-1', retryFn }}
+        errorAnnotation={{ type: 'source', messageId: 'msg-1', paragraphId: '0', retryFn }}
       />
     );
     expect(screen.getByTestId('annotation-error-block')).toBeTruthy();
@@ -55,7 +55,7 @@ describe('AnnotationError: inline error block rendering', () => {
     render(
       <MessageBlock
         message={msg}
-        errorAnnotation={{ type: 'source', messageId: 'msg-1', retryFn }}
+        errorAnnotation={{ type: 'source', messageId: 'msg-1', paragraphId: '0', retryFn }}
       />
     );
     expect(screen.getByText(/Couldn't load sources/)).toBeTruthy();
@@ -67,7 +67,7 @@ describe('AnnotationError: inline error block rendering', () => {
     render(
       <MessageBlock
         message={msg}
-        errorAnnotation={{ type: 'source', messageId: 'msg-1', retryFn }}
+        errorAnnotation={{ type: 'source', messageId: 'msg-1', paragraphId: '0', retryFn }}
       />
     );
     const retryBtn = screen.getByTestId('annotation-retry-btn');
@@ -81,7 +81,7 @@ describe('AnnotationError: inline error block rendering', () => {
     render(
       <MessageBlock
         message={msg}
-        errorAnnotation={{ type: 'simplification', messageId: 'msg-1', retryFn }}
+        errorAnnotation={{ type: 'simplification', messageId: 'msg-1', paragraphId: '0', retryFn }}
       />
     );
     expect(screen.getByTestId('annotation-error-block')).toBeTruthy();
@@ -94,7 +94,7 @@ describe('AnnotationError: inline error block rendering', () => {
     render(
       <MessageBlock
         message={msg}
-        errorAnnotation={{ type: 'source', messageId: 'msg-1', retryFn }}
+        errorAnnotation={{ type: 'source', messageId: 'msg-1', paragraphId: '0', retryFn }}
       />
     );
     expect(screen.queryByTestId('annotation-error-block')).toBeNull();

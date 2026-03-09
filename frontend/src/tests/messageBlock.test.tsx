@@ -38,29 +38,26 @@ const makeMessage = (overrides: Partial<Message> = {}): Message => ({
 });
 
 describe('MessageBlock annotation rendering', () => {
-  test('CitationBlock is rendered outside the AI bubble div when annotation type === source', () => {
+  test('CitationBlock is rendered inside the AI bubble div, after its target paragraph', () => {
     const ann = makeAnnotation({ type: 'source', id: 'ann-source-1' });
     const msg = makeMessage({ annotations: [ann] });
     const { container } = render(<MessageBlock message={msg} />);
 
-    // The outer message wrapper
     const messageWrapper = container.querySelector('[data-message-id="msg-1"]');
     expect(messageWrapper).toBeTruthy();
 
-    // The bubble div is the second child (after the label p)
-    // Find the CitationBlock — it should be a sibling of the bubble flex div, not inside it
     const bubbleDiv = messageWrapper!.querySelector('.flex.justify-start');
     expect(bubbleDiv).toBeTruthy();
 
-    // CitationBlock renders a div with bg-zinc-800
+    // CitationBlock renders a div with bg-zinc-800 — now inside the bubble
     const citationBlock = messageWrapper!.querySelector('.bg-zinc-800');
     expect(citationBlock).toBeTruthy();
 
-    // Confirm citationBlock is NOT inside the bubble div
-    expect(bubbleDiv!.contains(citationBlock)).toBe(false);
+    // Annotation is inside the bubble (inline after its paragraph)
+    expect(bubbleDiv!.contains(citationBlock)).toBe(true);
   });
 
-  test('SimplificationBlock is rendered outside the AI bubble div when annotation type === simplification', () => {
+  test('SimplificationBlock is rendered inside the AI bubble div, after its target paragraph', () => {
     const ann = makeAnnotation({
       type: 'simplification',
       id: 'ann-simp-1',
@@ -73,12 +70,12 @@ describe('MessageBlock annotation rendering', () => {
     const messageWrapper = container.querySelector('[data-message-id="msg-1"]');
     const bubbleDiv = messageWrapper!.querySelector('.flex.justify-start');
 
-    // SimplificationBlock renders a div with bg-indigo-950
+    // SimplificationBlock renders a div with bg-indigo-950 — now inside the bubble
     const simplBlock = messageWrapper!.querySelector('.bg-indigo-950');
     expect(simplBlock).toBeTruthy();
 
-    // Confirm simplBlock is NOT inside the bubble div
-    expect(bubbleDiv!.contains(simplBlock)).toBe(false);
+    // Annotation is inside the bubble (inline after its paragraph)
+    expect(bubbleDiv!.contains(simplBlock)).toBe(true);
   });
 
   test('data-paragraph-id attributes on MarkdownRenderer output are not affected by annotation blocks', () => {
