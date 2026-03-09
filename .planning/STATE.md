@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: "Completed 06-01-PLAN.md — Playwright E2E scaffold: config + 3 fixtures + 6 spec stubs"
-last_updated: "2026-03-09T21:10:40.319Z"
+stopped_at: Completed 06-02-PLAN.md — dark/light theme system with FOUC prevention
+last_updated: "2026-03-09T21:12:47.072Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 33
-  completed_plans: 29
+  completed_plans: 30
 ---
 
 ---
@@ -139,6 +139,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 05-inline-annotations P07 | 2 | 1 tasks | 0 files |
 | Phase 06-polish-and-deployment P04 | 4 | 2 tasks | 6 files |
 | Phase 06-polish-and-deployment P01 | 3 | 2 tasks | 11 files |
+| Phase 06-polish-and-deployment P02 | 8 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -217,6 +218,9 @@ Recent decisions affecting current work:
 - [Phase 06-04]: VITE_API_BASE_URL defaults to empty string in dev — Vite proxy handles /api routing transparently
 - [Phase 06-04]: render.yaml CLIENT_ORIGIN uses sync:false — must be set in Render dashboard after first Vercel deploy
 - [Phase 06-01]: test.skip() used for all stubs (not test.todo()) — allows fixture imports at module scope while keeping tests skipped
+- [Phase 06-02]: ThemeProvider wraps ClerkProvider in main.tsx so theme is available globally before auth boundary
+- [Phase 06-02]: Dark is default: inline FOUC script adds .dark unless localStorage explicitly holds 'light'
+- [Phase 06-02]: ACCENT_PALETTE kept as alias for ACCENT_PALETTE_DARK — backward compat for all existing callers
 
 ### Pending Todos
 
@@ -236,6 +240,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T21:10:40.315Z
-Stopped at: Completed 06-01-PLAN.md — Playwright E2E scaffold: config + 3 fixtures + 6 spec stubs
+Last session: 2026-03-09T21:12:47.068Z
+Stopped at: Completed 06-02-PLAN.md — dark/light theme system with FOUC prevention
 Resume file: None

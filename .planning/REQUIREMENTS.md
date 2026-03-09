@@ -62,8 +62,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### User Interface
 
-- [ ] **UI-01**: Default theme is dark; the app renders in dark mode on first load
-- [ ] **UI-02**: User can toggle to light theme; preference is stored in localStorage and restored on next visit
+- [x] **UI-01**: Default theme is dark; the app renders in dark mode on first load
+- [x] **UI-02**: User can toggle to light theme; preference is stored in localStorage and restored on next visit
 - [x] **UI-03**: Backend enforces per-user (or per-IP for unauthenticated) rate limiting on all API routes
 - [x] **UI-04**: AI provider is abstracted behind a service interface (`chat()`, `findSources()`, `simplify()`); switching between Gemini+Tavily and OpenAI+Responses API requires only an environment variable change
 
@@ -156,8 +156,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INLINE-06 | Phase 5 | Complete |
 | INLINE-07 | Phase 5 | Complete |
 | INLINE-08 | Phase 5 | Complete |
-| UI-01 | Phase 6 | Pending |
-| UI-02 | Phase 6 | Pending |
+| UI-01 | Phase 6 | Complete |
+| UI-02 | Phase 6 | Complete |
 | UI-03 | Phase 1 | Complete |
 | UI-04 | Phase 1 | Complete |
 | DEPLOY-01 | Phase 6 | Complete |
