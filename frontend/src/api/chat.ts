@@ -1,15 +1,18 @@
 import type { SseEvent } from '../../../shared/types';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+
 export async function streamChat(
   body: { messages: Array<{ role: string; content: string }>; signal?: AbortSignal; systemInstruction?: string },
   getToken: () => Promise<string | null>,
   onChunk: (text: string) => void,
   onDone: () => void,
-  onError: (message: string) => void
+  onError: (message: string) => void,
+  onRateLimit?: (resetEpochMs: number) => void
 ): Promise<void> {
   try {
   const token = await getToken();
-  const res = await fetch('/api/chat', {
+  const res = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +26,15 @@ export async function streamChat(
   });
 
   if (!res.ok || !res.body) {
-    onError(`HTTP ${res.status}`);
+    if (res.status === 429 && onRateLimit) {
+      // RateLimit-Reset is epoch seconds (express-rate-limit draft-7 headers)
+      const resetHeader = res.headers.get('RateLimit-Reset') ?? '0';
+      const resetEpochMs = parseInt(resetHeader) * 1000;
+      onRateLimit(resetEpochMs);
+      onError(`HTTP 429`);
+    } else {
+      onError(`HTTP ${res.status}`);
+    }
     return;
   }
 

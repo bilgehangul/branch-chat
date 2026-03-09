@@ -4,6 +4,8 @@ export interface RequestOptions extends RequestInit {
   getToken?: () => Promise<string | null>;
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+
 export async function apiRequest<T>(
   path: string,
   options: RequestOptions
@@ -18,7 +20,7 @@ export async function apiRequest<T>(
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  const res = await fetch(path, { ...fetchOptions, headers });
+  const res = await fetch(`${API_BASE}${path}`, { ...fetchOptions, headers });
 
   // Dispatch global event on 401 — AuthExpiredBanner listens for this
   if (res.status === 401) {
