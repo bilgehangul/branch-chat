@@ -35,12 +35,15 @@ function AuthModal({ isOpen, onClose }: AuthModalProps) {
 function LogoutButton() {
   const { signOut } = useAuth();
   const clearSession = _useSessionStore((s: { clearSession: () => void }) => s.clearSession);
+
+  const handleSignOut = () => {
+    clearSession();
+    signOut().catch(console.error);
+  };
+
   return (
     <button
-      onClick={() => {
-        clearSession();
-        void signOut();
-      }}
+      onClick={handleSignOut}
       className="px-3 py-1.5 text-sm bg-zinc-700 hover:bg-zinc-600 text-zinc-100 rounded-md transition-colors"
     >
       Sign out
