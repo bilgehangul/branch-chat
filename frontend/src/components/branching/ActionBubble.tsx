@@ -4,31 +4,58 @@
  * Floating action menu that appears after text selection. Positioned 8px above
  * the top-right of the selection using position:fixed.
  *
- * Requirements: BRANCH-02, BRANCH-03, BRANCH-12
+ * Requirements: BRANCH-02, BRANCH-03, BRANCH-12, INLINE-01, INLINE-05
  *
  * CRITICAL: All buttons call event.preventDefault() on mousedown to prevent
  * focus steal that collapses the browser selection before click handler fires.
- * anchorText/paragraphId are read from props (captured at selection time), NOT
- * from window.getSelection() at click time.
+ * anchorText/paragraphId/messageId are read from props (captured at selection
+ * time), NOT from window.getSelection() at click time.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+type BubbleMode = 'default' | 'simplify';
+type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
+
+const SIMPLIFY_MODES: { key: SimplifyMode; label: string; tooltip: string }[] = [
+  { key: 'simpler',   label: 'Simpler',   tooltip: 'Uses shorter sentences and simpler words' },
+  { key: 'example',  label: 'Example',   tooltip: 'Explains using a concrete real-world example' },
+  { key: 'analogy',  label: 'Analogy',   tooltip: 'Uses an analogy to something familiar' },
+  { key: 'technical', label: 'Technical', tooltip: 'Adds technical depth and precise terminology' },
+];
 
 export interface ActionBubbleProps {
   bubble: {
     anchorText: string;
     paragraphId: string;
+    messageId: string;
     top: number;
     left: number;
   };
   isAtMaxDepth: boolean;
   onGoDeeper: (anchorText: string, paragraphId: string) => void;
+  onFindSources: (anchorText: string, paragraphId: string, messageId: string) => void;
+  onSimplify: (anchorText: string, paragraphId: string, messageId: string, mode: SimplifyMode) => void;
   onDismiss: () => void;
 }
 
-export function ActionBubble({ bubble, isAtMaxDepth, onGoDeeper, onDismiss }: ActionBubbleProps) {
+export function ActionBubble({
+  bubble,
+  isAtMaxDepth,
+  onGoDeeper,
+  onFindSources,
+  onSimplify,
+  onDismiss,
+}: ActionBubbleProps) {
   const bubbleRef = useRef<HTMLDivElement>(null);
+  const [mode, setMode] = useState<BubbleMode>('default');
 
+  // Reset mode when selection changes to a new paragraph
+  useEffect(() => {
+    setMode('default');
+  }, [bubble.paragraphId]);
+
+  // Dismiss when clicking outside the bubble
   useEffect(() => {
     function handleMouseDown(e: MouseEvent) {
       if (bubbleRef.current && !bubbleRef.current.contains(e.target as Node)) {
@@ -46,7 +73,11 @@ export function ActionBubble({ bubble, isAtMaxDepth, onGoDeeper, onDismiss }: Ac
   const goDeeperDisabledClass =
     'flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium opacity-50 cursor-not-allowed';
   const secondaryClass =
-    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 bg-slate-100 text-slate-400 text-sm opacity-60 cursor-not-allowed';
+    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors';
+  const modeButtonClass =
+    'px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors';
+  const backButtonClass =
+    'px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-xs transition-colors';
 
   return (
     <div
@@ -58,34 +89,67 @@ export function ActionBubble({ bubble, isAtMaxDepth, onGoDeeper, onDismiss }: Ac
         transform: 'translateY(calc(-100% - 8px))',
       }}
     >
-      {/* Go Deeper — primary action */}
-      <button
-        className={isAtMaxDepth ? goDeeperDisabledClass : goDeeperBaseClass}
-        disabled={isAtMaxDepth}
-        title={isAtMaxDepth ? 'Maximum depth reached' : undefined}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => onGoDeeper(bubble.anchorText, bubble.paragraphId)}
-      >
-        &#8594; Go Deeper
-      </button>
+      {mode === 'default' ? (
+        <>
+          {/* Go Deeper — primary action */}
+          <button
+            className={isAtMaxDepth ? goDeeperDisabledClass : goDeeperBaseClass}
+            disabled={isAtMaxDepth}
+            title={isAtMaxDepth ? 'Maximum depth reached' : undefined}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onGoDeeper(bubble.anchorText, bubble.paragraphId)}
+          >
+            &#8594; Go Deeper
+          </button>
 
-      {/* Find Sources — secondary, disabled in Phase 4 */}
-      <button
-        className={secondaryClass}
-        disabled
-        onMouseDown={(e) => e.preventDefault()}
-      >
-        &#128269; Find Sources
-      </button>
+          {/* Find Sources — enabled in Phase 5 */}
+          <button
+            className={secondaryClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onFindSources(bubble.anchorText, bubble.paragraphId, bubble.messageId)}
+          >
+            &#128269; Find Sources
+          </button>
 
-      {/* Simplify — secondary, disabled in Phase 4 */}
-      <button
-        className={secondaryClass}
-        disabled
-        onMouseDown={(e) => e.preventDefault()}
-      >
-        &#10022; Simplify
-      </button>
+          {/* Simplify — enters expand mode */}
+          <button
+            className={secondaryClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setMode('simplify')}
+          >
+            &#10022; Simplify
+          </button>
+        </>
+      ) : (
+        <>
+          {/* Back arrow: returns to default mode */}
+          <button
+            className={backButtonClass}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setMode('default')}
+          >
+            &larr; Back
+          </button>
+
+          {/* 4 simplify mode buttons in a 2x2 grid */}
+          <div className="grid grid-cols-2 gap-1">
+            {SIMPLIFY_MODES.map(({ key, label, tooltip }) => (
+              <button
+                key={key}
+                className={modeButtonClass}
+                title={tooltip}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onSimplify(bubble.anchorText, bubble.paragraphId, bubble.messageId, key);
+                  onDismiss();
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
