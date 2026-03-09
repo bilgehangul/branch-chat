@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: apply dark styles when .dark is on a parent element */
+@variant dark (&:where(.dark, .dark *));
+
+body {
+  font-family: 'Inter', sans-serif;
+}
