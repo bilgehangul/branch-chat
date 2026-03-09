@@ -12,3 +12,25 @@ body {
   background: rgba(59, 130, 246, 0.25);
   color: inherit;
 }
+
+/* Light theme base — applied when .dark is NOT on <html> */
+:root {
+  --bg-base: theme(colors.stone.50);
+  --bg-surface: theme(colors.white);
+  --bg-elevated: theme(colors.stone.100);
+  --border-base: theme(colors.stone.200);
+  --text-primary: theme(colors.stone.900);
+  --text-secondary: theme(colors.stone.600);
+  --text-muted: theme(colors.stone.400);
+}
+
+/* Dark theme overrides */
+.dark {
+  --bg-base: theme(colors.zinc.900);
+  --bg-surface: theme(colors.zinc.800);
+  --bg-elevated: theme(colors.zinc.700);
+  --border-base: theme(colors.zinc.700);
+  --text-primary: theme(colors.slate.100);
+  --text-secondary: theme(colors.slate.400);
+  --text-muted: theme(colors.slate.500);
+}
