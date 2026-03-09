@@ -4,6 +4,14 @@ import { streamChat } from '../api/chat';
 import type { Message } from '../types/index';
 
 /**
+ * Builds the system prompt for child thread conversations.
+ * Pure function — exported for unit testing.
+ */
+export function buildChildSystemPrompt(anchorText: string, parentContext: string): string {
+  return `You are in a focused sub-conversation about: ${anchorText}. Context from parent message: ${parentContext.slice(0, 200)}. Stay focused on this specific topic unless the user redirects.`;
+}
+
+/**
  * useStreamingChat
  *
  * Wires user text → API call → Zustand store update.
@@ -69,9 +77,20 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     const existingMsgs = existingMessageIds
       .map((id) => messages[id])
       .filter(Boolean)
-      .map((m) => ({ role: m!.role, content: m!.content }));
+      .map((m) => ({ role: m!.role === 'assistant' ? 'model' : m!.role, content: m!.content }));
 
     const history = [...existingMsgs, { role: 'user' as const, content: text }];
+
+    // Derive system instruction for child threads (depth >= 1)
+    const systemInstruction =
+      activeThread.depth >= 1
+        ? buildChildSystemPrompt(
+            activeThread.anchorText ?? '',
+            activeThread.parentMessageId
+              ? (messages[activeThread.parentMessageId]?.content ?? '')
+              : ''
+          )
+        : '';
 
     // Create abort controller
     const controller = new AbortController();
@@ -79,7 +98,7 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
 
     try {
       await streamChat(
-        { messages: history, signal: controller.signal },
+        { messages: history, signal: controller.signal, systemInstruction },
         getToken,
         (chunk: string) => {
           accRef.current += chunk;

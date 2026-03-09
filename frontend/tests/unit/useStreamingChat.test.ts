@@ -9,6 +9,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import type { Thread, Message } from '../../src/types/index';
+import { buildChildSystemPrompt } from '../../src/hooks/useStreamingChat';
 
 const noopGetToken = async () => null;
 
@@ -359,5 +360,105 @@ describe('useStreamingChat', () => {
     });
 
     expect(mockState.setThreadTitle).not.toHaveBeenCalled();
+  });
+
+  // BRANCH-04: System prompt injection for child threads
+  it('depth=0 thread sends no systemInstruction (empty string or absent)', async () => {
+    const { useStreamingChat } = await import('../../src/hooks/useStreamingChat');
+    const { streamChat } = await import('../../src/api/chat');
+    const mockStreamChat = streamChat as ReturnType<typeof vi.fn>;
+
+    // DEFAULT thread is depth=0
+    mockStreamChat.mockImplementationOnce(async (
+      _body: unknown,
+      _getToken: unknown,
+      _onChunk: unknown,
+      onDone: () => void,
+    ) => { onDone(); });
+
+    const { result } = renderHook(() => useStreamingChat(noopGetToken));
+
+    await act(async () => {
+      await result.current.sendMessage('Root message');
+    });
+
+    expect(mockStreamChat).toHaveBeenCalledTimes(1);
+    const body = mockStreamChat.mock.calls[0][0] as { systemInstruction?: string };
+    // depth=0 should have empty or absent systemInstruction
+    expect(body.systemInstruction ?? '').toBe('');
+  });
+
+  it('depth=1 thread sends systemInstruction containing anchorText and parent context', async () => {
+    const { useStreamingChat } = await import('../../src/hooks/useStreamingChat');
+    const { streamChat } = await import('../../src/api/chat');
+    const mockStreamChat = streamChat as ReturnType<typeof vi.fn>;
+
+    const childThreadId = 'child-with-prompt';
+    const parentMsgId = 'parent-msg-id';
+    mockState.activeThreadId = childThreadId;
+    mockState.threads = {
+      [childThreadId]: makeThread({
+        id: childThreadId,
+        depth: 1,
+        parentThreadId: 'root-thread',
+        anchorText: 'test topic',
+        parentMessageId: parentMsgId,
+        title: 'Child',
+      }),
+    };
+    mockState.messages = {
+      [parentMsgId]: makeMessage({
+        id: parentMsgId,
+        threadId: 'root-thread',
+        role: 'assistant',
+        content: 'foo bar baz',
+      }),
+    };
+
+    mockStreamChat.mockImplementationOnce(async (
+      _body: unknown,
+      _getToken: unknown,
+      _onChunk: unknown,
+      onDone: () => void,
+    ) => { onDone(); });
+
+    const { result } = renderHook(() => useStreamingChat(noopGetToken));
+
+    await act(async () => {
+      await result.current.sendMessage('Child question');
+    });
+
+    expect(mockStreamChat).toHaveBeenCalledTimes(1);
+    const body = mockStreamChat.mock.calls[0][0] as { systemInstruction?: string };
+    expect(body.systemInstruction).toContain('focused sub-conversation about: test topic');
+    expect(body.systemInstruction).toContain('foo bar baz');
+  });
+});
+
+// ─── buildChildSystemPrompt unit tests ───────────────────────────────────────
+
+describe('buildChildSystemPrompt', () => {
+  it('returns formatted prompt with anchorText and parent context', () => {
+    const result = buildChildSystemPrompt('machine learning', 'Here is some context about ML.');
+    expect(result).toContain('focused sub-conversation about: machine learning');
+    expect(result).toContain('Here is some context about ML.');
+    expect(result).toContain('Stay focused on this specific topic');
+  });
+
+  it('truncates parentContext to 200 chars', () => {
+    const longContext = 'A'.repeat(300);
+    const result = buildChildSystemPrompt('topic', longContext);
+    expect(result).toContain('A'.repeat(200));
+    expect(result).not.toContain('A'.repeat(201));
+  });
+
+  it('handles empty anchorText gracefully', () => {
+    const result = buildChildSystemPrompt('', 'some context');
+    expect(result).toContain('focused sub-conversation about: ');
+  });
+
+  it('handles empty parentContext gracefully', () => {
+    const result = buildChildSystemPrompt('topic', '');
+    expect(result).toContain('focused sub-conversation about: topic');
   });
 });
