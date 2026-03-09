@@ -19,5 +19,12 @@ export async function apiRequest<T>(
   };
 
   const res = await fetch(path, { ...fetchOptions, headers });
+
+  // Dispatch global event on 401 — AuthExpiredBanner listens for this
+  if (res.status === 401) {
+    window.dispatchEvent(new CustomEvent('auth-expired'));
+    return { error: 'Session expired. Please sign in again.' } as ApiResponse<T>;
+  }
+
   return res.json() as Promise<ApiResponse<T>>;
 }

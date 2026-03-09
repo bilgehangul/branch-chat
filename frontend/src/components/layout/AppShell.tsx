@@ -4,6 +4,8 @@ import { BreadcrumbBar } from './BreadcrumbBar';
 import { AncestorPeekPanel } from './AncestorPeekPanel';
 import { useSessionStore } from '../../store/sessionStore';
 import { selectThreadAncestry } from '../../store/selectors';
+import { NetworkBanner } from '../ui/NetworkBanner';
+import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
 
 export function AppShell() {
   const threads = useSessionStore(s => s.threads);
@@ -20,6 +22,8 @@ export function AppShell() {
 
   return (
     <div className="flex h-screen bg-slate-50 text-slate-900">
+      <NetworkBanner />
+      <AuthExpiredBanner />
       {/* Ancestor peek panels — oldest to newest, left to right */}
       {ancestors.map((thread, idx) => {
         const distFromParent = ancestors.length - 1 - idx;
