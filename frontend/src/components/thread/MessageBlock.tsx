@@ -17,24 +17,32 @@ export function MessageBlock({ message }: { message: Message }) {
   }
 
   return (
-    <div className="mb-8 max-w-[720px] mx-auto" data-message-id={message.id}>
-      <p className="text-xs text-zinc-400 mb-1 font-medium uppercase tracking-wide">
+    <div className="mb-6 max-w-[720px] mx-auto" data-message-id={message.id}>
+      {/* Label above bubble */}
+      <p className={`text-xs mb-1 font-medium ${isUser ? 'text-slate-500 text-right' : 'text-slate-500 text-left'}`}>
         {isUser ? 'You' : 'Gemini'}
       </p>
-      <div
-        className={`${isUser ? 'bg-zinc-800' : 'bg-zinc-900'} rounded-lg px-4 py-3 ${streamingClasses}`}
-      >
-        {isUser ? (
-          <p className="text-zinc-100 whitespace-pre-wrap">{message.content}</p>
-        ) : (
-          <>
-            <MarkdownRenderer content={message.content} underlineMap={underlineMap} />
-            <StreamingCursor
-              isStreaming={message.isStreaming}
-              hasContent={message.content.length > 0}
-            />
-          </>
-        )}
+      {/* Bubble */}
+      <div className={isUser ? 'flex justify-end' : 'flex justify-start'}>
+        <div
+          className={`${
+            isUser
+              ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto max-w-[75%]'
+              : 'bg-white text-slate-900 border border-slate-200 shadow-sm rounded-2xl rounded-tl-sm px-4 py-3 mr-auto max-w-[85%]'
+          } ${streamingClasses}`}
+        >
+          {isUser ? (
+            <p className="whitespace-pre-wrap">{message.content}</p>
+          ) : (
+            <>
+              <MarkdownRenderer content={message.content} underlineMap={underlineMap} />
+              <StreamingCursor
+                isStreaming={message.isStreaming}
+                hasContent={message.content.length > 0}
+              />
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
