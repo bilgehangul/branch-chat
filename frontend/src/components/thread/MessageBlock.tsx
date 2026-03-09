@@ -7,7 +7,7 @@ export function MessageBlock({ message }: { message: Message }) {
   const streamingClasses = message.isStreaming ? 'opacity-80 select-none pointer-events-none' : '';
 
   return (
-    <div className="mb-8 max-w-[720px] mx-auto">
+    <div className="mb-8 max-w-[720px] mx-auto" data-message-id={message.id}>
       <p className="text-xs text-zinc-400 mb-1 font-medium uppercase tracking-wide">
         {isUser ? 'You' : 'Gemini'}
       </p>
