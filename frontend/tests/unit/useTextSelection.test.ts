@@ -85,7 +85,7 @@ describe('useTextSelection', () => {
     expect(result.current.bubble).toBeNull();
   });
 
-  it('returns null and clears selection for cross-block selection', async () => {
+  it('returns null (no bubble) for cross-block selection but preserves the selection', async () => {
     const ref = makeContainerRef(container);
     const { result } = renderHook(() => useTextSelection(ref));
 
@@ -114,7 +114,9 @@ describe('useTextSelection', () => {
       await new Promise(resolve => setTimeout(resolve, 10));
     });
 
-    expect(removeAllRanges).toHaveBeenCalled();
+    // Selection is preserved (not cleared) so user can still copy text
+    expect(removeAllRanges).not.toHaveBeenCalled();
+    // But bubble does not appear for cross-block selections
     expect(result.current.bubble).toBeNull();
   });
 

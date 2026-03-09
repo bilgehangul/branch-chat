@@ -5,12 +5,25 @@ import type { AIProvider, Message } from './types.js';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
+// Free-tier models in priority order — tried in sequence on 503/overload errors
+const FREE_TIER_MODELS = [
+  'gemini-2.0-flash-lite',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash-8b',
+  'gemini-1.5-flash',
+] as const;
+
 const SIMPLIFY_PROMPTS: Record<string, string> = {
   simpler: 'Rewrite the following text so a 12-year-old can understand it. Keep it concise.',
   example: 'Explain the following text by giving a concrete, relatable real-world example.',
   analogy: 'Explain the following text using a clear analogy to something familiar.',
   technical: 'Rewrite the following text with more technical depth and precise terminology for an expert audience.',
 };
+
+function isRetryableError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes('503') || msg.includes('overloaded') || msg.includes('UNAVAILABLE') || msg.includes('quota');
+}
 
 export class GeminiProvider implements AIProvider {
   async streamChat(
@@ -21,36 +34,55 @@ export class GeminiProvider implements AIProvider {
     onError: (err: Error) => void,
     signal?: AbortSignal
   ): Promise<void> {
-    try {
-      const contents = messages.map(m => ({
-        role: m.role,
-        parts: [{ text: m.content }],
-      }));
+    const contents = messages.map(m => ({
+      role: m.role,
+      parts: [{ text: m.content }],
+    }));
 
-      const response = await ai.models.generateContentStream({
-        model: 'gemini-3.1-flash-lite-preview',
-        contents,
-        config: { systemInstruction: systemPrompt || undefined },
-      });
+    let lastErr: Error | null = null;
+    for (const model of FREE_TIER_MODELS) {
+      if (signal?.aborted) { onDone(); return; }
+      try {
+        const response = await ai.models.generateContentStream({
+          model,
+          contents,
+          config: { systemInstruction: systemPrompt || undefined },
+        });
 
-      for await (const chunk of response) {
-        if (signal?.aborted) break;
-        const text = chunk.text;
-        if (text) onChunk(text);
+        for await (const chunk of response) {
+          if (signal?.aborted) break;
+          const text = chunk.text;
+          if (text) onChunk(text);
+        }
+        onDone();
+        return;
+      } catch (err) {
+        lastErr = err instanceof Error ? err : new Error(String(err));
+        if (!isRetryableError(err)) break; // non-retryable: fail immediately
+        console.warn(`[GeminiProvider] ${model} unavailable, trying next model...`);
       }
-      onDone();
-    } catch (err) {
-      onError(err instanceof Error ? err : new Error(String(err)));
     }
+    onError(lastErr ?? new Error('All Gemini models unavailable'));
   }
 
   async simplify(text: string, mode: string): Promise<string> {
     const instruction = SIMPLIFY_PROMPTS[mode] ?? SIMPLIFY_PROMPTS['simpler'];
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-lite-preview',
-      contents: `${instruction}\n\nText to rewrite:\n${text}`,
-      config: { systemInstruction: 'You are a writing assistant. Return only the rewritten text, no preamble.' },
-    });
-    return response.text ?? '';
+
+    let lastErr: Error | null = null;
+    for (const model of FREE_TIER_MODELS) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: `${instruction}\n\nText to rewrite:\n${text}`,
+          config: { systemInstruction: 'You are a writing assistant. Return only the rewritten text, no preamble.' },
+        });
+        return response.text ?? '';
+      } catch (err) {
+        lastErr = err instanceof Error ? err : new Error(String(err));
+        if (!isRetryableError(err)) break;
+        console.warn(`[GeminiProvider] ${model} unavailable for simplify, trying next...`);
+      }
+    }
+    throw lastErr ?? new Error('All Gemini models unavailable');
   }
 }

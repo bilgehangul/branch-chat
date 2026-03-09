@@ -6,3 +6,9 @@
 body {
   font-family: 'Inter', sans-serif;
 }
+
+/* Keep selection highlight visible even when focus moves to the action bubble */
+::selection {
+  background: rgba(59, 130, 246, 0.25);
+  color: inherit;
+}

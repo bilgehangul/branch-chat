@@ -57,9 +57,9 @@ export function useTextSelection(
         const anchorBlock = (anchorEl as HTMLElement | null)?.closest?.('[data-paragraph-id]') as HTMLElement | null;
         const focusBlock = (focusEl as HTMLElement | null)?.closest?.('[data-paragraph-id]') as HTMLElement | null;
 
-        // Cross-block or missing block: clear selection and reject
+        // Cross-block or missing block: hide bubble but preserve selection
+        // so the user can still copy their text freely
         if (!anchorBlock || !focusBlock || anchorBlock !== focusBlock) {
-          sel.removeAllRanges();
           setBubble(null);
           return;
         }
