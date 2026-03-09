@@ -2,7 +2,7 @@
 phase: 01-backend-proxy-shell
 plan: 03
 subsystem: api
-tags: [express, clerk, jwt, sse, rate-limiting, cors, supertest]
+tags: [express, clerk, jwt, sse, rate-limiting, cors, supertest, ipKeyGenerator]
 
 # Dependency graph
 requires:
@@ -54,6 +54,7 @@ key-decisions:
   - "SSE flushHeaders() called before aiProvider.streamChat() — required so response headers reach client before async streaming begins"
   - "rateLimiter tests test keyGenerator LOGIC directly (mock + manual invocation) rather than through full middleware pipeline — avoids needing a running server for this unit test"
   - "@types/cors added as devDependency — cors package had no bundled types, blocked TypeScript compilation (Rule 3 auto-fix)"
+  - "ipKeyGenerator(ip: string) from express-rate-limit accepts an IP string not a Request object — pass req.ip, not req itself"
 
 patterns-established:
   - "Auth protection: mount routes in routes/index.ts and apiRouter.use(requireApiAuth) handles all of them"
@@ -64,20 +65,20 @@ patterns-established:
 requirements-completed: [AUTH-04, UI-03]
 
 # Metrics
-duration: 3min
+duration: 20min
 completed: 2026-03-09
 ---
 
 # Phase 01 Plan 03: Express Server Wiring Summary
 
-**Express server with Clerk JWT auth on all three API routes (401 without valid JWT), SSE streaming for /api/chat, per-user rate limiting via Clerk userId, and 14 passing tests**
+**Express server with Clerk JWT auth on all three API routes (401 without valid JWT), SSE streaming for /api/chat, per-user rate limiting via Clerk userId and ipKeyGenerator, and 14 passing tests — human-verify checkpoint passed**
 
 ## Performance
 
-- **Duration:** 3 min
+- **Duration:** ~20 min (including human-verify checkpoint)
 - **Started:** 2026-03-09T10:50:41Z
-- **Completed:** 2026-03-09T10:53:38Z
-- **Tasks:** 2 of 2 (Task 3 is checkpoint:human-verify — awaiting manual verification)
+- **Completed:** 2026-03-09
+- **Tasks:** 3 of 3 (Tasks 1-2 auto, Task 3 checkpoint:human-verify — approved)
 - **Files modified:** 10
 
 ## Accomplishments
@@ -94,6 +95,7 @@ Each task was committed atomically:
 
 1. **Task 1: Auth middleware, rate limiter, and fill rateLimiter test stubs** - `5c728ac` (feat)
 2. **Task 2: Three API routes, authenticated router, and Express entry point** - `8c2d115` (feat)
+3. **Task 3: Checkpoint approved — ipKeyGenerator fix post-verification** - `83d6232` (fix)
 
 _Note: TDD tasks — tests written first (RED), then implementation (GREEN), committed together per task_
 
@@ -130,37 +132,40 @@ _Note: TDD tasks — tests written first (RED), then implementation (GREEN), com
 
 ---
 
-**Total deviations:** 1 auto-fixed (1 blocking)
-**Impact on plan:** Missing devDependency; required for TypeScript compilation. No scope creep.
+**2. [Rule 1 - Bug] Fixed ipKeyGenerator call signature — passed IP string not Request object**
+- **Found during:** Post-checkpoint fix (rateLimiter.ts)
+- **Issue:** `ipKeyGenerator(req)` passed the full Request object; function expects an IP address string. Caused TS2345 type error and broke 5 tests.
+- **Fix:** Extract IP first: `const ip = req.ip ?? 'anonymous'`, then call `ipKeyGenerator(ip)` only when ip is a real address
+- **Files modified:** `backend/src/middleware/rateLimiter.ts`
+- **Verification:** `npx jest` 14/14 pass; `npx tsc --noEmit` zero errors
+- **Committed in:** `83d6232`
+
+---
+
+**Total deviations:** 2 auto-fixed (1 blocking, 1 bug)
+**Impact on plan:** Both fixes required for correctness. No scope creep.
 
 ## Issues Encountered
 
-None beyond the @types/cors Rule 3 fix above.
+- `@types/cors` missing — blocked TypeScript compilation during Task 2 (Rule 3, resolved inline)
+- `ipKeyGenerator` API mismatch — function expects IP string, not Request object; caused TS2345 and 5 test failures post-checkpoint (Rule 1, resolved in `83d6232`)
 
 ## User Setup Required
 
-**Checkpoint:human-verify awaiting manual verification.** To fully test the server:
+**Human-verify checkpoint approved.** All 6 manual steps passed:
+- Server starts without error
+- 401 without JWT confirmed on all routes
+- SSE streaming with valid Clerk JWT produces progressive chunks ending with `{"type":"done"}`
+- AI_PROVIDER=openai switch does not crash server
+- Health endpoint returns `{"status":"ok"}`
 
-1. Create `backend/.env` with real keys:
-   ```
-   GEMINI_API_KEY=...
-   TAVILY_API_KEY=...
-   CLERK_PUBLISHABLE_KEY=pk_test_...
-   CLERK_SECRET_KEY=sk_test_...
-   AI_PROVIDER=gemini
-   PORT=3001
-   CLIENT_ORIGIN=http://localhost:5173
-   ```
-2. Start server: `cd backend && npx tsx src/index.ts`
-3. Verify 401: `curl -s -X POST http://localhost:3001/api/chat -H "Content-Type: application/json" -d '{"messages":[{"role":"user","content":"hi"}]}'`
-4. Verify SSE streaming with a valid Clerk JWT
-5. Verify health: `curl http://localhost:3001/health`
+`backend/.env` with real keys required for live operation (already set up by user during checkpoint verification).
 
 ## Next Phase Readiness
 
-- Backend proxy shell complete — all three API routes wired, JWT auth enforced, SSE streaming ready
-- Phase 02 (frontend) can integrate against these endpoints once checkpoint is approved
-- No blockers — all 14 tests pass, zero TypeScript errors
+- Backend proxy shell complete — all three API routes wired, JWT auth enforced, SSE streaming verified live
+- Phase 02 (frontend shell) can integrate against `/api/chat`, `/api/simplify`, `/api/find-sources`
+- No blockers — all 14 tests pass, zero TypeScript errors, human-verify checkpoint approved
 
 ---
 *Phase: 01-backend-proxy-shell*
@@ -168,5 +173,7 @@ None beyond the @types/cors Rule 3 fix above.
 
 ## Self-Check: PASSED
 
-- All 7 source files found on disk
-- Both task commits (5c728ac, 8c2d115) confirmed in git log
+- All 7 source files confirmed on disk
+- All task commits confirmed in git log: 5c728ac, 8c2d115, 83d6232
+- 14/14 tests passing post-fix
+- Zero TypeScript errors

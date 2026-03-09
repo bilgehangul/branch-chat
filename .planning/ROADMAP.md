@@ -34,8 +34,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Project scaffold, test infrastructure, Wave 0 stubs, shared/types.ts
-- [ ] 01-02-PLAN.md — Provider abstraction: interfaces, GeminiProvider, TavilyProvider, OpenAI stubs, config factory
-- [ ] 01-03-PLAN.md — Server wiring: auth middleware, rate limiter, 3 API routes, Express entry point
+- [x] 01-02-PLAN.md — Provider abstraction: interfaces, GeminiProvider, TavilyProvider, OpenAI stubs, config factory
+- [x] 01-03-PLAN.md — Server wiring: auth middleware, rate limiter, 3 API routes, Express entry point
 
 ### Phase 2: Frontend Foundation
 **Goal**: An authenticated user lands on the app, a guest user bypasses auth, and the Zustand store is fully typed and initialized with the flat normalized structure that all future phases depend on

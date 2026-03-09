@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: "01-03 CHECKPOINT: Tasks 1-2 complete (all 14 tests pass), awaiting human-verify checkpoint for manual SSE/JWT testing"
-last_updated: "2026-03-09T10:55:02.960Z"
-last_activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
+status: phase_complete
+stopped_at: "Phase 01 complete — all 3 plans done, backend proxy shell verified"
+last_updated: "2026-03-09T12:00:00.000Z"
+last_activity: 2026-03-09 — Plan 01-03 complete (Express server wiring, human-verify checkpoint approved)
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 3
   completed_plans: 3
-  percent: 67
+  percent: 100
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-08)
 
 **Core value:** A user must be able to branch off any paragraph into a focused child conversation and return to the exact spot in the parent — with a visible lead marker showing where they went and what they found.
-**Current focus:** Phase 1 — Backend Proxy Shell
+**Current focus:** Phase 2 — Frontend Shell (next phase)
 
 ## Current Position
 
-Phase: 1 of 6 (Backend Proxy Shell)
-Plan: 1 of 3 in current phase
-Status: In progress
-Last activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
+Phase: 1 of 6 (Backend Proxy Shell) — COMPLETE
+Plan: 3 of 3 in current phase — ALL COMPLETE
+Status: Phase complete — ready for Phase 02
+Last activity: 2026-03-09 — Plan 01-03 complete (Express server wired, all 14 tests pass, human-verify approved)
 
-Progress: [███████░░░] 67%
+Progress: [██████████] 100% (Phase 01)
 
 ## Performance Metrics
 
@@ -74,6 +74,7 @@ Recent decisions affecting current work:
 - [Phase 01-03]: apiRouter.use(requireApiAuth) in routes/index.ts protects all sub-routes automatically — no per-route decoration needed
 - [Phase 01-03]: SSE flushHeaders() called before aiProvider.streamChat() — streaming headers must reach client before async work begins
 - [Phase 01-03]: @types/cors added as devDependency — cors package had no bundled types (Rule 3 auto-fix)
+- [Phase 01-03]: ipKeyGenerator(ip: string) accepts IP string not Request object — pass req.ip, not req (Rule 1 bug fix post-checkpoint)
 
 ### Pending Todos
 
@@ -86,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T10:55:02.957Z
-Stopped at: 01-03 CHECKPOINT: Tasks 1-2 complete (all 14 tests pass), awaiting human-verify checkpoint for manual SSE/JWT testing
+Last session: 2026-03-09T12:00:00.000Z
+Stopped at: Phase 01 complete — all 3 plans done, backend proxy shell verified end-to-end
 Resume file: None
