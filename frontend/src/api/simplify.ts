@@ -4,8 +4,8 @@ import type { ApiResponse } from '../../../shared/types';
 export async function simplifyText(
   params: { text: string; mode: 'simpler' | 'example' | 'analogy' | 'technical' },
   getToken: () => Promise<string | null>
-): Promise<ApiResponse<{ text: string }>> {
-  return apiRequest<{ text: string }>('/api/simplify', {
+): Promise<ApiResponse<{ rewritten: string }>> {
+  return apiRequest<{ rewritten: string }>('/api/simplify', {
     method: 'POST',
     body: JSON.stringify(params),
     getToken,

@@ -23,6 +23,7 @@ interface SessionState {
   setMessageStreaming: (id: string, isStreaming: boolean) => void;
   addChildLead: (messageId: string, lead: ChildLead) => void;
   addAnnotation: (messageId: string, annotation: Annotation) => void;
+  updateAnnotation: (messageId: string, annotationId: string, patch: Partial<Annotation>) => void;
   setScrollPosition: (threadId: string, position: number) => void;
   setThreadTitle: (threadId: string, title: string) => void;
   deleteThread: (threadId: string) => void;
@@ -157,6 +158,20 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         [messageId]: {
           ...state.messages[messageId]!,
           annotations: [...(state.messages[messageId]?.annotations ?? []), annotation],
+        },
+      },
+    }));
+  },
+
+  updateAnnotation: (messageId: string, annotationId: string, patch: Partial<Annotation>) => {
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [messageId]: {
+          ...state.messages[messageId]!,
+          annotations: state.messages[messageId]!.annotations.map(a =>
+            a.id === annotationId ? { ...a, ...patch } : a
+          ),
         },
       },
     }));
