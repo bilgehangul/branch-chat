@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-02-PLAN.md (provider abstraction layer). Ready for Plan 01-03 (route handlers).
+last_updated: "2026-03-09T10:49:37.948Z"
+last_activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
+progress:
+  total_phases: 6
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 2
+  percent: 67
+---
+
 # Project State
 
 ## Project Reference
@@ -14,7 +30,7 @@ Plan: 1 of 3 in current phase
 Status: In progress
 Last activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -34,6 +50,7 @@ Progress: [█░░░░░░░░░] 5%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 01-backend-proxy-shell P02 | 4 min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -49,6 +66,10 @@ Recent decisions affecting current work:
 - [01-01]: No type:module in backend/package.json — ts-jest uses CommonJS transform to avoid ESM/CJS conflicts
 - [01-01]: @google/genai v1.x used (not @google/generative-ai which EOL'd Nov 2025)
 - [01-01]: shared/types.ts at repo root so both backend and frontend can import without package boundary issues
+- [Phase 01-02]: TavilyProvider uses lazy client init — avoids throwing on missing TAVILY_API_KEY during tests
+- [Phase 01-02]: Factory tests use jest.isolateModulesAsync() + constructor.name — avoids class identity mismatch after module cache reset
+- [Phase 01-02]: config.ts is the ONLY file reading AI_PROVIDER — route handlers import aiProvider/searchProvider singletons, never branch on provider type
+- [Phase 01-02]: tsconfig.json rootDir changed from ./src to . — fix for pre-existing TS6059 errors when tests/ included but outside rootDir
 
 ### Pending Todos
 
@@ -61,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09
-Stopped at: Completed 01-01-PLAN.md (backend scaffold + Wave 0 stubs). Ready for Plan 01-02 (provider implementations).
+Last session: 2026-03-09T10:49:37.945Z
+Stopped at: Completed 01-02-PLAN.md (provider abstraction layer). Ready for Plan 01-03 (route handlers).
 Resume file: None
