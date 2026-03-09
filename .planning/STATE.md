@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 03-02-PLAN.md (streaming hook + ChatInput)
-last_updated: "2026-03-09T14:22:53.080Z"
+stopped_at: Completed 03-03-PLAN.md (message rendering components)
+last_updated: "2026-03-09T14:28:57.469Z"
 last_activity: 2026-03-09 — Plans 02-01 and 02-02 complete (parallel Wave 1)
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 ---
@@ -73,6 +73,7 @@ Progress: [███░░░░░░░] ~33% (Phase 02 in progress)
 | Phase 02-frontend-foundation P03 | 45 | 2 tasks | 6 files |
 | Phase 03-core-thread-ui P01 | 4 | 2 tasks | 7 files |
 | Phase 03-core-thread-ui P02 | 6 | 2 tasks | 7 files |
+| Phase 03-core-thread-ui P03 | 8 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,9 @@ Recent decisions affecting current work:
 - [Phase 03-core-thread-ui]: AbortError detection uses dual check (err.name==='AbortError' OR DOMException code 20) — jsdom DOMException is not instanceof Error in all environments
 - [Phase 03-core-thread-ui]: useStreamingChat snapshots messageIds BEFORE addMessage calls — prevents history double-counting in synchronous mock contexts
 - [Phase 03-core-thread-ui]: vi.mock hoisting in Vitest requires test file separation: AbortSignal tests in api.chat.test.ts, setThreadTitle in sessionStore.test.ts — cannot mix real+mocked imports for same module
+- [Phase 03-core-thread-ui]: react-markdown v10 dropped className prop on ReactMarkdown element — wrap in div for prose classes
+- [Phase 03-core-thread-ui]: react-syntax-highlighter prism-light uses default export (not named Prism) — use default import
+- [Phase 03-core-thread-ui]: MessageBlock streaming classes are Tailwind utility strings for testability; StreamingCursor uses inline style tag for keyframes
 
 ### Pending Todos
 
@@ -122,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T14:22:53.077Z
-Stopped at: Completed 03-02-PLAN.md (streaming hook + ChatInput)
+Last session: 2026-03-09T14:28:47.052Z
+Stopped at: Completed 03-03-PLAN.md (message rendering components)
 Resume file: None
