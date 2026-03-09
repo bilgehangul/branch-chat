@@ -30,7 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. A curl request without a JWT receives a 401 response on every API route
   3. A curl request to `/simplify` and `/find-sources` returns non-streamed JSON responses
   4. Switching the `AI_PROVIDER` environment variable is the only change required to point the server at a different provider
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [x] 01-01-PLAN.md — Project scaffold, test infrastructure, Wave 0 stubs, shared/types.ts
+- [ ] 01-02-PLAN.md — Provider abstraction: interfaces, GeminiProvider, TavilyProvider, OpenAI stubs, config factory
+- [ ] 01-03-PLAN.md — Server wiring: auth middleware, rate limiter, 3 API routes, Express entry point
 
 ### Phase 2: Frontend Foundation
 **Goal**: An authenticated user lands on the app, a guest user bypasses auth, and the Zustand store is fully typed and initialized with the flat normalized structure that all future phases depend on
@@ -98,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Proxy Shell | 0/TBD | Not started | - |
+| 1. Backend Proxy Shell | 1/3 | In progress | - |
 | 2. Frontend Foundation | 0/TBD | Not started | - |
 | 3. Core Thread UI | 0/TBD | Not started | - |
 | 4. Branching | 0/TBD | Not started | - |

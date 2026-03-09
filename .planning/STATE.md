@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-03-08)
 ## Current Position
 
 Phase: 1 of 6 (Backend Proxy Shell)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-08 — Roadmap created; all 46 v1 requirements mapped to 6 phases
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-09 — Plan 01-01 complete (backend scaffold + Wave 0 test stubs)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 2 min
+- Total execution time: 0.03 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-backend-proxy-shell | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: none yet
+- Last 5 plans: 01-01 (2 min)
 - Trend: -
 
 *Updated after each plan completion*
@@ -46,6 +46,9 @@ Recent decisions affecting current work:
 - [Init]: Flat normalized Zustand store (`Record<id, Thread>`, `Record<id, Message>`) must be locked in Phase 2 — no nested tree mutations
 - [Init]: SSE streaming via `fetch` + `ReadableStream` only — `EventSource` cannot send auth headers
 - [Init]: DOM pixel positions (gutter pill anchors) must never enter Zustand — track in component-local refs via ResizeObserver
+- [01-01]: No type:module in backend/package.json — ts-jest uses CommonJS transform to avoid ESM/CJS conflicts
+- [01-01]: @google/genai v1.x used (not @google/generative-ai which EOL'd Nov 2025)
+- [01-01]: shared/types.ts at repo root so both backend and frontend can import without package boundary issues
 
 ### Pending Todos
 
@@ -58,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-08
-Stopped at: Roadmap written; REQUIREMENTS.md traceability updated; ready to run `/gsd:plan-phase 1`
+Last session: 2026-03-09
+Stopped at: Completed 01-01-PLAN.md (backend scaffold + Wave 0 stubs). Ready for Plan 01-02 (provider implementations).
 Resume file: None
