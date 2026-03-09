@@ -225,7 +225,7 @@ describe('useStreamingChat', () => {
     // History: 2 existing + 1 new user message = 3
     expect(body.messages.length).toBe(3);
     expect(body.messages[0]).toEqual({ role: 'user', content: 'Previous question' });
-    expect(body.messages[1]).toEqual({ role: 'assistant', content: 'Previous answer' });
+    expect(body.messages[1]).toEqual({ role: 'model', content: 'Previous answer' });
     expect(body.messages[2]).toEqual({ role: 'user', content: 'New question' });
   });
 
