@@ -2,7 +2,7 @@
 // POST /api/find-sources — Tavily web search via searchProvider.findSources().
 // Returns standard JSON envelope: { data: { results }, error: null }.
 import { Router } from 'express';
-import { searchProvider } from '../config.js';
+import { searchProvider, aiProvider } from '../config.js';
 
 export const findSourcesRouter = Router();
 
@@ -19,7 +19,19 @@ findSourcesRouter.post('/', async (req, res) => {
 
   try {
     const results = await searchProvider.findSources(query.trim(), 3);
-    res.json({ data: { results }, error: null });
+
+    // Generate Gemini synthesis note — sequential since note needs results
+    let citationNote = '';
+    if (results.length > 0) {
+      try {
+        citationNote = await aiProvider.generateCitationNote(results, query.trim());
+      } catch {
+        // Citation note failure is non-fatal — return results without note
+        citationNote = '';
+      }
+    }
+
+    res.json({ data: { results, citationNote }, error: null });
   } catch (err) {
     res.status(502).json({
       data: null,

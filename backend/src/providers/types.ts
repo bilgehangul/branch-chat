@@ -33,6 +33,12 @@ export interface AIProvider {
    * Single-shot text rewrite. mode is one of: "simpler" | "example" | "analogy" | "technical"
    */
   simplify(text: string, mode: string): Promise<string>;
+
+  /**
+   * Generate a 1–2 sentence citation note synthesizing the search results
+   * in context of the original query text.
+   */
+  generateCitationNote(results: SearchResult[], originalText: string): Promise<string>;
 }
 
 export interface SearchProvider {

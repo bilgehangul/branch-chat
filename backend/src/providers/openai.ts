@@ -1,7 +1,7 @@
 // backend/src/providers/openai.ts
 // OpenAIProvider — stub only. Forces interface completeness in Phase 1.
 // Throws NotImplementedError so tests can verify it doesn't silently no-op.
-import type { AIProvider, Message } from './types.js';
+import type { AIProvider, Message, SearchResult } from './types.js';
 
 export class OpenAIProvider implements AIProvider {
   streamChat(
@@ -16,6 +16,10 @@ export class OpenAIProvider implements AIProvider {
   }
 
   simplify(_text: string, _mode: string): Promise<string> {
+    throw new Error('OpenAIProvider not yet implemented. Set AI_PROVIDER=gemini.');
+  }
+
+  generateCitationNote(_results: SearchResult[], _originalText: string): Promise<string> {
     throw new Error('OpenAIProvider not yet implemented. Set AI_PROVIDER=gemini.');
   }
 }
