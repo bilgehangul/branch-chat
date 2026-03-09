@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 03-03-PLAN.md (message rendering components)
-last_updated: "2026-03-09T14:28:57.469Z"
+stopped_at: Completed 03-04-PLAN.md (ThreadView + createSession wiring)
+last_updated: "2026-03-09T14:34:27.517Z"
 last_activity: 2026-03-09 — Plans 02-01 and 02-02 complete (parallel Wave 1)
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 12
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 ---
@@ -74,6 +74,7 @@ Progress: [███░░░░░░░] ~33% (Phase 02 in progress)
 | Phase 03-core-thread-ui P01 | 4 | 2 tasks | 7 files |
 | Phase 03-core-thread-ui P02 | 6 | 2 tasks | 7 files |
 | Phase 03-core-thread-ui P03 | 8 | 2 tasks | 8 files |
+| Phase 03-core-thread-ui P04 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,8 @@ Recent decisions affecting current work:
 - [Phase 03-core-thread-ui]: react-markdown v10 dropped className prop on ReactMarkdown element — wrap in div for prose classes
 - [Phase 03-core-thread-ui]: react-syntax-highlighter prism-light uses default export (not named Prism) — use default import
 - [Phase 03-core-thread-ui]: MessageBlock streaming classes are Tailwind utility strings for testability; StreamingCursor uses inline style tag for keyframes
+- [Phase 03-04]: Zustand selectors must be separate calls (not object spread) to avoid getSnapshot infinite loop in React concurrent mode
+- [Phase 03-04]: scrollIntoView guarded with typeof check for jsdom test environment compatibility
 
 ### Pending Todos
 
@@ -126,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T14:28:47.052Z
-Stopped at: Completed 03-03-PLAN.md (message rendering components)
+Last session: 2026-03-09T14:34:27.514Z
+Stopped at: Completed 03-04-PLAN.md (ThreadView + createSession wiring)
 Resume file: None
