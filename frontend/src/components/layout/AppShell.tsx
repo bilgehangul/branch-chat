@@ -10,6 +10,7 @@ export function AppShell() {
   const messages = useSessionStore(s => s.messages);
   const activeThreadId = useSessionStore(s => s.activeThreadId);
   const setActiveThread = useSessionStore(s => s.setActiveThread);
+  const deleteThread = useSessionStore(s => s.deleteThread);
 
   // Ancestry = [root, ...ancestors, current] — exclude current (last element)
   const ancestry = activeThreadId ? selectThreadAncestry(threads, activeThreadId) : [];
@@ -29,8 +30,11 @@ export function AppShell() {
             thread={thread}
             allMessages={messages}
             highlightMessageId={nextThread?.parentMessageId ?? undefined}
+            childThreadId={nextThread?.id}
             width={w}
             onClick={() => setActiveThread(thread.id)}
+            onNavigate={setActiveThread}
+            onDelete={deleteThread}
           />
         );
       })}

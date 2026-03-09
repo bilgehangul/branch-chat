@@ -25,6 +25,7 @@ interface SessionState {
   addAnnotation: (messageId: string, annotation: Annotation) => void;
   setScrollPosition: (threadId: string, position: number) => void;
   setThreadTitle: (threadId: string, title: string) => void;
+  deleteThread: (threadId: string) => void;
 }
 
 export const useSessionStore = create<SessionState>()((set, get) => ({
@@ -178,6 +179,50 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         [threadId]: { ...state.threads[threadId]!, title },
       },
     }));
+  },
+
+  deleteThread: (threadId: string) => {
+    set((state) => {
+      // Collect threadId + all descendant IDs
+      function collectIds(id: string): string[] {
+        const t = state.threads[id];
+        if (!t) return [];
+        return [id, ...t.childThreadIds.flatMap(collectIds)];
+      }
+      const toDelete = new Set(collectIds(threadId));
+
+      // Rebuild threads without deleted ones, and remove deleted childThreadIds from parents
+      const newThreads: Record<string, Thread> = {};
+      for (const [id, t] of Object.entries(state.threads)) {
+        if (toDelete.has(id)) continue;
+        newThreads[id] = {
+          ...t,
+          childThreadIds: t.childThreadIds.filter(c => !toDelete.has(c)),
+        };
+      }
+
+      // Rebuild messages: remove messages from deleted threads, remove childLeads pointing to deleted threads
+      const newMessages: Record<string, Message> = {};
+      for (const [id, m] of Object.entries(state.messages)) {
+        if (toDelete.has(m.threadId)) continue;
+        newMessages[id] = {
+          ...m,
+          childLeads: m.childLeads.filter(cl => !toDelete.has(cl.threadId)),
+        };
+      }
+
+      // If the active thread was deleted, fall back to parent thread or first available
+      const deletedThread = state.threads[threadId];
+      let newActiveThreadId = state.activeThreadId;
+      if (newActiveThreadId && toDelete.has(newActiveThreadId)) {
+        newActiveThreadId =
+          (deletedThread?.parentThreadId && newThreads[deletedThread.parentThreadId]
+            ? deletedThread.parentThreadId
+            : null) ?? Object.keys(newThreads)[0] ?? null;
+      }
+
+      return { threads: newThreads, messages: newMessages, activeThreadId: newActiveThreadId };
+    });
   },
 }));
 

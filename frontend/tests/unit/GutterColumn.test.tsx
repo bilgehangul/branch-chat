@@ -63,7 +63,8 @@ describe('GutterColumn', () => {
       const thread = makeThread({ childThreadIds: [] });
       const { container } = render(
         <GutterColumn
-          scrollContainerRef={makeScrollRef(mockContainer)}
+          wrapperRef={makeScrollRef(mockContainer)}
+          onDeleteThread={vi.fn()}
           activeThread={thread}
           threads={{ 'thread-1': thread }}
           messages={{ 'msg-1': makeMessage() }}
@@ -97,7 +98,8 @@ describe('GutterColumn', () => {
 
       const { container } = render(
         <GutterColumn
-          scrollContainerRef={makeScrollRef(mockContainer)}
+          wrapperRef={makeScrollRef(mockContainer)}
+          onDeleteThread={vi.fn()}
           activeThread={parentThread}
           threads={{ 'thread-1': parentThread, 'child-1': childThread }}
           messages={{ 'msg-1': parentMsg, 'msg-2': makeMessage({ id: 'msg-2', threadId: 'child-1' }) }}
@@ -133,7 +135,8 @@ describe('GutterColumn', () => {
 
       return render(
         <GutterColumn
-          scrollContainerRef={makeScrollRef(mockContainer)}
+          wrapperRef={makeScrollRef(mockContainer)}
+          onDeleteThread={vi.fn()}
           activeThread={parentThread}
           threads={{ 'thread-1': parentThread, 'child-1': childThread }}
           messages={{
@@ -198,7 +201,8 @@ describe('GutterColumn', () => {
 
       return render(
         <GutterColumn
-          scrollContainerRef={makeScrollRef(mockContainer)}
+          wrapperRef={makeScrollRef(mockContainer)}
+          onDeleteThread={vi.fn()}
           activeThread={parentThread}
           threads={{ 'thread-1': parentThread, 'child-1': childThread }}
           messages={{
@@ -257,7 +261,8 @@ describe('GutterColumn', () => {
 
       render(
         <GutterColumn
-          scrollContainerRef={makeScrollRef(mockContainer)}
+          wrapperRef={makeScrollRef(mockContainer)}
+          onDeleteThread={vi.fn()}
           activeThread={parentThread}
           threads={{ 'thread-1': parentThread, 'child-1': childThread }}
           messages={{

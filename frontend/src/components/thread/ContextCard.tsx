@@ -5,11 +5,30 @@ export function ContextCard({ thread }: { thread: Thread }) {
 
   return (
     <div
-      className="max-w-[720px] mx-auto mb-8 px-4 py-3 bg-blue-50 border-l-4 rounded-r"
+      className="max-w-[720px] mx-auto mb-6 rounded-xl overflow-hidden border"
       style={{ borderColor: thread.accentColor }}
     >
-      <p className="text-xs text-slate-700 mb-1">Branched from parent thread</p>
-      <p className="text-sm text-slate-600 italic">"{thread.anchorText}"</p>
+      {/* Header bar */}
+      <div
+        className="px-4 py-2 flex items-center gap-2"
+        style={{ backgroundColor: `${thread.accentColor}22` }}
+      >
+        <span className="text-base" style={{ color: thread.accentColor }}>↗</span>
+        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+          Branched from parent thread
+        </span>
+      </div>
+
+      {/* Selected text quote */}
+      <div className="px-4 py-3 bg-white">
+        <p className="text-xs text-slate-400 mb-1">You selected:</p>
+        <p
+          className="text-sm font-medium leading-relaxed"
+          style={{ color: thread.accentColor }}
+        >
+          "{thread.anchorText}"
+        </p>
+      </div>
     </div>
   );
 }

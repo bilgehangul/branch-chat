@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import type { Thread, Message } from '../../types/index';
 
 interface AncestorPeekPanelProps {
@@ -6,19 +6,67 @@ interface AncestorPeekPanelProps {
   allMessages: Record<string, Message>;
   /** Message in this thread where the next branch was created — scrolled into view */
   highlightMessageId?: string;
+  /** The direct child thread in the current ancestry path (shown as nav button on highlighted message) */
+  childThreadId?: string;
   width: number;
   onClick: () => void;
+  onNavigate?: (threadId: string) => void;
+  onDelete?: (threadId: string) => void;
+}
+
+function ContextMenu({
+  x, y, threadId, onDelete, onClose,
+}: {
+  x: number; y: number; threadId: string;
+  onDelete: (id: string) => void; onClose: () => void;
+}) {
+  useEffect(() => {
+    const handler = () => onClose();
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
+
+  return (
+    <div
+      style={{ position: 'fixed', top: y, left: x, zIndex: 9999 }}
+      className="bg-white border border-slate-200 rounded-lg shadow-xl py-1 min-w-[160px] text-sm"
+      onMouseDown={e => e.stopPropagation()}
+    >
+      <button
+        className="w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-50 transition-colors"
+        onClick={() => { onDelete(threadId); onClose(); }}
+      >
+        Delete thread
+      </button>
+      <button
+        className="w-full text-left px-3 py-1.5 text-slate-400 cursor-not-allowed"
+        onClick={() => alert('Summarize: coming soon')}
+      >
+        Summarize
+      </button>
+      <button
+        className="w-full text-left px-3 py-1.5 text-slate-400 cursor-not-allowed"
+        onClick={() => alert('Compact: coming soon')}
+      >
+        Compact
+      </button>
+    </div>
+  );
 }
 
 export function AncestorPeekPanel({
   thread,
   allMessages,
   highlightMessageId,
+  childThreadId,
   width,
   onClick,
+  onNavigate,
+  onDelete,
 }: AncestorPeekPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
   const threadMessages = thread.messageIds
     .map(id => allMessages[id])
@@ -38,6 +86,11 @@ export function AncestorPeekPanel({
       className="relative flex-shrink-0 flex flex-col bg-slate-50 cursor-pointer group hover:bg-slate-100 transition-colors"
       style={{ width, borderRight: `3px solid ${thread.accentColor}` }}
       onClick={onClick}
+      onContextMenu={e => {
+        if (!onDelete) return;
+        e.preventDefault();
+        setMenu({ x: e.clientX, y: e.clientY });
+      }}
       title={`← Back to: ${thread.title}`}
     >
       {/* Title header */}
@@ -77,6 +130,23 @@ export function AncestorPeekPanel({
               </span>
               {msg.content.slice(0, maxChars)}
               {msg.content.length > maxChars && '…'}
+
+              {/* Child thread navigation button on the anchor message */}
+              {isAnchor && childThreadId && onNavigate && (
+                <button
+                  className="block mt-1 text-[9px] font-semibold px-1.5 py-0.5 rounded"
+                  style={{
+                    backgroundColor: `${thread.accentColor}30`,
+                    color: thread.accentColor,
+                  }}
+                  onClick={e => {
+                    e.stopPropagation();
+                    onNavigate(childThreadId);
+                  }}
+                >
+                  ↗ branch
+                </button>
+              )}
             </div>
           );
         })}
@@ -84,6 +154,17 @@ export function AncestorPeekPanel({
 
       {/* Bottom fade — hints more content below */}
       <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-slate-50 to-transparent pointer-events-none" />
+
+      {/* Context menu */}
+      {menu && onDelete && (
+        <ContextMenu
+          x={menu.x}
+          y={menu.y}
+          threadId={thread.id}
+          onDelete={onDelete}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }

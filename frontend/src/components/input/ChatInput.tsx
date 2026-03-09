@@ -48,7 +48,7 @@ export function ChatInput({ onSend, onStop, isStreaming }: ChatInputProps) {
         placeholder="Ask anything..."
         disabled={isStreaming}
         onInput={handleInput}
-        className={`flex-1 resize-none rounded-lg border border-slate-300 bg-slate-50 text-slate-900 placeholder-slate-400 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors${isStreaming ? ' opacity-50' : ''}`}
+        className={`flex-1 resize-none rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors${isStreaming ? ' opacity-50' : ''}`}
         style={{ minHeight: '2.25rem', maxHeight: `${24 * 4}px`, overflowY: 'auto' }}
       />
       <button

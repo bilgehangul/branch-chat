@@ -16,6 +16,9 @@ import { GutterColumn } from '../branching/GutterColumn';
  * Scroll container + auto-scroll + 200ms slide transition + ChatInput wiring.
  * Also wires useTextSelection and ActionBubble for the "Go Deeper" branching flow.
  *
+ * Branch pills (GutterColumn) are absolutely-positioned INSIDE the scroll container's
+ * content wrapper so they scroll with the text, aligned to their anchor paragraph.
+ *
  * This is the ONLY place useStreamingChat is called.
  */
 export function ThreadView() {
@@ -29,6 +32,7 @@ export function ThreadView() {
   const createThread = useSessionStore(s => s.createThread);
   const addChildLead = useSessionStore(s => s.addChildLead);
   const setActiveThread = useSessionStore(s => s.setActiveThread);
+  const deleteThread = useSessionStore(s => s.deleteThread);
 
   const { sendMessage, abort, isStreaming } = useStreamingChat(getToken);
 
@@ -40,6 +44,8 @@ export function ThreadView() {
 
   // Refs for scroll management
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Ref for the position:relative inner wrapper (GutterColumn measures relative to this)
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const bottomAnchorRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);
 
@@ -143,20 +149,22 @@ export function ThreadView() {
     };
   }, []);
 
+  const hasChildThreads = activeThread && activeThread.childThreadIds.length > 0;
+
   return (
     <div className="flex flex-col h-full">
-      {/* Scroll area + gutter row */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Scroll container */}
-        <div
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto px-4"
-        >
-          {/* Slide transition wrapper */}
+      {/* Scroll area */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        {/*
+          position:relative wrapper — GutterColumn pills are absolutely-positioned
+          inside this wrapper so they scroll with content and align to their anchor paragraph.
+        */}
+        <div ref={contentWrapperRef} className="relative px-4">
+          {/* Slide transition wrapper — right padding reserves space for pills */}
           <div
             className={`transition-transform duration-200 ease-out ${
               isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-            }`}
+            } ${hasChildThreads ? 'pr-[200px]' : ''}`}
           >
             {activeThread ? (
               orderedMessages.length > 0 ? (
@@ -174,18 +182,19 @@ export function ThreadView() {
             {/* Bottom anchor for auto-scroll */}
             <div ref={bottomAnchorRef} />
           </div>
-        </div>
 
-        {/* Gutter — only renders when thread has child branches */}
-        {activeThread && (
-          <GutterColumn
-            scrollContainerRef={scrollRef}
-            activeThread={activeThread}
-            threads={threads}
-            messages={messages}
-            onNavigate={setActiveThread}
-          />
-        )}
+          {/* Branch pills: absolutely positioned inside the relative wrapper, scrolls with content */}
+          {activeThread && (
+            <GutterColumn
+              wrapperRef={contentWrapperRef}
+              activeThread={activeThread}
+              threads={threads}
+              messages={messages}
+              onNavigate={setActiveThread}
+              onDeleteThread={deleteThread}
+            />
+          )}
+        </div>
       </div>
 
       {/* ActionBubble: appears on valid text selection when not at max depth */}

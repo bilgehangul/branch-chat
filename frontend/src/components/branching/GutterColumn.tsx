@@ -1,21 +1,22 @@
 /**
- * GutterColumn
+ * GutterColumn (Inline Branch Pills)
  *
- * 200px right gutter that appears only when a thread has child branches.
- * Renders lead pills at the vertical position of their anchor paragraphs.
- * Each pill shows thread title (max 32 chars), message count, accent pip;
- * hovering shows a preview card. Clicking navigates into the thread.
+ * Pills are absolutely positioned INSIDE the scroll container's content wrapper,
+ * so they scroll with the text rather than sitting in a separate fixed column.
+ *
+ * Each pill aligns to the paragraph where the branch was created.
+ * Right-click shows a context menu with Delete / Summarize / Compact.
  *
  * Requirements: BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11
  *
- * KEY DECISIONS (from STATE.md):
- * - DOM pixel positions must never enter Zustand — track in component-local refs via ResizeObserver
- * - ResizeObserver guarded with typeof check (jsdom does not define it)
- * - requestAnimationFrame batches updates to avoid ResizeObserver loop warning
- * - Pill positions in useRef; separate counter state triggers re-render on >1px change
+ * KEY DECISIONS:
+ * - Positions measured as anchorRect.top - wrapperRect.top (both in viewport coords;
+ *   scrollTop cancels out, so no scroll listener needed)
+ * - Pills are position:absolute inside a position:relative wrapper — they scroll with content
+ * - ResizeObserver (guarded for jsdom) recomputes only on content reflow, not scroll
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import type { Thread, Message, ChildLead } from '../../types/index';
 
 // ── DOM measurement ────────────────────────────────────────────────────────
@@ -23,20 +24,66 @@ import type { Thread, Message, ChildLead } from '../../types/index';
 function measurePillTop(
   messageId: string,
   paragraphId: string,
-  scrollContainer: HTMLElement
+  wrapper: HTMLElement
 ): number | null {
-  const anchor = scrollContainer.querySelector(
+  const anchor = wrapper.querySelector(
     `[data-message-id="${messageId}"] [data-paragraph-id="${paragraphId}"]`
   );
   if (!anchor) return null;
   const anchorRect = anchor.getBoundingClientRect();
-  const containerRect = scrollContainer.getBoundingClientRect();
-  return anchorRect.top - containerRect.top + scrollContainer.scrollTop;
+  const wrapperRect = wrapper.getBoundingClientRect();
+  // anchorRect.top - wrapperRect.top gives content-relative offset.
+  // scrollTop cancels because both elements are in the same scroll container.
+  return anchorRect.top - wrapperRect.top;
 }
 
-// ── Sub-components ─────────────────────────────────────────────────────────
+// ── Context menu ─────────────────────────────────────────────────────────
 
-// Recursively renders a thread's descendants as nested pills (no DOM positioning needed)
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  threadId: string;
+  onDelete: (threadId: string) => void;
+  onClose: () => void;
+}
+
+function ThreadContextMenu({ x, y, threadId, onDelete, onClose }: ContextMenuProps) {
+  useEffect(() => {
+    const handler = () => onClose();
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [onClose]);
+
+  return (
+    <div
+      style={{ position: 'fixed', top: y, left: x, zIndex: 9999 }}
+      className="bg-white border border-slate-200 rounded-lg shadow-xl py-1 min-w-[160px] text-sm"
+      onMouseDown={e => e.stopPropagation()}
+    >
+      <button
+        className="w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-50 transition-colors"
+        onClick={() => { onDelete(threadId); onClose(); }}
+      >
+        Delete thread
+      </button>
+      <button
+        className="w-full text-left px-3 py-1.5 text-slate-400 cursor-not-allowed"
+        onClick={() => alert('Summarize: coming soon')}
+      >
+        Summarize
+      </button>
+      <button
+        className="w-full text-left px-3 py-1.5 text-slate-400 cursor-not-allowed"
+        onClick={() => alert('Compact: coming soon')}
+      >
+        Compact
+      </button>
+    </div>
+  );
+}
+
+// ── DescendantPill ────────────────────────────────────────────────────────
+
 function DescendantPill({
   threadId,
   threads,
@@ -77,6 +124,8 @@ function DescendantPill({
   );
 }
 
+// ── LeadPill ─────────────────────────────────────────────────────────────
+
 interface LeadPillProps {
   lead: ChildLead;
   thread: Thread;
@@ -84,10 +133,12 @@ interface LeadPillProps {
   messages: Record<string, Message>;
   top: number;
   onNavigate: (threadId: string) => void;
+  onDeleteThread: (threadId: string) => void;
 }
 
-function LeadPill({ lead, thread, allThreads, messages, top, onNavigate }: LeadPillProps) {
+function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDeleteThread }: LeadPillProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
   const childMessages = thread.messageIds
     .map(id => messages[id])
@@ -98,12 +149,13 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate }: LeadP
   const firstAiLine = firstAiMsg ? firstAiMsg.content.split('\n')[0] : '';
 
   return (
-    <div style={{ position: 'absolute', top, left: 8, right: 8 }}>
+    <div style={{ position: 'absolute', top, right: 8, width: 184 }}>
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
         className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-left text-sm transition-colors cursor-pointer"
         onClick={() => onNavigate(lead.threadId)}
+        onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -153,6 +205,17 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate }: LeadP
           )}
         </div>
       )}
+
+      {/* Context menu */}
+      {menu && (
+        <ThreadContextMenu
+          x={menu.x}
+          y={menu.y}
+          threadId={lead.threadId}
+          onDelete={onDeleteThread}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }
@@ -160,19 +223,22 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate }: LeadP
 // ── Main component ─────────────────────────────────────────────────────────
 
 export interface GutterColumnProps {
-  scrollContainerRef: React.RefObject<HTMLElement | null>;
+  /** The position:relative wrapper div inside the scroll container */
+  wrapperRef: React.RefObject<HTMLElement | null>;
   activeThread: Thread;
   threads: Record<string, Thread>;
   messages: Record<string, Message>;
   onNavigate: (threadId: string) => void;
+  onDeleteThread: (threadId: string) => void;
 }
 
 export function GutterColumn({
-  scrollContainerRef,
+  wrapperRef,
   activeThread,
   threads,
   messages,
   onNavigate,
+  onDeleteThread,
 }: GutterColumnProps) {
   // BRANCH-08: render nothing when no child threads
   if (activeThread.childThreadIds.length === 0) return null;
@@ -186,13 +252,12 @@ export function GutterColumn({
   const pillPositions = useRef<Record<string, number>>({});
   const [posVersion, setPosVersion] = useState(0);
 
-  function recomputePositions() {
-    const container = scrollContainerRef.current;
-    if (!container) return;
+  const recomputePositions = useCallback(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
     let changed = false;
 
     for (const lead of childLeads) {
-      // Find the messageId that contains this childLead
       const containingMessageId = activeThread.messageIds.find(id =>
         messages[id]?.childLeads.some(cl => cl.threadId === lead.threadId)
       );
@@ -201,7 +266,7 @@ export function GutterColumn({
       const top = measurePillTop(
         containingMessageId,
         String(lead.paragraphIndex),
-        container
+        wrapper
       );
       if (top !== null) {
         const prev = pillPositions.current[lead.threadId];
@@ -213,35 +278,26 @@ export function GutterColumn({
     }
 
     if (changed) setPosVersion(v => v + 1);
-  }
+  }, [wrapperRef, childLeads, activeThread.messageIds, messages]);
 
-  // ResizeObserver — guarded for jsdom (Phase 03-05 pattern)
+  // ResizeObserver — guarded for jsdom, observes the content wrapper
   useEffect(() => {
-    recomputePositions(); // initial measurement
+    recomputePositions();
     if (typeof ResizeObserver === 'undefined') return;
 
     const ro = new ResizeObserver(() => {
       requestAnimationFrame(recomputePositions);
     });
-    if (scrollContainerRef.current) {
-      ro.observe(scrollContainerRef.current);
+    if (wrapperRef.current) {
+      ro.observe(wrapperRef.current);
     }
     return () => ro.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [childLeads.length, posVersion]);
 
-  // Scroll listener to recompute pill positions on scroll
-  useEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    const handleScroll = () => requestAnimationFrame(recomputePositions);
-    el.addEventListener('scroll', handleScroll, { passive: true });
-    return () => el.removeEventListener('scroll', handleScroll);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  // Pills are position:absolute inside the relative wrapper — render as fragment
   return (
-    <div className="relative w-[200px] flex-shrink-0 border-l border-slate-200">
+    <>
       {childLeads.map(lead => {
         const childThread = threads[lead.threadId];
         if (!childThread) return null;
@@ -255,9 +311,10 @@ export function GutterColumn({
             messages={messages}
             top={top}
             onNavigate={onNavigate}
+            onDeleteThread={onDeleteThread}
           />
         );
       })}
-    </div>
+    </>
   );
 }
