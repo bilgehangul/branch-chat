@@ -1,24 +1,10 @@
-import { useState } from 'react';
-import { SignedIn, SignedOut, SignIn, SignOutButton, UserButton } from '@clerk/clerk-react';
+import { useEffect, useState } from 'react';
+import { SignedIn, SignedOut, SignIn, UserButton, useAuth } from '@clerk/clerk-react';
 import { AppShell } from './components/layout/AppShell';
 import { DemoChat } from './components/demo/DemoChat';
+import { useSessionStore } from './store/sessionStore';
 
-// Will be created in Plan 02 — store/sessionStore
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let _useSessionStore: any;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  _useSessionStore = require('./store/sessionStore').useSessionStore;
-} catch {
-  _useSessionStore = () => ({ clearSession: () => {} });
-}
-
-interface AuthModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-function AuthModal({ isOpen, onClose }: AuthModalProps) {
+function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
   return (
     <div
@@ -32,33 +18,22 @@ function AuthModal({ isOpen, onClose }: AuthModalProps) {
   );
 }
 
-function LogoutButton() {
-  const clearSession = _useSessionStore((s: { clearSession: () => void }) => s.clearSession);
-
-  return (
-    <SignOutButton>
-      <button
-        onClick={() => clearSession()}
-        className="px-3 py-1.5 text-sm bg-zinc-700 hover:bg-zinc-600 text-zinc-100 rounded-md transition-colors"
-      >
-        Sign out
-      </button>
-    </SignOutButton>
-  );
-}
-
 export function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isSignedIn } = useAuth();
+  const clearSession = useSessionStore((s) => s.clearSession);
+
+  // Clear Zustand store whenever the user signs out (handles UserButton sign-out)
+  useEffect(() => {
+    if (isSignedIn === false) clearSession();
+  }, [isSignedIn, clearSession]);
 
   return (
     <>
       <SignedIn>
         <div className="flex flex-col h-screen">
           <div className="flex justify-end items-center px-4 h-12 border-b border-zinc-800 bg-zinc-900 absolute top-0 right-0 left-0 z-10">
-            <div className="flex items-center gap-2">
-              <UserButton />
-              <LogoutButton />
-            </div>
+            <UserButton />
           </div>
           <AppShell />
         </div>
