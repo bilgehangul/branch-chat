@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction (completed 2026-03-09)
 - [x] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client (completed 2026-03-09)
-- [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
+- [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
 - [ ] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit
 - [ ] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text
 - [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, Vercel + Render
@@ -84,7 +84,17 @@ Plans:
   3. Child lead pills appear in the right gutter at the vertical position of the anchor paragraph, showing the thread title, message count, and accent color pip
   4. Clicking a child lead pill navigates into that thread; clicking a breadcrumb or the spine navigates back, with scroll position restored to where the user left off
   5. "Go Deeper" is disabled at depth 4 and shows an explanatory tooltip; branching is impossible beyond that level
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Wave 0: test stubs (useTextSelection, ActionBubble, GutterColumn) + dep verification
+- [ ] 04-02-PLAN.md — useTextSelection hook + MarkdownRenderer rehype paragraph ID plugin
+- [ ] 04-03-PLAN.md — System prompt injection for child threads (api/chat.ts + useStreamingChat.ts)
+- [ ] 04-04-PLAN.md — ActionBubble component (3 buttons, fixed positioning, depth limit disable)
+- [ ] 04-05-PLAN.md — Go Deeper wiring: ThreadView integration, accent palette, addChildLead, anchor underline
+- [ ] 04-06-PLAN.md — GutterColumn + lead pills (DOM positioning, ResizeObserver, hover preview)
+- [ ] 04-07-PLAN.md — ContextCard accentColor + MessageList renders it for child threads
+- [ ] 04-08-PLAN.md — Human verification checkpoint (all 12 BRANCH requirements)
 
 ### Phase 5: Inline Annotations
 **Goal**: Users can find sources for any selected paragraph and simplify it in four modes; annotations persist in place, remain re-selectable, and do not break gutter pill positioning
@@ -119,6 +129,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
 | 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
-| 4. Branching | 0/TBD | Not started | - |
+| 4. Branching | 0/8 | Not started | - |
 | 5. Inline Annotations | 0/TBD | Not started | - |
 | 6. Polish and Deployment | 0/TBD | Not started | - |
