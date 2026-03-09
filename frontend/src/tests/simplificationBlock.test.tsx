@@ -22,7 +22,7 @@ describe('SimplificationBlock', () => {
       <SimplificationBlock
         annotation={makeAnnotation()}
         modeLabel="Simpler"
-        onTryAnother={() => {}}
+        onSelectMode={() => {}}
       />
     );
     expect(screen.getByText(/✎ Simplified/)).toBeTruthy();
@@ -34,7 +34,7 @@ describe('SimplificationBlock', () => {
       <SimplificationBlock
         annotation={makeAnnotation()}
         modeLabel="Analogy"
-        onTryAnother={() => {}}
+        onSelectMode={() => {}}
       />
     );
     expect(screen.getByText('This is the simplified version of the text.')).toBeTruthy();
@@ -45,25 +45,42 @@ describe('SimplificationBlock', () => {
       <SimplificationBlock
         annotation={makeAnnotation()}
         modeLabel="Simpler"
-        onTryAnother={() => {}}
+        onSelectMode={() => {}}
       />
     );
     const block = container.firstChild as HTMLElement;
     expect(block.className).toContain('border-l');
   });
 
-  test('"Try another mode" button calls onTryAnother callback', () => {
-    const onTryAnother = vi.fn();
+  test('"Try another mode" button shows mode picker on click', () => {
     render(
       <SimplificationBlock
         annotation={makeAnnotation()}
         modeLabel="Example"
-        onTryAnother={onTryAnother}
+        onSelectMode={() => {}}
       />
     );
     const btn = screen.getByText('Try another mode');
     fireEvent.click(btn);
-    expect(onTryAnother).toHaveBeenCalledTimes(1);
+    // Mode picker should now show 4 mode buttons
+    expect(screen.getByText('Simpler')).toBeTruthy();
+    expect(screen.getByText('Example')).toBeTruthy();
+    expect(screen.getByText('Analogy')).toBeTruthy();
+    expect(screen.getByText('Technical')).toBeTruthy();
+  });
+
+  test('clicking a mode button calls onSelectMode with correct mode key', () => {
+    const onSelectMode = vi.fn();
+    render(
+      <SimplificationBlock
+        annotation={makeAnnotation()}
+        modeLabel="Example"
+        onSelectMode={onSelectMode}
+      />
+    );
+    fireEvent.click(screen.getByText('Try another mode'));
+    fireEvent.click(screen.getByText('Analogy'));
+    expect(onSelectMode).toHaveBeenCalledWith('analogy');
   });
 
   test('"Try another mode" button calls e.preventDefault() on mousedown', () => {
@@ -71,7 +88,7 @@ describe('SimplificationBlock', () => {
       <SimplificationBlock
         annotation={makeAnnotation()}
         modeLabel="Technical"
-        onTryAnother={() => {}}
+        onSelectMode={() => {}}
       />
     );
     const btn = screen.getByText('Try another mode');
