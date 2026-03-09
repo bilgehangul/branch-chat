@@ -27,7 +27,7 @@ describe('App auth routing', () => {
     const { App } = await import('../../src/App');
     render(<App />);
 
-    expect(screen.getByText(/Start a conversation/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ask anything to begin/i)).toBeInTheDocument();
   });
 
   it('Clerk SignIn component is present in the DOM when modal is open', async () => {

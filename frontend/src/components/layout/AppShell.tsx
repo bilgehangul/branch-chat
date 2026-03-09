@@ -1,18 +1,23 @@
+import { ThreadView } from '../thread/ThreadView';
+import { BreadcrumbBar } from './BreadcrumbBar';
+import { SpineStrip } from './SpineStrip';
+
 export function AppShell() {
   return (
-    <div className="flex flex-col h-screen bg-zinc-900 text-zinc-100">
-      <header className="h-12 border-b border-zinc-800 flex items-center px-4">
-        {/* Breadcrumb bar — Phase 3 */}
-      </header>
-      <main className="flex-1 overflow-y-auto">
-        {/* Thread view — Phase 3 */}
-        <div className="max-w-[720px] mx-auto py-8 text-zinc-400 text-sm">
-          Start a conversation...
-        </div>
-      </main>
-      <footer className="border-t border-zinc-800 p-4">
-        {/* Chat input — Phase 3 */}
-      </footer>
+    <div className="flex h-screen bg-zinc-900 text-zinc-100">
+      {/* Left spine strip — renders itself only at depth >= 1 */}
+      <SpineStrip />
+      {/* Main content area */}
+      <div className="flex flex-col flex-1 min-w-0">
+        {/* Breadcrumb bar */}
+        <header className="h-12 border-b border-zinc-800 flex items-center px-4 flex-shrink-0">
+          <BreadcrumbBar />
+        </header>
+        {/* Thread view fills remaining height */}
+        <main className="flex-1 overflow-hidden">
+          <ThreadView />
+        </main>
+      </div>
     </div>
   );
 }

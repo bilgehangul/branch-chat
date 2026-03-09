@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SignedIn, SignedOut, SignIn, UserButton, useAuth } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, SignIn, useAuth } from '@clerk/clerk-react';
 import { AppShell } from './components/layout/AppShell';
 import { DemoChat } from './components/demo/DemoChat';
 import { useSessionStore } from './store/sessionStore';
@@ -20,8 +20,17 @@ function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
 
 export function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, userId } = useAuth();
+  const session = useSessionStore((s) => s.session);
+  const createSession = useSessionStore((s) => s.createSession);
   const clearSession = useSessionStore((s) => s.clearSession);
+
+  // Initialize session when user signs in
+  useEffect(() => {
+    if (isSignedIn && userId && !session) {
+      createSession(userId);
+    }
+  }, [isSignedIn, userId, session, createSession]);
 
   // Clear Zustand store whenever the user signs out (handles UserButton sign-out)
   useEffect(() => {
@@ -31,12 +40,7 @@ export function App() {
   return (
     <>
       <SignedIn>
-        <div className="flex flex-col h-screen">
-          <div className="flex justify-end items-center px-4 h-12 border-b border-zinc-800 bg-zinc-900 absolute top-0 right-0 left-0 z-10">
-            <UserButton />
-          </div>
-          <AppShell />
-        </div>
+        <AppShell />
       </SignedIn>
       <SignedOut>
         <DemoChat onSignInClick={() => setIsModalOpen(true)} />
