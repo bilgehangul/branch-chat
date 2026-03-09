@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 04-04-PLAN.md — ActionBubble component
-last_updated: "2026-03-09T16:16:25.136Z"
+stopped_at: Completed 04-05-PLAN.md — Go Deeper wiring + anchor underline
+last_updated: "2026-03-09T16:19:57.328Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
   percent: 65
 ---
 
@@ -112,6 +112,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 04-branching P02 | 5 | 2 tasks | 5 files |
 | Phase 04-branching P01 | 5 | 2 tasks | 3 files |
 | Phase 04-branching P04 | 2 | 1 tasks | 2 files |
+| Phase 04-branching P05 | 4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -167,6 +168,8 @@ Recent decisions affecting current work:
 - [Phase 04-branching]: Wave 0 stubs use import-free test.todo() — ActionBubble and GutterColumn stubs safe before modules exist
 - [Phase 04-branching]: ActionBubble reads anchorText/paragraphId from props (captured at selection time), NOT window.getSelection() at click time — prevents collapsed-selection bug
 - [Phase 04-branching]: All ActionBubble buttons call onMouseDown preventDefault to prevent focus steal that collapses browser selection before click fires
+- [Phase 04-branching]: ACCENT_PALETTE and getNextAccentColor extracted to src/constants/theme.ts — shared between ThreadView and tests
+- [Phase 04-branching]: bubble.messageId used directly for addChildLead — no last-AI-message heuristic
 
 ### Pending Todos
 
@@ -179,6 +182,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T16:16:25.132Z
-Stopped at: Completed 04-04-PLAN.md — ActionBubble component
+Last session: 2026-03-09T16:19:57.323Z
+Stopped at: Completed 04-05-PLAN.md — Go Deeper wiring + anchor underline
 Resume file: None
