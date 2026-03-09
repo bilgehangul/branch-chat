@@ -44,10 +44,15 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can sign up with email/password and be redirected to the chat interface
   2. User can sign in with Google OAuth and be redirected to the chat interface
-  3. Unauthenticated user can access the full chat interface without signing in
-  4. Logging out clears all in-memory state (thread tree, messages, annotations) and returns to the auth state
-  5. The Zustand store exposes a flat `Record<id, Thread>` and `Record<id, Message>` shape with all action signatures defined (even if stubs)
-**Plans**: TBD
+  3. Unauthenticated user sees a read-only demo chat; must sign in to interact (AUTH-03 revised per 02-CONTEXT.md)
+  4. Logging out clears all in-memory state (thread tree, messages, annotations) and returns to the demo chat view
+  5. The Zustand store exposes a flat `Record<id, Thread>` and `Record<id, Message>` shape with all actions fully implemented (not stubs)
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Vite scaffold, Tailwind v4, Clerk modal auth, DemoChat guest view, AppShell skeleton, Wave 0 test stubs
+- [ ] 02-02-PLAN.md — Zustand store (all 9 actions), frontend types, selectors (currentThread, threadAncestry, isAtMaxDepth)
+- [ ] 02-03-PLAN.md — SSE client (fetch+ReadableStream+remainder buffer), API client wrapper, simplify/search stubs, human-verify checkpoint
 
 ### Phase 3: Core Thread UI
 **Goal**: Users can have a complete multi-turn conversation in the root thread with streaming AI responses, and all navigation chrome is present (even if non-functional beyond root)
@@ -104,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
-| 2. Frontend Foundation | 0/TBD | Not started | - |
+| 2. Frontend Foundation | 0/3 | Not started | - |
 | 3. Core Thread UI | 0/TBD | Not started | - |
 | 4. Branching | 0/TBD | Not started | - |
 | 5. Inline Annotations | 0/TBD | Not started | - |
