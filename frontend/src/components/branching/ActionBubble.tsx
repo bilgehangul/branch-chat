@@ -46,12 +46,12 @@ export function ActionBubble({ bubble, isAtMaxDepth, onGoDeeper, onDismiss }: Ac
   const goDeeperDisabledClass =
     'flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium opacity-50 cursor-not-allowed';
   const secondaryClass =
-    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 text-zinc-400 text-sm opacity-60 cursor-not-allowed';
+    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 bg-slate-100 text-slate-400 text-sm opacity-60 cursor-not-allowed';
 
   return (
     <div
       ref={bubbleRef}
-      className="fixed z-50 flex flex-col gap-1 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl p-2"
+      className="fixed z-50 flex flex-col gap-1 bg-white border border-slate-200 rounded-xl shadow-lg p-2"
       style={{
         top: bubble.top,
         left: bubble.left,

@@ -63,21 +63,21 @@ function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
-        className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 text-left text-sm transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-left text-sm transition-colors cursor-pointer"
         onClick={() => onNavigate(lead.threadId)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Directional arrow */}
-        <span className="text-zinc-400 flex-shrink-0">→</span>
+        <span className="text-slate-400 flex-shrink-0">→</span>
 
         {/* Thread title (max 32 chars) */}
-        <span className="text-zinc-200 truncate flex-1 min-w-0">
+        <span className="text-slate-800 truncate flex-1 min-w-0">
           {thread.title.slice(0, 32)}
         </span>
 
         {/* Message count badge */}
-        <span className="text-xs text-zinc-500 flex-shrink-0">
+        <span className="text-xs text-slate-400 flex-shrink-0">
           {thread.messageIds.length}
         </span>
 
@@ -92,24 +92,24 @@ function LeadPill({ lead, thread, messages, top, onNavigate }: LeadPillProps) {
       {/* Preview card on hover */}
       {isHovered && (
         <div
-          className="absolute right-0 top-full mt-1 z-50 w-64 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl p-3 text-xs text-zinc-300 space-y-2"
+          className="absolute right-0 top-full mt-1 z-50 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-xs text-slate-700 space-y-2"
           data-testid="preview-card"
         >
           {/* Anchor text */}
-          <div className="text-zinc-400 italic truncate">{lead.anchorText}</div>
+          <div className="text-slate-500 italic truncate">{lead.anchorText}</div>
 
           {/* First user message */}
           {firstUserMsg && (
-            <div className="text-zinc-300 truncate">
-              <span className="text-zinc-500">You: </span>
+            <div className="text-slate-700 truncate">
+              <span className="text-slate-500">You: </span>
               {firstUserMsg.content}
             </div>
           )}
 
           {/* First AI line */}
           {firstAiLine && (
-            <div className="text-zinc-400 truncate">
-              <span className="text-zinc-500">AI: </span>
+            <div className="text-slate-500 truncate">
+              <span className="text-slate-500">AI: </span>
               {firstAiLine}
             </div>
           )}
@@ -203,7 +203,7 @@ export function GutterColumn({
   }, []);
 
   return (
-    <div className="relative w-[200px] flex-shrink-0 border-l border-zinc-800">
+    <div className="relative w-[200px] flex-shrink-0 border-l border-slate-200">
       {childLeads.map(lead => {
         const childThread = threads[lead.threadId];
         if (!childThread) return null;
