@@ -106,7 +106,7 @@ export function ActionBubble({
           <button
             className={secondaryClass}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => onFindSources(bubble.anchorText, bubble.paragraphId, bubble.messageId)}
+            onClick={() => { onFindSources(bubble.anchorText, bubble.paragraphId, bubble.messageId); onDismiss(); }}
           >
             &#128269; Find Sources
           </button>

@@ -101,18 +101,28 @@ export function ThreadView() {
       }
 
       const { results, citationNote } = response.data;
-      const annotation: Annotation = {
-        id: crypto.randomUUID(),
-        type: 'source',
-        targetText: anchorText,
-        paragraphIndex: Number(paragraphId),
-        originalText: anchorText,
-        replacementText: null,
-        citationNote: citationNote ?? null,
-        sources: results.map(toSourceResult),
-        isShowingOriginal: false,
-      };
-      addAnnotation(messageId, annotation);
+      const existing = useSessionStore.getState().messages[messageId]?.annotations.find(
+        a => a.type === 'source' && a.paragraphIndex === Number(paragraphId)
+      );
+      if (existing) {
+        updateAnnotation(messageId, existing.id, {
+          sources: results.map(toSourceResult),
+          citationNote: citationNote ?? null,
+          targetText: anchorText,
+        });
+      } else {
+        addAnnotation(messageId, {
+          id: crypto.randomUUID(),
+          type: 'source',
+          targetText: anchorText,
+          paragraphIndex: Number(paragraphId),
+          originalText: anchorText,
+          replacementText: null,
+          citationNote: citationNote ?? null,
+          sources: results.map(toSourceResult),
+          isShowingOriginal: false,
+        });
+      }
       setPendingAnnotation(null);
     };
 

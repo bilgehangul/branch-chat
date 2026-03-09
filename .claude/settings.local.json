@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "WebSearch",
+      "Bash(npx jest:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(git:*)",
+      "Bash(npx vitest:*)",
+      "Bash(sed:*)",
+      "Skill(gsd:discuss-phase)",
+      "Bash(npm test:*)",
+      "Bash(npm run:*)",
+      "Skill(gsd:verify-work)"
+    ]
+  }
+}
