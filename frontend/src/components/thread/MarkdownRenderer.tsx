@@ -122,19 +122,19 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
               })}
 
               {isPending && pendingAnnotation && (
-                <div className="not-prose mb-2 rounded-lg border border-zinc-700 bg-zinc-800 p-3 animate-pulse">
-                  <div className="h-3 bg-zinc-600 rounded w-1/3 mb-3" />
+                <div className="not-prose mb-2 rounded-lg border border-slate-200 bg-slate-50 p-3 animate-pulse">
+                  <div className="h-3 bg-slate-300 rounded w-1/3 mb-3" />
                   {pendingAnnotation.type === 'source' ? (
                     <>
-                      <div className="h-3 bg-zinc-600 rounded w-full mb-2" />
-                      <div className="h-3 bg-zinc-600 rounded w-4/5 mb-2" />
-                      <hr className="border-zinc-700 my-2" />
-                      <div className="h-3 bg-zinc-600 rounded w-2/3" />
+                      <div className="h-3 bg-slate-300 rounded w-full mb-2" />
+                      <div className="h-3 bg-slate-300 rounded w-4/5 mb-2" />
+                      <hr className="border-slate-200 my-2" />
+                      <div className="h-3 bg-slate-300 rounded w-2/3" />
                     </>
                   ) : (
                     <>
-                      <div className="h-3 bg-zinc-600 rounded w-3/4 mb-2" />
-                      <div className="h-10 bg-zinc-600 rounded w-full" />
+                      <div className="h-3 bg-slate-300 rounded w-3/4 mb-2" />
+                      <div className="h-10 bg-slate-300 rounded w-full" />
                     </>
                   )}
                 </div>
@@ -142,14 +142,14 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
 
               {isError && errorAnnotation && (
                 <div
-                  className="not-prose mb-2 rounded-lg border border-red-800 bg-red-950 text-sm px-3 py-2 flex items-center justify-between"
+                  className="not-prose mb-2 rounded-lg border border-red-200 bg-red-50 text-sm px-3 py-2 flex items-center justify-between"
                   data-testid="annotation-error-block"
                 >
-                  <span className="text-red-300 text-xs">
+                  <span className="text-red-600 text-xs">
                     {errorAnnotation.type === 'source' ? "Couldn't load sources" : "Couldn't simplify text"}
                   </span>
                   <button
-                    className="text-xs text-red-400 hover:text-red-200 underline ml-2"
+                    className="text-xs text-red-500 hover:text-red-700 underline ml-2"
                     onClick={errorAnnotation.retryFn}
                     data-testid="annotation-retry-btn"
                   >

@@ -24,7 +24,14 @@ const SIMPLIFY_PROMPTS: Record<string, string> = {
 
 function isRetryableError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err);
-  return msg.includes('503') || msg.includes('overloaded') || msg.includes('UNAVAILABLE') || msg.includes('quota');
+  return (
+    msg.includes('503') ||
+    msg.includes('429') ||
+    msg.includes('overloaded') ||
+    msg.includes('UNAVAILABLE') ||
+    msg.includes('RESOURCE_EXHAUSTED') ||
+    msg.includes('quota')
+  );
 }
 
 export class GeminiProvider implements AIProvider {

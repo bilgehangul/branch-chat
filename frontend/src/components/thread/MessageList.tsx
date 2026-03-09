@@ -14,8 +14,8 @@ interface MessageListProps {
     paragraphId: string,
     mode: SimplifyMode
   ) => void;
-  pendingAnnotation?: { type: 'source' | 'simplification'; messageId: string } | null;
-  errorAnnotation?: { type: 'source' | 'simplification'; messageId: string; retryFn: () => void } | null;
+  pendingAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string } | null;
+  errorAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string; retryFn: () => void } | null;
 }
 
 export function MessageList({
