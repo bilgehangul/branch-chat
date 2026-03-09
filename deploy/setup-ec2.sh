@@ -8,10 +8,8 @@ APP_DIR="/var/www/branch-chat"
 REPO="https://github.com/bilgehangul/branch-chat.git"
 
 echo "==> Installing Node 20, Nginx, Git, pm2"
-curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -   # Amazon Linux
-# For Ubuntu use: curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
-sudo yum install -y nodejs nginx git   # Amazon Linux
-# For Ubuntu use: sudo apt-get install -y nodejs nginx git
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+sudo apt-get install -y nodejs nginx git
 
 sudo npm install -g pm2
 
