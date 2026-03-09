@@ -1,7 +1,7 @@
 // backend/src/middleware/rateLimiter.ts
 // Per-user rate limiting using express-rate-limit.
 // keyGenerator: Clerk userId for authenticated requests, req.ip for guests.
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import { getAuth } from '@clerk/express';
 
 export const apiRateLimiter = rateLimit({
@@ -9,7 +9,8 @@ export const apiRateLimiter = rateLimit({
   limit: 100,                // 100 requests per 15 min per user/IP
   keyGenerator: (req) => {
     const { userId } = getAuth(req);
-    return userId ?? (req.ip ?? 'anonymous');
+    const ip = req.ip ?? 'anonymous';
+    return userId ?? (ip === 'anonymous' ? 'anonymous' : ipKeyGenerator(ip));
   },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
