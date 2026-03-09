@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 04-07-PLAN.md — ContextCard accentColor + MessageList integration
-last_updated: "2026-03-09T16:22:37.398Z"
+stopped_at: Completed 04-06-PLAN.md — GutterColumn lead pills + hover preview + ThreadView integration
+last_updated: "2026-03-09T16:24:57.241Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 19
   percent: 65
 ---
 
@@ -114,6 +114,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 04-branching P04 | 2 | 1 tasks | 2 files |
 | Phase 04-branching P05 | 4 | 2 tasks | 5 files |
 | Phase 04-branching P07 | 2 | 1 tasks | 3 files |
+| Phase 04-branching P06 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -173,6 +174,8 @@ Recent decisions affecting current work:
 - [Phase 04-branching]: bubble.messageId used directly for addChildLead — no last-AI-message heuristic
 - [Phase 04-branching]: ContextCard accepts full Thread prop (not individual props) — component owns its own depth/null guard
 - [Phase 04-branching]: MessageList renders ContextCard unconditionally; ContextCard returns null for depth 0 — single responsibility
+- [Phase 04-branching]: DOM pill positions stored in useRef (never Zustand) — per established Phase 04 planning decision
+- [Phase 04-branching]: posVersion counter state triggers re-render only when pill positions change >1px — avoids ResizeObserver infinite loop
 
 ### Pending Todos
 
@@ -185,6 +188,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T16:22:26.759Z
-Stopped at: Completed 04-07-PLAN.md — ContextCard accentColor + MessageList integration
+Last session: 2026-03-09T16:24:51.277Z
+Stopped at: Completed 04-06-PLAN.md — GutterColumn lead pills + hover preview + ThreadView integration
 Resume file: None
