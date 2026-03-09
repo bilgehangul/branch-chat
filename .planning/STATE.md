@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-01-PLAN.md — Wave 0 test scaffold for Phase 5 inline annotations
-last_updated: "2026-03-09T18:50:55.177Z"
+stopped_at: Completed 05-02-PLAN.md — API shape fixes and updateAnnotation store action
+last_updated: "2026-03-09T18:56:54.109Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 27
-  completed_plans: 20
+  completed_plans: 21
 ---
 
 ---
@@ -131,6 +131,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 04-branching P07 | 2 | 1 tasks | 3 files |
 | Phase 04-branching P06 | 2 | 2 tasks | 3 files |
 | Phase 05-inline-annotations P01 | 3 | 2 tasks | 6 files |
+| Phase 05-inline-annotations P02 | 4 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -193,6 +194,9 @@ Recent decisions affecting current work:
 - [Phase 04-branching]: DOM pill positions stored in useRef (never Zustand) — per established Phase 04 planning decision
 - [Phase 04-branching]: posVersion counter state triggers re-render only when pill positions change >1px — avoids ResizeObserver infinite loop
 - [Phase 05-inline-annotations]: Wave 0 stubs use import-free test.todo() — no component imports before modules exist, same pattern as Phase 04 Wave 0
+- [Phase 05-inline-annotations]: OpenAIProvider stub implements generateCitationNote throwing NotImplementedError — satisfies interface contract without real implementation
+- [Phase 05-inline-annotations]: Citation note failure in find-sources is non-fatal — empty string fallback preserves search results
+- [Phase 05-inline-annotations]: toSourceResult() exported from search.ts — converts backend SearchResult to frontend SourceResult when constructing Annotation
 
 ### Pending Todos
 
@@ -212,6 +216,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T18:50:55.174Z
-Stopped at: Completed 05-01-PLAN.md — Wave 0 test scaffold for Phase 5 inline annotations
+Last session: 2026-03-09T18:56:54.105Z
+Stopped at: Completed 05-02-PLAN.md — API shape fixes and updateAnnotation store action
 Resume file: None
