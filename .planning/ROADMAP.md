@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client (completed 2026-03-09)
 - [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
-- [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
+- [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
 - [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, Vercel + Render
 
 ## Phase Details
@@ -126,7 +126,15 @@ Plans:
   2. The frontend is live on Vercel and the backend is live on Render; both deploy automatically from the main branch
   3. The Playwright E2E suite passes for all 6 core flows: auth, root chat with streaming, Go Deeper branching, Find Sources, Simplify, and multi-level navigation
   4. A `.env.example` file documents every required environment variable with a description
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Playwright scaffold: install, playwright.config.ts, fixtures, 6 spec stubs (Wave 0)
+- [ ] 06-02-PLAN.md — Theme system: FOUC script, ThemeContext, ThemeToggle, light theme CSS, accent palette adaptation
+- [ ] 06-03-PLAN.md — Error states: NetworkBanner, AuthExpiredBanner, RateLimitBanner, mid-stream failure + retry
+- [ ] 06-04-PLAN.md — Deployment config: .env.example, render.yaml, vercel.json, CI workflow, VITE_API_BASE_URL fix
+- [ ] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
+- [ ] 06-06-PLAN.md — Deployment checkpoint: Vercel + Render live, CORS wired (depends on 06-04, 06-05)
 
 ## Progress
 
@@ -140,4 +148,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
 | 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
-| 6. Polish and Deployment | 0/TBD | Not started | - |
+| 6. Polish and Deployment | 0/6 | Not started | - |
