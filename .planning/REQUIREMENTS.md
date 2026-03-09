@@ -69,10 +69,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Deployment
 
-- [ ] **DEPLOY-01**: Frontend is deployed to Vercel with auto-deploy from the main branch
-- [ ] **DEPLOY-02**: Backend is deployed to Render (Node.js/Express proxy)
-- [ ] **DEPLOY-03**: A `.env.example` file in the repository root documents every required environment variable with a description
-- [ ] **DEPLOY-04**: An E2E test suite (Playwright) covers the 6 core user flows: auth, root chat, Go Deeper, Find Sources, Simplify, and multi-level navigation
+- [x] **DEPLOY-01**: Frontend is deployed to Vercel with auto-deploy from the main branch
+- [x] **DEPLOY-02**: Backend is deployed to Render (Node.js/Express proxy)
+- [x] **DEPLOY-03**: A `.env.example` file in the repository root documents every required environment variable with a description
+- [x] **DEPLOY-04**: An E2E test suite (Playwright) covers the 6 core user flows: auth, root chat, Go Deeper, Find Sources, Simplify, and multi-level navigation
 
 ## v2 Requirements
 
@@ -160,10 +160,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-02 | Phase 6 | Pending |
 | UI-03 | Phase 1 | Complete |
 | UI-04 | Phase 1 | Complete |
-| DEPLOY-01 | Phase 6 | Pending |
-| DEPLOY-02 | Phase 6 | Pending |
-| DEPLOY-03 | Phase 6 | Pending |
-| DEPLOY-04 | Phase 6 | Pending |
+| DEPLOY-01 | Phase 6 | Complete |
+| DEPLOY-02 | Phase 6 | Complete |
+| DEPLOY-03 | Phase 6 | Complete |
+| DEPLOY-04 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 46 total

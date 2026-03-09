@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 6 context gathered
-last_updated: "2026-03-09T20:38:25.384Z"
+stopped_at: "Completed 06-01-PLAN.md — Playwright E2E scaffold: config + 3 fixtures + 6 spec stubs"
+last_updated: "2026-03-09T21:10:40.319Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 27
-  completed_plans: 27
+  total_plans: 33
+  completed_plans: 29
 ---
 
 ---
@@ -137,6 +137,8 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 05-inline-annotations P05 | 2 | 1 tasks | 2 files |
 | Phase 05-inline-annotations P06 | 5 | 2 tasks | 7 files |
 | Phase 05-inline-annotations P07 | 2 | 1 tasks | 0 files |
+| Phase 06-polish-and-deployment P04 | 4 | 2 tasks | 6 files |
+| Phase 06-polish-and-deployment P01 | 3 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -211,6 +213,10 @@ Recent decisions affecting current work:
 - [Phase 05-06]: SimplificationBlock onSelectMode with mode picker; mode key stored in annotation.originalText
 - [Phase 05-06]: doFetch closure captures retry logic — retryFn calls same closure without rebinding params
 - [Phase 05-inline-annotations]: All 8 INLINE requirements verified by human in live browser before Phase 5 declared complete
+- [Phase 06-04]: frontend/vercel.json placed inside frontend/ subdir — Vercel Root Directory set to frontend/ in dashboard
+- [Phase 06-04]: VITE_API_BASE_URL defaults to empty string in dev — Vite proxy handles /api routing transparently
+- [Phase 06-04]: render.yaml CLIENT_ORIGIN uses sync:false — must be set in Render dashboard after first Vercel deploy
+- [Phase 06-01]: test.skip() used for all stubs (not test.todo()) — allows fixture imports at module scope while keeping tests skipped
 
 ### Pending Todos
 
@@ -230,6 +236,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T20:38:25.380Z
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-polish-and-deployment/06-CONTEXT.md
+Last session: 2026-03-09T21:10:40.315Z
+Stopped at: Completed 06-01-PLAN.md — Playwright E2E scaffold: config + 3 fixtures + 6 spec stubs
+Resume file: None
