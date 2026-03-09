@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 05-06-PLAN.md — Full annotation integration flow (Find Sources, Simplify, retry, persistence)
-last_updated: "2026-03-09T19:17:26.564Z"
+stopped_at: "Completed 05-07-PLAN.md — Human verification checkpoint for all 8 INLINE requirements (vitest: 152 tests green)"
+last_updated: "2026-03-09T19:19:31.009Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 27
-  completed_plans: 25
+  completed_plans: 26
 ---
 
 ---
@@ -136,6 +136,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 05-inline-annotations P04 | 2 | 2 tasks | 3 files |
 | Phase 05-inline-annotations P05 | 2 | 1 tasks | 2 files |
 | Phase 05-inline-annotations P06 | 5 | 2 tasks | 7 files |
+| Phase 05-inline-annotations P07 | 2 | 1 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -209,6 +210,7 @@ Recent decisions affecting current work:
 - [Phase 05-06]: pendingAnnotation/errorAnnotation as local useState in ThreadView (ephemeral, not Zustand)
 - [Phase 05-06]: SimplificationBlock onSelectMode with mode picker; mode key stored in annotation.originalText
 - [Phase 05-06]: doFetch closure captures retry logic — retryFn calls same closure without rebinding params
+- [Phase 05-inline-annotations]: All 8 INLINE requirements verified by human in live browser before Phase 5 declared complete
 
 ### Pending Todos
 
@@ -228,6 +230,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T19:17:26.561Z
-Stopped at: Completed 05-06-PLAN.md — Full annotation integration flow (Find Sources, Simplify, retry, persistence)
+Last session: 2026-03-09T19:19:22.735Z
+Stopped at: Completed 05-07-PLAN.md — Human verification checkpoint for all 8 INLINE requirements (vitest: 152 tests green)
 Resume file: None
