@@ -2,6 +2,7 @@ import { UserButton } from '@clerk/clerk-react';
 import { ThreadView } from '../thread/ThreadView';
 import { BreadcrumbBar } from './BreadcrumbBar';
 import { AncestorPeekPanel } from './AncestorPeekPanel';
+import { ThemeToggle } from '../ui/ThemeToggle';
 import { useSessionStore } from '../../store/sessionStore';
 import { selectThreadAncestry } from '../../store/selectors';
 import { NetworkBanner } from '../ui/NetworkBanner';
@@ -21,7 +22,7 @@ export function AppShell() {
   const ancestors = ancestry.slice(0, -1);
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900">
+    <div className="flex h-screen bg-stone-50 dark:bg-zinc-900 text-stone-900 dark:text-slate-100">
       <NetworkBanner />
       <AuthExpiredBanner />
       {/* Ancestor peek panels — oldest to newest, left to right */}
@@ -50,10 +51,11 @@ export function AppShell() {
       {/* Main content area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header / breadcrumb bar */}
-        <header className="h-12 bg-white border-b border-slate-200 flex items-center px-4 flex-shrink-0 gap-2">
+        <header className="h-12 bg-white dark:bg-zinc-900 border-b border-stone-200 dark:border-zinc-700 flex items-center px-4 flex-shrink-0 gap-2">
           <div className="flex-1 min-w-0">
             <BreadcrumbBar />
           </div>
+          <ThemeToggle />
           <UserButton />
         </header>
         {/* Thread view fills remaining height */}
