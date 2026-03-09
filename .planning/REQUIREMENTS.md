@@ -9,9 +9,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up and sign in with email/password via Clerk
-- [ ] **AUTH-02**: User can sign in with Google OAuth via Clerk
-- [ ] **AUTH-03**: Login is optional — unauthenticated users can access and use the full chat interface
+- [x] **AUTH-01**: User can sign up and sign in with email/password via Clerk
+- [x] **AUTH-02**: User can sign in with Google OAuth via Clerk
+- [x] **AUTH-03**: Login is optional — unauthenticated users can access and use the full chat interface
 - [x] **AUTH-04**: If authenticated, every backend API call validates the Clerk JWT before processing
 - [ ] **AUTH-05**: Logout clears all in-memory session state (thread tree, messages, annotations)
 
@@ -118,9 +118,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
+| AUTH-02 | Phase 2 | Complete |
+| AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 2 | Pending |
 | CHAT-01 | Phase 3 | Pending |

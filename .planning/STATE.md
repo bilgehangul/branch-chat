@@ -3,11 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
+stopped_at: Phase 02-01 complete — Vite scaffold, Clerk auth, DemoChat, AppShell skeleton, 7 tests green
+last_updated: "2026-03-09T12:29:59.579Z"
+last_activity: 2026-03-09 — Plan 01-03 complete (Express server wired, all 14 tests pass, human-verify approved)
+progress:
+  total_phases: 6
+  completed_phases: 1
+  total_plans: 6
+  completed_plans: 4
+  percent: 67
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: completed
 stopped_at: Phase 01 complete — all 3 plans done, backend proxy shell verified end-to-end
 last_updated: "2026-03-09T11:23:36.233Z"
 last_activity: 2026-03-09 — Plan 01-03 complete (Express server wired, all 14 tests pass, human-verify approved)
 progress:
-  total_phases: 6
+  [███████░░░] 67%
   completed_phases: 1
   total_plans: 3
   completed_plans: 3
@@ -52,6 +68,7 @@ Progress: [██████████] 100% (Phase 01)
 *Updated after each plan completion*
 | Phase 01-backend-proxy-shell P02 | 4 min | 2 tasks | 8 files |
 | Phase 01-backend-proxy-shell P03 | 3 min | 2 tasks | 10 files |
+| Phase 02-frontend-foundation P01 | 6 min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -75,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase 01-03]: SSE flushHeaders() called before aiProvider.streamChat() — streaming headers must reach client before async work begins
 - [Phase 01-03]: @types/cors added as devDependency — cors package had no bundled types (Rule 3 auto-fix)
 - [Phase 01-03]: ipKeyGenerator(ip: string) accepts IP string not Request object — pass req.ip, not req (Rule 1 bug fix post-checkpoint)
+- [Phase 02-01]: Clerk modal auth with routing=hash — no /sign-in route; URL stays unchanged on modal open
+- [Phase 02-01]: Global Clerk mock uses React.createElement in .ts setup file (not JSX) to avoid esbuild parse error
+- [Phase 02-01]: tsconfig.app.json rootDir=../.. so shared/types.ts resolves across frontend/backend boundary
 
 ### Pending Todos
 
@@ -87,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T12:00:00.000Z
-Stopped at: Phase 01 complete — all 3 plans done, backend proxy shell verified end-to-end
+Last session: 2026-03-09T12:29:59.576Z
+Stopped at: Phase 02-01 complete — Vite scaffold, Clerk auth, DemoChat, AppShell skeleton, 7 tests green
 Resume file: None
