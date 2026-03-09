@@ -59,6 +59,17 @@ export function ThreadView() {
   // Text selection bubble state
   const { bubble, clearBubble } = useTextSelection(scrollRef);
 
+  // Stub handlers for Phase 5 annotation actions — real implementation in plan 05-06
+  function handleFindSources(anchorText: string, paragraphId: string, messageId: string) {
+    // TODO 05-06: call searchSources(), manage loading/error/retry state, dispatch addAnnotation
+    console.log('[handleFindSources] anchorText:', anchorText, 'paragraphId:', paragraphId, 'messageId:', messageId);
+  }
+
+  function handleSimplify(anchorText: string, paragraphId: string, messageId: string, mode: string) {
+    // TODO 05-06: call simplifyText(), manage loading/error/retry state, dispatch addAnnotation/updateAnnotation
+    console.log('[handleSimplify] mode:', mode, 'anchorText:', anchorText, 'messageId:', messageId);
+  }
+
   // Handle Go Deeper click: create child thread using bubble.messageId directly
   // IMPORTANT: bubble.messageId is used directly — NOT the last-AI-message heuristic.
   function handleGoDeeper() {
@@ -212,6 +223,8 @@ export function ThreadView() {
           bubble={bubble}
           isAtMaxDepth={isAtMaxDepth(activeThread)}
           onGoDeeper={handleGoDeeper}
+          onFindSources={handleFindSources}
+          onSimplify={handleSimplify}
           onDismiss={clearBubble}
         />
       )}

@@ -5,6 +5,7 @@ import { ActionBubble } from '../../src/components/branching/ActionBubble';
 const defaultBubble = {
   anchorText: 'selected text',
   paragraphId: '3',
+  messageId: 'msg-1',
   top: 200,
   left: 400,
 };
@@ -13,6 +14,8 @@ const defaultProps = {
   bubble: defaultBubble,
   isAtMaxDepth: false,
   onGoDeeper: vi.fn(),
+  onFindSources: vi.fn(),
+  onSimplify: vi.fn(),
   onDismiss: vi.fn(),
 };
 
@@ -57,16 +60,16 @@ describe('ActionBubble', () => {
     expect(btn.className).toContain('bg-zinc-700');
   });
 
-  it('Find Sources button is disabled (Phase 5 not wired)', () => {
+  it('Find Sources button is enabled (Phase 5 wired)', () => {
     render(<ActionBubble {...defaultProps} />);
     const btn = screen.getByRole('button', { name: /find sources/i });
-    expect(btn).toBeDisabled();
+    expect(btn).not.toBeDisabled();
   });
 
-  it('Simplify button is disabled (Phase 5 not wired)', () => {
+  it('Simplify button is enabled (Phase 5 wired)', () => {
     render(<ActionBubble {...defaultProps} />);
     const btn = screen.getByRole('button', { name: /simplify/i });
-    expect(btn).toBeDisabled();
+    expect(btn).not.toBeDisabled();
   });
 
   // BRANCH-12: depth limit
