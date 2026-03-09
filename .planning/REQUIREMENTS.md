@@ -29,7 +29,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **BRANCH-01**: User can click and drag to select up to one paragraph of text in any AI response; selection is capped to the paragraph where the drag began
 - [ ] **BRANCH-02**: A floating action bubble appears within 100ms of releasing the mouse after a valid selection, positioned 8px above the top-right corner of the selection
 - [ ] **BRANCH-03**: The action bubble contains three actions: Go Deeper, Find Sources, Simplify
-- [ ] **BRANCH-04**: User can click "Go Deeper" to create a child thread anchored to the selected paragraph; the new thread opens with a slide-right transition
+- [x] **BRANCH-04**: User can click "Go Deeper" to create a child thread anchored to the selected paragraph; the new thread opens with a slide-right transition
 - [ ] **BRANCH-05**: Each new child thread is auto-assigned an accent color from the 8-color palette (cycling in creation order)
 - [ ] **BRANCH-06**: Each new child thread is auto-titled using a client-side heuristic (first 6 words of anchor text)
 - [ ] **BRANCH-07**: The anchor paragraph receives a persistent colored underline in the thread's accent color
@@ -132,7 +132,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BRANCH-01 | Phase 4 | Pending |
 | BRANCH-02 | Phase 4 | Pending |
 | BRANCH-03 | Phase 4 | Pending |
-| BRANCH-04 | Phase 4 | Pending |
+| BRANCH-04 | Phase 4 | Complete |
 | BRANCH-05 | Phase 4 | Pending |
 | BRANCH-06 | Phase 4 | Pending |
 | BRANCH-07 | Phase 4 | Pending |

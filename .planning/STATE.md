@@ -3,11 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 03-06-PLAN.md — Phase 3 COMPLETE, human verification approved
-last_updated: "2026-03-09T15:27:28.416Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-09T16:09:20.211Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 6
+  completed_phases: 3
+  total_plans: 20
+  completed_plans: 13
+  percent: 65
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: in_progress
+stopped_at: Phase 4 context gathered
+last_updated: "2026-03-09T15:37:05.360Z"
+last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
+progress:
+  [███████░░░] 65%
   completed_phases: 3
   total_plans: 12
   completed_plans: 12
@@ -92,6 +108,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 03-core-thread-ui P04 | 3 | 2 tasks | 7 files |
 | Phase 03-core-thread-ui P05 | 3 | 2 tasks | 4 files |
 | Phase 03-core-thread-ui P06 | 8 | 1 tasks | 7 files |
+| Phase 04-branching P03 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -139,6 +156,8 @@ Recent decisions affecting current work:
 - [Phase 03-05]: SpineStrip only calls setActiveThread — ThreadView cleanup useEffect handles scroll save, no scrollRef prop threading needed
 - [Phase 03-06]: tsconfig.app.json types array blocks @types/* autodiscovery — must explicitly add react-syntax-highlighter when using deep ESM sub-path imports
 - [Phase 03-06]: react-markdown v10 code component prop: use HTMLAttributes<HTMLElement> with optional node, not custom CodeProps with index signature
+- [Phase 04-branching]: Frontend parameter named systemInstruction; serialized as systemPrompt in JSON body to match existing backend req.body.systemPrompt
+- [Phase 04-branching]: buildChildSystemPrompt exported as pure function from useStreamingChat.ts for direct unit testing without hook harness
 
 ### Pending Todos
 
@@ -151,6 +170,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-09T15:30:00.000Z
-Stopped at: Completed 03-06-PLAN.md — Phase 3 COMPLETE, human verification approved
+Last session: 2026-03-09T16:09:11.734Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None

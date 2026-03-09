@@ -129,6 +129,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
 | 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
-| 4. Branching | 0/8 | Not started | - |
+| 4. Branching | 1/8 | In Progress|  |
 | 5. Inline Annotations | 0/TBD | Not started | - |
 | 6. Polish and Deployment | 0/TBD | Not started | - |
