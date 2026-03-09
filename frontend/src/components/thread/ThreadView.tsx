@@ -5,6 +5,7 @@ import { useStreamingChat } from '../../hooks/useStreamingChat';
 import { useTextSelection } from '../../hooks/useTextSelection';
 import { ChatInput } from '../input/ChatInput';
 import { MessageList } from './MessageList';
+import { ContextCard } from './ContextCard';
 import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
@@ -170,9 +171,13 @@ export function ThreadView() {
               orderedMessages.length > 0 ? (
                 <MessageList messages={orderedMessages} thread={activeThread} />
               ) : (
-                <div className="flex items-center justify-center h-full min-h-[200px]">
-                  <p className="text-slate-400 text-sm">Ask anything to begin</p>
-                </div>
+                <>
+                  {/* Always show anchor context for child threads even before first message */}
+                  <ContextCard thread={activeThread} />
+                  <div className="flex items-center justify-center h-full min-h-[200px]">
+                    <p className="text-slate-400 text-sm">Ask anything to begin</p>
+                  </div>
+                </>
               )
             ) : (
               <div className="flex items-center justify-center h-full min-h-[200px]">
