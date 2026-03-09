@@ -102,11 +102,20 @@ Plans:
 **Requirements**: INLINE-01, INLINE-02, INLINE-03, INLINE-04, INLINE-05, INLINE-06, INLINE-07, INLINE-08
 **Success Criteria** (what must be TRUE):
   1. User can click "Find Sources" and see a citation block injected below the paragraph with top 3 Tavily results (title, domain, link) and a Gemini-generated note; the block is collapsible
-  2. User can click "Simplify", choose one of four modes, and see the paragraph text replaced inline with the rewritten version
-  3. A toggle persists beside simplified text allowing the user to switch between the rewritten version and the original at any time
+  2. User can click "Simplify", choose one of four modes, and see a simplification block appear below the paragraph (original remains visible simultaneously — per CONTEXT.md)
+  3. "Try another mode" updates the existing simplification block in-place (no duplicate blocks)
   4. If Tavily returns no results or fails, an inline error message with a retry option appears below the paragraph
   5. Text that has been annotated (simplified or sourced) is fully re-selectable and the action bubble offers all three actions (Go Deeper, Find Sources, Simplify)
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Wave 0: test scaffolds (6 files, test.todo stubs)
+- [ ] 05-02-PLAN.md — updateAnnotation store action + API shape fixes (simplify/search types) + backend find-sources citation note extension
+- [ ] 05-03-PLAN.md — ActionBubble expanded mode state (Simplify picker) + onFindSources/onSimplify props wired in ThreadView
+- [ ] 05-04-PLAN.md — CitationBlock + AnnotationShimmer components
+- [ ] 05-05-PLAN.md — SimplificationBlock component
+- [ ] 05-06-PLAN.md — MessageBlock annotation rendering + ThreadView async handlers (loading/error/retry/try-another)
+- [ ] 05-07-PLAN.md — Human verification checkpoint (all 8 INLINE requirements)
 
 ### Phase 6: Polish and Deployment
 **Goal**: The app is production-deployed, visually polished in both themes, protected by rate limiting, and covered by an E2E test suite
@@ -130,5 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
-| 5. Inline Annotations | 0/TBD | Not started | - |
+| 5. Inline Annotations | 0/7 | Not started | - |
 | 6. Polish and Deployment | 0/TBD | Not started | - |
