@@ -154,3 +154,138 @@ sessionsRouter.post('/', async (req, res) => {
     res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to create session.' } });
   }
 });
+
+// ---- Thread mutation routes ------------------------------------------------
+
+export const threadsRouter = Router();
+
+// POST /api/threads — create child thread
+threadsRouter.post('/', async (req, res) => {
+  try {
+    const userId = req.verifiedUser!.sub;
+    const { threadId, sessionId, parentThreadId, depth, anchorText, parentMessageId, title, accentColor } =
+      req.body as {
+        threadId: string; sessionId: string; parentThreadId: string;
+        depth: number; anchorText: string; parentMessageId: string | null;
+        title: string; accentColor: string;
+      };
+
+    if (!threadId || !sessionId || !parentThreadId) {
+      res.status(400).json({ data: null, error: { code: 'BAD_REQUEST', message: 'threadId, sessionId, parentThreadId required.' } });
+      return;
+    }
+
+    // Ownership: verify session belongs to this user
+    const session = await Session.findById(sessionId).lean();
+    if (!session || session.userId !== userId) {
+      res.status(403).json({ data: null, error: { code: 'FORBIDDEN', message: 'Access denied.' } });
+      return;
+    }
+
+    await Thread.create({
+      _id: threadId, sessionId, userId, parentThreadId, depth: depth ?? 1,
+      anchorText: anchorText ?? null, parentMessageId: parentMessageId ?? null,
+      title, accentColor, childThreadIds: [], scrollPosition: 0,
+    } as never);
+
+    // Update parent thread's childThreadIds array
+    await Thread.findByIdAndUpdate(parentThreadId, { $push: { childThreadIds: threadId } });
+
+    res.status(201).json({ data: { threadId }, error: null });
+  } catch (err) {
+    console.error('[POST /api/threads]', err);
+    res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to create thread.' } });
+  }
+});
+
+// PATCH /api/threads/:id — update title and/or scrollPosition
+threadsRouter.patch('/:id', async (req, res) => {
+  try {
+    const userId = req.verifiedUser!.sub;
+    const thread = await Thread.findById(req.params.id).lean();
+    if (!thread || thread.userId !== userId) {
+      res.status(403).json({ data: null, error: { code: 'FORBIDDEN', message: 'Access denied.' } });
+      return;
+    }
+
+    const { title, scrollPosition } = req.body as { title?: string; scrollPosition?: number };
+    const patch: Record<string, unknown> = {};
+    if (title !== undefined) patch['title'] = title;
+    if (scrollPosition !== undefined) patch['scrollPosition'] = scrollPosition;
+
+    await Thread.findByIdAndUpdate(req.params.id, { $set: patch });
+    res.json({ data: { updated: true }, error: null });
+  } catch (err) {
+    console.error('[PATCH /api/threads/:id]', err);
+    res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to update thread.' } });
+  }
+});
+
+// DELETE /api/threads/:id — delete thread and all descendants + their messages
+threadsRouter.delete('/:id', async (req, res) => {
+  try {
+    const userId = req.verifiedUser!.sub;
+    const thread = await Thread.findById(req.params.id).lean();
+    if (!thread || thread.userId !== userId) {
+      res.status(403).json({ data: null, error: { code: 'FORBIDDEN', message: 'Access denied.' } });
+      return;
+    }
+
+    // Collect all descendant thread IDs (BFS using in-memory sessionId query)
+    const allThreadsInSession = await Thread.find({ sessionId: thread.sessionId }).lean();
+    const threadMap = new Map(allThreadsInSession.map(t => [t._id, t]));
+
+    const toDelete: string[] = [];
+    const queue = [req.params.id];
+    while (queue.length) {
+      const id = queue.shift()!;
+      toDelete.push(id);
+      const t = threadMap.get(id);
+      if (t?.childThreadIds) queue.push(...t.childThreadIds);
+    }
+
+    await Thread.deleteMany({ _id: { $in: toDelete } });
+    await Message.deleteMany({ threadId: { $in: toDelete } });
+
+    res.json({ data: { deleted: toDelete.length }, error: null });
+  } catch (err) {
+    console.error('[DELETE /api/threads/:id]', err);
+    res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to delete thread.' } });
+  }
+});
+
+// ---- Message mutation routes -----------------------------------------------
+
+export const messagesRouter = Router();
+
+// PATCH /api/messages/:id — update annotations and/or childLeads (replace whole array)
+messagesRouter.patch('/:id', async (req, res) => {
+  try {
+    const userId = req.verifiedUser!.sub;
+    const message = await Message.findById(req.params.id).lean();
+    if (!message || message.userId !== userId) {
+      res.status(403).json({ data: null, error: { code: 'FORBIDDEN', message: 'Access denied.' } });
+      return;
+    }
+
+    const { annotations, childLeads } = req.body as { annotations?: unknown[]; childLeads?: unknown[] };
+    if (annotations !== undefined && !Array.isArray(annotations)) {
+      res.status(400).json({ data: null, error: { code: 'BAD_REQUEST', message: 'annotations must be an array.' } });
+      return;
+    }
+    if (childLeads !== undefined && !Array.isArray(childLeads)) {
+      res.status(400).json({ data: null, error: { code: 'BAD_REQUEST', message: 'childLeads must be an array.' } });
+      return;
+    }
+
+    const patch: Record<string, unknown> = {};
+    if (annotations !== undefined) patch['annotations'] = annotations;
+    if (childLeads !== undefined) patch['childLeads'] = childLeads;
+
+    await Message.findByIdAndUpdate(req.params.id, { $set: patch });
+    res.json({ data: { updated: true }, error: null });
+  } catch (err) {
+    console.error('[PATCH /api/messages/:id]', err);
+    res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to update message.' } });
+  }
+});
