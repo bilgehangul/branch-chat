@@ -1,6 +1,6 @@
 // frontend/src/contexts/AuthContext.tsx
-// Replaces ClerkProvider + useAuth. Backed by Google OAuth via @react-oauth/google.
-// Stores Google ID token in localStorage; exposes same getToken signature as Clerk.
+// Google OAuth authentication via @react-oauth/google.
+// Stores Google ID token in localStorage; provides getToken for API authorization.
 import { createContext, useContext, useState, useCallback } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
-  // Same async signature as Clerk's getToken — no changes needed to api/ layer
+  // Async getToken for API authorization header
   const getToken = useCallback(async () => token, [token]);
 
   return (

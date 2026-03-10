@@ -1,6 +1,6 @@
 // backend/src/middleware/auth.ts
 // requireApiAuth — Google ID token verification using google-auth-library.
-// Replaces Clerk getAuth() pattern. Attaches verified user to req.verifiedUser.
+// Google OAuth ID token verification. Attaches verified user to req.verifiedUser.
 import { OAuth2Client } from 'google-auth-library';
 import type { Request, Response, NextFunction } from 'express';
 
