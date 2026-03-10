@@ -28,5 +28,9 @@ export async function apiRequest<T>(
     return { data: null, error: { code: 'UNAUTHORIZED', message: 'Session expired. Please sign in again.' } };
   }
 
-  return res.json() as Promise<ApiResponse<T>>;
+  try {
+    return await res.json() as ApiResponse<T>;
+  } catch {
+    return { data: null, error: { code: 'PARSE_ERROR', message: 'Invalid response from server' } };
+  }
 }

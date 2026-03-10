@@ -91,6 +91,7 @@ export function ThreadView() {
       const response = await searchSources({ query: anchorText }, getToken);
 
       if (response.error || !response.data) {
+        console.error('[handleFindSources] API error:', response.error);
         setPendingAnnotation(null);
         setErrorAnnotation({
           type: 'source',
@@ -152,6 +153,7 @@ export function ThreadView() {
       const response = await simplifyText({ text: anchorText, mode }, getToken);
 
       if (response.error || !response.data) {
+        console.error('[handleSimplify] API error:', response.error);
         setPendingAnnotation(null);
         setErrorAnnotation({
           type: 'simplification',

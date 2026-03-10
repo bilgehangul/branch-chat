@@ -11,7 +11,7 @@
  * Requirements: BRANCH-01, BRANCH-02
  */
 
-import React, { useState, useEffect } from 'react';
+import { type RefObject, useState, useEffect } from 'react';
 
 export interface SelectionState {
   anchorText: string;
@@ -22,7 +22,7 @@ export interface SelectionState {
 }
 
 export function useTextSelection(
-  containerRef: React.RefObject<HTMLElement | null>
+  containerRef: RefObject<HTMLElement | null>
 ): { bubble: SelectionState | null; clearBubble: () => void } {
   const [bubble, setBubble] = useState<SelectionState | null>(null);
 
@@ -57,18 +57,30 @@ export function useTextSelection(
         const anchorBlock = (anchorEl as HTMLElement | null)?.closest?.('[data-paragraph-id]') as HTMLElement | null;
         const focusBlock = (focusEl as HTMLElement | null)?.closest?.('[data-paragraph-id]') as HTMLElement | null;
 
-        // Cross-block or missing block: hide bubble but preserve selection
-        // so the user can still copy their text freely
-        if (!anchorBlock || !focusBlock || anchorBlock !== focusBlock) {
+        // At least the anchor block must exist
+        if (!anchorBlock || !focusBlock) {
           setBubble(null);
           return;
         }
 
-        // Walk up from the paragraph block to find the enclosing message element
-        const messageEl = anchorBlock.closest('[data-message-id]');
-        const messageId = messageEl?.getAttribute('data-message-id') ?? '';
+        // Both blocks must be in the same message container
+        const anchorMessage = anchorBlock.closest('[data-message-id]');
+        const focusMessage = focusBlock.closest('[data-message-id]');
+        if (!anchorMessage || !focusMessage || anchorMessage !== focusMessage) {
+          setBubble(null);
+          return;
+        }
 
-        const paragraphId = anchorBlock.getAttribute('data-paragraph-id') ?? '0';
+        const messageId = anchorMessage.getAttribute('data-message-id') ?? '';
+
+        // For cross-paragraph selections, use the first (lowest-index) paragraph as the anchor.
+        // This is where the annotation block will be inserted below.
+        const anchorParagraphId = anchorBlock.getAttribute('data-paragraph-id') ?? '0';
+        const focusParagraphId = focusBlock.getAttribute('data-paragraph-id') ?? '0';
+        const paragraphId =
+          Number(anchorParagraphId) <= Number(focusParagraphId)
+            ? anchorParagraphId
+            : focusParagraphId;
         const anchorText = sel.toString().trim();
         const rect = range.getBoundingClientRect();
 
