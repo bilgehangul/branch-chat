@@ -19,6 +19,8 @@ export function SignInButton() {
       theme="filled_black"
       shape="rectangular"
       text="signin_with"
+      ux_mode="popup"
+      use_fedcm_for_prompt={false}
     />
   );
 }

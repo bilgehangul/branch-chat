@@ -285,6 +285,7 @@ None yet.
 | 10 | Rich static demo chat showcasing branching, annotations, code blocks, gutter pill, breadcrumbs, context card for unauthenticated visitors | 2026-03-10 | 3470f357 | [10-update-landing-demo-chat-to-showcase-all](.planning/quick/10-update-landing-demo-chat-to-showcase-all/) |
 | 11 | Codebase audit fixes: stale Clerk refs in .env.example, dark mode on 6 components, dead rewrite type | 2026-03-10 | 0e2252ea | [11-extensive-codebase-audit-find-and-fix-al](.planning/quick/11-extensive-codebase-audit-find-and-fix-al/) |
 | 12 | Fix Google auth: env validation, email_verified check, token expiration, error logging | 2026-03-10 | ae87816b | [12-fix-google-auth-issues](.planning/quick/12-fix-google-auth-issues/) |
+| 13 | Fix Google auth double-popup: move GoogleOAuthProvider outside StrictMode | 2026-03-10 | pending | [13-fix-google-auth-double-popup-and-callbac](.planning/quick/13-fix-google-auth-double-popup-and-callbac/) |
 
 ### Blockers/Concerns
 

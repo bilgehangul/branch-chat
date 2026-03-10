@@ -2,7 +2,6 @@
 // Google OAuth authentication via @react-oauth/google.
 // Stores Google ID token in localStorage; provides getToken for API authorization.
 import { createContext, useContext, useState, useCallback } from 'react';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const TOKEN_KEY = 'google_id_token';
 
@@ -85,17 +84,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return token;
   }, [token, signOut]);
 
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
-  if (!clientId) {
-    console.warn('[AuthProvider] VITE_GOOGLE_CLIENT_ID is not set — Google sign-in will not work');
-  }
-
+  // GoogleOAuthProvider is in main.tsx (outside StrictMode to avoid double-init)
   return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <AuthContext.Provider value={{ isSignedIn: !!token, user, token, getToken, signIn, signOut }}>
-        {children}
-      </AuthContext.Provider>
-    </GoogleOAuthProvider>
+    <AuthContext.Provider value={{ isSignedIn: !!token, user, token, getToken, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 
