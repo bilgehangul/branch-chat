@@ -13,12 +13,12 @@ DeepDive Chat is built in six phases ordered by hard architectural dependencies.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction (completed 2026-03-09)
-- [x] **Phase 2: Frontend Foundation** - React scaffold, Clerk auth gate, flat Zustand store, SSE client (completed 2026-03-09)
+- [x] **Phase 2: Frontend Foundation** - React scaffold, Google OAuth auth gate, flat Zustand store, SSE client (completed 2026-03-09)
 - [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
 - [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
-- [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, Vercel + Render
-- [x] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view (completed 2026-03-10)
+- [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, AWS EC2 (Ubuntu, nginx + PM2)
+- [x] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view (completed 2026-03-10)
 
 ## Phase Details
 
@@ -27,8 +27,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Depends on**: Nothing (first phase)
 **Requirements**: UI-04, AUTH-04, UI-03
 **Success Criteria** (what must be TRUE):
-  1. A curl request with a valid Clerk JWT to the `/chat` endpoint returns SSE chunks from Gemini with tokens arriving progressively
-  2. A curl request without a JWT receives a 401 response on every API route
+  1. A curl request with a valid Google ID token to the `/chat` endpoint returns SSE chunks from Gemini with tokens arriving progressively
+  2. A curl request without a token receives a 401 response on every API route
   3. A curl request to `/simplify` and `/find-sources` returns non-streamed JSON responses
   4. Switching the `AI_PROVIDER` environment variable is the only change required to point the server at a different provider
 **Plans**: 3 plans
@@ -43,15 +43,14 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-05
 **Success Criteria** (what must be TRUE):
-  1. User can sign up with email/password and be redirected to the chat interface
-  2. User can sign in with Google OAuth and be redirected to the chat interface
-  3. Unauthenticated user sees a read-only demo chat; must sign in to interact (AUTH-03 revised per 02-CONTEXT.md)
-  4. Logging out clears all in-memory state (thread tree, messages, annotations) and returns to the demo chat view
-  5. The Zustand store exposes a flat `Record<id, Thread>` and `Record<id, Message>` shape with all actions fully implemented (not stubs)
+  1. User can sign in with Google OAuth and be redirected to the chat interface
+  2. Unauthenticated user sees a read-only demo chat; must sign in to interact (AUTH-03 revised per 02-CONTEXT.md)
+  3. Logging out clears all in-memory state (thread tree, messages, annotations) and returns to the demo chat view
+  4. The Zustand store exposes a flat `Record<id, Thread>` and `Record<id, Message>` shape with all actions fully implemented (not stubs)
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Vite scaffold, Tailwind v4, Clerk modal auth, DemoChat guest view, AppShell skeleton, Wave 0 test stubs
+- [ ] 02-01-PLAN.md — Vite scaffold, Tailwind v4, Google OAuth auth (AuthContext + GoogleLogin button), DemoChat guest view, AppShell skeleton, Wave 0 test stubs
 - [ ] 02-02-PLAN.md — Zustand store (all 9 actions), frontend types, selectors (currentThread, threadAncestry, isAtMaxDepth)
 - [ ] 02-03-PLAN.md — SSE client (fetch+ReadableStream+remainder buffer), API client wrapper, simplify/search stubs, human-verify checkpoint
 
@@ -119,12 +118,12 @@ Plans:
 - [ ] 05-07-PLAN.md — Human verification checkpoint (all 8 INLINE requirements)
 
 ### Phase 6: Polish and Deployment
-**Goal**: The app is production-deployed, visually polished in both themes, protected by rate limiting, and covered by an E2E test suite
+**Goal**: The app is production-deployed to AWS EC2 (Ubuntu, nginx + PM2), visually polished in both themes, protected by rate limiting, and covered by an E2E test suite
 **Depends on**: Phase 5
 **Requirements**: UI-01, UI-02, DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04
 **Success Criteria** (what must be TRUE):
   1. The app renders in dark mode on first load; toggling to light theme persists across page refreshes via localStorage
-  2. The frontend is live on Vercel and the backend is live on Render; both deploy automatically from the main branch
+  2. The frontend and backend are live on a single AWS EC2 Ubuntu instance — nginx serves the built React static files and reverse-proxies /api to the Express backend on port 3001; PM2 keeps the Node.js process running; Let's Encrypt/Certbot provides SSL
   3. The Playwright E2E suite passes for all 6 core flows: auth, root chat with streaming, Go Deeper branching, Find Sources, Simplify, and multi-level navigation
   4. A `.env.example` file documents every required environment variable with a description
 **Plans**: 6 plans
@@ -133,9 +132,9 @@ Plans:
 - [ ] 06-01-PLAN.md — Playwright scaffold: install, playwright.config.ts, fixtures, 6 spec stubs (Wave 0)
 - [ ] 06-02-PLAN.md — Theme system: FOUC script, ThemeContext, ThemeToggle, light theme CSS, accent palette adaptation
 - [ ] 06-03-PLAN.md — Error states: NetworkBanner, AuthExpiredBanner, RateLimitBanner, mid-stream failure + retry
-- [ ] 06-04-PLAN.md — Deployment config: .env.example, render.yaml, vercel.json, CI workflow, VITE_API_BASE_URL fix
+- [ ] 06-04-PLAN.md — Deployment config: .env.example, nginx site config template, PM2 ecosystem.config.js, .env.production template, VITE_API_BASE_URL set to empty string (nginx handles /api proxy)
 - [x] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
-- [ ] 06-06-PLAN.md — Deployment checkpoint: Vercel + Render live, CORS wired (depends on 06-04, 06-05)
+- [ ] 06-06-PLAN.md — Deployment checkpoint: AWS EC2 live — nginx + PM2 running, SSL via Certbot, CORS wired (depends on 06-04, 06-05)
 
 ### Phase 7: Auth Migration + Persistent Storage
 **Goal**: Clerk is fully removed and replaced with Google OAuth; MongoDB Atlas stores sessions, chat threads, and message history so data persists across devices and page refreshes

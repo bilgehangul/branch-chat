@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [x] **AUTH-01**: User can sign up and sign in with email/password via Clerk
-- [x] **AUTH-02**: User can sign in with Google OAuth via Clerk
+- [x] **AUTH-01**: User can sign in with Google OAuth (no email/password option)
+- [x] **AUTH-02**: User can sign in with Google OAuth (google-auth-library on backend, GoogleLogin button on frontend)
 - [x] **AUTH-03**: Login is optional — unauthenticated users can access and use the full chat interface
-- [x] **AUTH-04**: If authenticated, every backend API call validates the Clerk JWT before processing
+- [x] **AUTH-04**: If authenticated, every backend API call validates the Google ID token using google-auth-library
 - [x] **AUTH-05**: Logout clears all in-memory session state (thread tree, messages, annotations)
 
 ### Core Chat
@@ -69,10 +69,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Deployment
 
-- [x] **DEPLOY-01**: Frontend is deployed to Vercel with auto-deploy from the main branch
-- [x] **DEPLOY-02**: Backend is deployed to Render (Node.js/Express proxy)
+- [x] **DEPLOY-01**: Frontend is deployed to AWS EC2 Ubuntu — nginx serves the built React static files (dist/)
+- [x] **DEPLOY-02**: Backend is deployed to AWS EC2 Ubuntu — PM2 manages the Node.js process (port 3001); nginx reverse-proxies /api to port 3001
 - [x] **DEPLOY-03**: A `.env.example` file in the repository root documents every required environment variable with a description
 - [x] **DEPLOY-04**: An E2E test suite (Playwright) covers the 6 core user flows: auth, root chat, Go Deeper, Find Sources, Simplify, and multi-level navigation
+
+### Persistence
+
+- [x] **PERSIST-01**: User sessions are saved to MongoDB Atlas and restored on page refresh
+- [x] **PERSIST-02**: User can view a history of past sessions in the SessionHistory sidebar
 
 ## v2 Requirements
 
@@ -80,8 +85,6 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Persistence
 
-- **PERSIST-01**: User sessions are saved to a database and restored on page refresh
-- **PERSIST-02**: User can view a history of past sessions
 - **PERSIST-03**: User can export a session (thread tree) to markdown
 
 ### Sharing
@@ -103,7 +106,6 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature | Reason |
 |---------|--------|
-| Session persistence in v1 | Requires database architecture; intentional experiment-phase constraint |
 | Full thread tree sharing | Depends on persistence; v2 |
 | Collaborative sessions | High complexity; one user per session in v1 |
 | Voice input/output | Not core to research reading flow |
@@ -164,12 +166,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPLOY-02 | Phase 6 | Complete |
 | DEPLOY-03 | Phase 6 | Complete |
 | DEPLOY-04 | Phase 6 | Complete |
+| PERSIST-01 | Phase 7 | Complete |
+| PERSIST-02 | Phase 7 | Complete |
 
 **Coverage:**
-- v1 requirements: 46 total
-- Mapped to phases: 46
+- v1 requirements: 48 total
+- Mapped to phases: 48
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-08*
-*Last updated: 2026-03-08 after roadmap creation — all 46 requirements mapped*
+*Last updated: 2026-03-10 — AUTH-01/02/04 updated to Google OAuth (removed Clerk); DEPLOY-01/02 updated to AWS EC2 + nginx + PM2 (removed Vercel/Render); PERSIST-01/02 moved from v2 to v1 (complete, shipped in Phase 7); "Session persistence in v1" removed from Out of Scope*
