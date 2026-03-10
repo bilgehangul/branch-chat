@@ -259,6 +259,7 @@ None yet.
 | 1 | add delete thread confirmation dialog | 2026-03-09 | 8a1d9f1 | [1-add-delete-thread-confirmation-dialog](.planning/quick/1-add-delete-thread-confirmation-dialog/) |
 | 2 | delete thread modal + summarize/compact store stubs | 2026-03-09 | 3502fee | [2-the-delete-thread-should-be-like-a-pop-u](.planning/quick/2-the-delete-thread-should-be-like-a-pop-u/) |
 | 3 | Fix EC2 deploy scripts (frontend env + pm2 startup) | 2026-03-09 | 239a79e3 | [3-fix-aws-ec2-deployment-configs-and-tsc-p](.planning/quick/3-fix-aws-ec2-deployment-configs-and-tsc-p/) |
+| 6 | Update planning docs to reflect AWS EC2 stack (Google OAuth, AWS EC2+nginx+PM2, MongoDB Atlas) | 2026-03-10 | d5b13985 | [6-update-planning-docs-to-reflect-aws-ec2-](.planning/quick/6-update-planning-docs-to-reflect-aws-ec2-/) |
 
 ### Blockers/Concerns
 
@@ -267,6 +268,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T05:24:11.454Z
-Stopped at: Completed 07-05-PLAN.md — human verification checkpoint reached
+Last session: 2026-03-10T06:00:00.000Z
+Stopped at: Completed quick-6 — planning docs updated to reflect AWS EC2 stack
 Resume file: None
