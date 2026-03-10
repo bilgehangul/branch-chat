@@ -6,6 +6,18 @@ import { connectDB } from './db/connection.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
 import { apiRouter } from './routes/index.js';
 
+// --- Startup env validation ---
+const REQUIRED_ENV = ['GOOGLE_CLIENT_ID'] as const;
+for (const key of REQUIRED_ENV) {
+  if (!process.env[key]) {
+    console.error(`[startup] FATAL: Missing required env var ${key}`);
+    process.exit(1);
+  }
+}
+if (!process.env.MONGODB_URI) {
+  console.warn('[startup] WARNING: MONGODB_URI is not set — database operations will be unavailable');
+}
+
 export const app = express();
 
 // 1. CORS — before routes

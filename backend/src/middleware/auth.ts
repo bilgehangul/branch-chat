@@ -4,7 +4,7 @@
 import { OAuth2Client } from 'google-auth-library';
 import type { Request, Response, NextFunction } from 'express';
 
-const googleClient = new OAuth2Client();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Extend Express Request to carry verified user identity
 declare global {
@@ -38,6 +38,14 @@ export async function requireApiAuth(
     });
     const payload = ticket.getPayload();
     if (!payload?.sub) throw new Error('No sub in token payload');
+
+    if (payload.email_verified === false) {
+      res.status(403).json({
+        data: null,
+        error: { code: 'EMAIL_NOT_VERIFIED', message: 'Google email not verified.' },
+      });
+      return;
+    }
 
     req.verifiedUser = {
       sub: payload.sub,
