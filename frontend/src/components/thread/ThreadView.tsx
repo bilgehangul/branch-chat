@@ -12,6 +12,7 @@ import { getNextAccentColor } from '../../constants/theme';
 import { GutterColumn } from '../branching/GutterColumn';
 import { searchSources, toSourceResult } from '../../api/search';
 import { simplifyText } from '../../api/simplify';
+import { createThreadOnBackend, updateThreadOnBackend, deleteThreadFromDB, updateMessageOnBackend } from '../../api/sessions';
 import type { Annotation } from '../../types/index';
 
 type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
@@ -124,6 +125,11 @@ export function ThreadView() {
         });
       }
       setPendingAnnotation(null);
+      // Persist updated annotations (fire-and-forget)
+      const updatedAnnotations = useSessionStore.getState().messages[messageId]?.annotations;
+      if (updatedAnnotations) {
+        void updateMessageOnBackend(messageId, { annotations: updatedAnnotations }, getToken);
+      }
     };
 
     await doFetch();
@@ -185,6 +191,11 @@ export function ThreadView() {
         addAnnotation(messageId, annotation);
       }
       setPendingAnnotation(null);
+      // Persist updated annotations (fire-and-forget)
+      const updatedAnnotations = useSessionStore.getState().messages[messageId]?.annotations;
+      if (updatedAnnotations) {
+        void updateMessageOnBackend(messageId, { annotations: updatedAnnotations }, getToken);
+      }
     };
 
     await doFetch();
@@ -225,6 +236,27 @@ export function ThreadView() {
     }
     clearBubble();
     setActiveThread(newThreadId);
+    // Persist child thread to MongoDB (fire-and-forget)
+    const sessionId = useSessionStore.getState().session?.id;
+    if (sessionId) {
+      void createThreadOnBackend({
+        threadId: newThreadId,
+        sessionId,
+        parentThreadId: activeThreadId,
+        depth: (activeThread.depth ?? 0) + 1,
+        anchorText,
+        parentMessageId: messageId || null,
+        title,
+        accentColor,
+      }, getToken);
+    }
+    // Persist parent message childLeads (fire-and-forget)
+    if (messageId) {
+      const updatedChildLeads = useSessionStore.getState().messages[messageId]?.childLeads;
+      if (updatedChildLeads) {
+        void updateMessageOnBackend(messageId, { childLeads: updatedChildLeads }, getToken);
+      }
+    }
   }
 
   // Track activeThreadId changes for scroll save + slide transition
@@ -234,6 +266,7 @@ export function ThreadView() {
       // Save scroll position of the thread we're leaving
       if (prevId && scrollRef.current) {
         setScrollPosition(prevId, scrollRef.current.scrollTop);
+        void updateThreadOnBackend(prevId, { scrollPosition: scrollRef.current.scrollTop }, getToken);
       }
 
       // Trigger slide transition
@@ -346,7 +379,10 @@ export function ThreadView() {
               threads={threads}
               messages={messages}
               onNavigate={setActiveThread}
-              onDeleteThread={deleteThread}
+              onDeleteThread={(threadId) => {
+                deleteThread(threadId);
+                void deleteThreadFromDB(threadId, getToken);
+              }}
               onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
               onCompact={(threadId) => void compactThread(threadId, getToken)}
             />

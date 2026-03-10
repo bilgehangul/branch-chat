@@ -94,3 +94,53 @@ export async function createSessionOnBackend(
     return null;
   }
 }
+
+export async function createThreadOnBackend(
+  payload: {
+    threadId: string; sessionId: string; parentThreadId: string;
+    depth: number; anchorText: string; parentMessageId: string | null;
+    title: string; accentColor: string;
+  },
+  getToken: () => Promise<string | null>
+): Promise<void> {
+  try {
+    await apiFetch('/api/threads', { method: 'POST', body: JSON.stringify(payload) }, getToken);
+  } catch {
+    // fire-and-forget — non-fatal
+  }
+}
+
+export async function updateThreadOnBackend(
+  threadId: string,
+  patch: { title?: string; scrollPosition?: number },
+  getToken: () => Promise<string | null>
+): Promise<void> {
+  try {
+    await apiFetch(`/api/threads/${threadId}`, { method: 'PATCH', body: JSON.stringify(patch) }, getToken);
+  } catch {
+    // fire-and-forget — non-fatal
+  }
+}
+
+export async function deleteThreadFromDB(
+  threadId: string,
+  getToken: () => Promise<string | null>
+): Promise<void> {
+  try {
+    await apiFetch(`/api/threads/${threadId}`, { method: 'DELETE' }, getToken);
+  } catch {
+    // fire-and-forget — non-fatal
+  }
+}
+
+export async function updateMessageOnBackend(
+  messageId: string,
+  patch: { annotations?: unknown[]; childLeads?: unknown[] },
+  getToken: () => Promise<string | null>
+): Promise<void> {
+  try {
+    await apiFetch(`/api/messages/${messageId}`, { method: 'PATCH', body: JSON.stringify(patch) }, getToken);
+  } catch {
+    // fire-and-forget — non-fatal
+  }
+}
