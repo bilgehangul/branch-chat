@@ -283,6 +283,7 @@ None yet.
 | 8 | Fix type mismatches: role enum JSDoc, 401 ApiError shape, summary createdAt, childLeads orphan cleanup | 2026-03-10 | 4c2c4dec | [8-go-over-the-code-base-to-find-and-fix-is](.planning/quick/8-go-over-the-code-base-to-find-and-fix-is/) |
 | 9 | Fix thread ops (delete dialog, summarize-as-child, compact), inline annotations, multi-para selection, dark-mode Markdown | 2026-03-10 | 845182bb | [9-fix-thread-ops-inline-annotations-multi-](.planning/quick/9-fix-thread-ops-inline-annotations-multi-/) |
 | 10 | Rich static demo chat showcasing branching, annotations, code blocks, gutter pill, breadcrumbs, context card for unauthenticated visitors | 2026-03-10 | 3470f357 | [10-update-landing-demo-chat-to-showcase-all](.planning/quick/10-update-landing-demo-chat-to-showcase-all/) |
+| 11 | Codebase audit fixes: stale Clerk refs in .env.example, dark mode on 6 components, dead rewrite type | 2026-03-10 | 0e2252ea | [11-extensive-codebase-audit-find-and-fix-al](.planning/quick/11-extensive-codebase-audit-find-and-fix-al/) |
 
 ### Blockers/Concerns
 
@@ -291,6 +292,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T16:22:41.739Z
-Stopped at: Completed 06-06-PLAN.md — nginx+PM2 configs generated, human EC2 deployment checkpoints pending
+Last session: 2026-03-10T17:30:00Z
+Stopped at: Completed quick-11 — codebase audit fixes (env cleanup, dark mode, dead type removal)
 Resume file: None
