@@ -284,6 +284,7 @@ None yet.
 | 9 | Fix thread ops (delete dialog, summarize-as-child, compact), inline annotations, multi-para selection, dark-mode Markdown | 2026-03-10 | 845182bb | [9-fix-thread-ops-inline-annotations-multi-](.planning/quick/9-fix-thread-ops-inline-annotations-multi-/) |
 | 10 | Rich static demo chat showcasing branching, annotations, code blocks, gutter pill, breadcrumbs, context card for unauthenticated visitors | 2026-03-10 | 3470f357 | [10-update-landing-demo-chat-to-showcase-all](.planning/quick/10-update-landing-demo-chat-to-showcase-all/) |
 | 11 | Codebase audit fixes: stale Clerk refs in .env.example, dark mode on 6 components, dead rewrite type | 2026-03-10 | 0e2252ea | [11-extensive-codebase-audit-find-and-fix-al](.planning/quick/11-extensive-codebase-audit-find-and-fix-al/) |
+| 12 | Fix Google auth: env validation, email_verified check, token expiration, error logging | 2026-03-10 | ae87816b | [12-fix-google-auth-issues](.planning/quick/12-fix-google-auth-issues/) |
 
 ### Blockers/Concerns
 
@@ -292,6 +293,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T17:30:00Z
-Stopped at: Completed quick-11 — codebase audit fixes (env cleanup, dark mode, dead type removal)
+Last session: 2026-03-10T17:55:00Z
+Stopped at: Completed quick-12 — Google auth hardening (env validation, email_verified, token expiration)
 Resume file: None
