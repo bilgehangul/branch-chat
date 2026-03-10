@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
 import { useSessionStore } from '../../store/sessionStore';
 import { useStreamingChat } from '../../hooks/useStreamingChat';
 import { useTextSelection } from '../../hooks/useTextSelection';

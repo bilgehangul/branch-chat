@@ -1,4 +1,5 @@
-import { UserButton, useAuth } from '@clerk/clerk-react';
+import { useAuth } from '../../contexts/AuthContext';
+import type { AuthUser } from '../../contexts/AuthContext';
 import { ThreadView } from '../thread/ThreadView';
 import { BreadcrumbBar } from './BreadcrumbBar';
 import { AncestorPeekPanel } from './AncestorPeekPanel';
@@ -8,7 +9,12 @@ import { selectThreadAncestry } from '../../store/selectors';
 import { NetworkBanner } from '../ui/NetworkBanner';
 import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
 
-export function AppShell() {
+interface AppShellProps {
+  onSignOut: () => void;
+  user: AuthUser | null;
+}
+
+export function AppShell({ onSignOut, user }: AppShellProps) {
   const { getToken } = useAuth();
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
@@ -58,7 +64,19 @@ export function AppShell() {
             <BreadcrumbBar />
           </div>
           <ThemeToggle />
-          <UserButton />
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {user && (
+              <span className="text-sm text-stone-600 dark:text-slate-400 truncate max-w-32">
+                {user.name}
+              </span>
+            )}
+            <button
+              onClick={onSignOut}
+              className="text-sm px-3 py-1 rounded bg-stone-200 dark:bg-zinc-700 hover:bg-stone-300 dark:hover:bg-zinc-600 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
         </header>
         {/* Thread view fills remaining height */}
         <main className="flex-1 overflow-hidden">
