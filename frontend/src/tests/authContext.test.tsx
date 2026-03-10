@@ -2,6 +2,7 @@
 // Covers AUTH-01, AUTH-02, AUTH-05 — Google sign-in, token storage, sign-out.
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 
 // Build a minimal fake Google ID token JWT (header.payload.signature)

@@ -7,22 +7,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTextSelection } from '../../src/hooks/useTextSelection';
 
-// Helper to create a DOM element with data-paragraph-id
-function makeParagraphBlock(paragraphId: string, messageId: string): HTMLElement {
-  const msgEl = document.createElement('div');
-  msgEl.setAttribute('data-message-id', messageId);
-
-  const paraEl = document.createElement('p');
-  paraEl.setAttribute('data-paragraph-id', paragraphId);
-
-  const textNode = document.createTextNode('Some text here');
-  paraEl.appendChild(textNode);
-  msgEl.appendChild(paraEl);
-  document.body.appendChild(msgEl);
-
-  return textNode as unknown as HTMLElement;
-}
-
 function makeContainerRef(el: HTMLElement) {
   return { current: el } as React.RefObject<HTMLElement | null>;
 }

@@ -1,7 +1,7 @@
 // frontend/src/tests/app.test.tsx
 // Covers AUTH-03 — guest path renders DemoChat, signed-in path renders AppShell.
 import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock useSessionStore to prevent store side effects
 const fakeSessionState = {

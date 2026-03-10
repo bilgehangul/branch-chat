@@ -27,6 +27,7 @@ function makeMessage(overrides: Partial<Message> = {}): Message {
     isStreaming: false,
     childLeads: [],
     annotations: [],
+    createdAt: Date.now(),
     ...overrides,
   };
 }
