@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
 - [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
 - [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, Vercel + Render
-- [ ] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view
+- [x] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view (completed 2026-03-10)
 
 ## Phase Details
 
@@ -150,11 +150,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Backend Clerk removal: google-auth-library auth middleware, rateLimiter IP-only, index.ts cleanup, auth.test.ts update
-- [ ] 07-02-PLAN.md — Frontend Clerk removal: AuthContext + AuthProvider, SignInButton (GoogleLogin), App.tsx + AppShell rewire, main.tsx, setup.ts
-- [ ] 07-03-PLAN.md — Mongoose connection + four schema models (User, Session, Thread, Message) + sessions test scaffold
-- [ ] 07-04-PLAN.md — Session persistence routes (GET/POST /api/sessions, GET /api/sessions/:id), chat save-on-done, hydrateSession Zustand action, sessions API client
-- [ ] 07-05-PLAN.md — SessionHistory component, App.tsx post-login hydration, chat body enrichment, authContext/app tests, human verification checkpoint
+- [x] 07-01-PLAN.md — Backend Clerk removal: google-auth-library auth middleware, rateLimiter IP-only, index.ts cleanup, auth.test.ts update
+- [x] 07-02-PLAN.md — Frontend Clerk removal: AuthContext + AuthProvider, SignInButton (GoogleLogin), App.tsx + AppShell rewire, main.tsx, setup.ts
+- [x] 07-03-PLAN.md — Mongoose connection + four schema models (User, Session, Thread, Message) + sessions test scaffold
+- [x] 07-04-PLAN.md — Session persistence routes (GET/POST /api/sessions, GET /api/sessions/:id), chat save-on-done, hydrateSession Zustand action, sessions API client
+- [x] 07-05-PLAN.md — SessionHistory component, App.tsx post-login hydration, chat body enrichment, authContext/app tests, human verification checkpoint
 
 ## Progress
 
@@ -169,4 +169,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
 | 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
 | 6. Polish and Deployment | 5/6 | In Progress|  |
-| 7. Auth Migration + Persistent Storage | 0/5 | Planned | |
+| 7. Auth Migration + Persistent Storage | 5/5 | Pending Verify | 2026-03-10 |
