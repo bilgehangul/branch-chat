@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ActionBubble } from '../../src/components/branching/ActionBubble';
 
 const defaultBubble = {
@@ -21,6 +21,11 @@ const defaultProps = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.useFakeTimers();
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe('ActionBubble', () => {
@@ -110,6 +115,9 @@ describe('ActionBubble', () => {
       </div>
     );
     fireEvent.mouseDown(screen.getByTestId('outside'));
+    // onDismiss is deferred via setTimeout(0) to check selection state first.
+    // In jsdom, window.getSelection() returns null, so onDismiss fires after the timer.
+    act(() => { vi.runAllTimers(); });
     expect(onDismiss).toHaveBeenCalledOnce();
   });
 });
