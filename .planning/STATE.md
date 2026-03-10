@@ -260,6 +260,7 @@ None yet.
 | 2 | delete thread modal + summarize/compact store stubs | 2026-03-09 | 3502fee | [2-the-delete-thread-should-be-like-a-pop-u](.planning/quick/2-the-delete-thread-should-be-like-a-pop-u/) |
 | 3 | Fix EC2 deploy scripts (frontend env + pm2 startup) | 2026-03-09 | 239a79e3 | [3-fix-aws-ec2-deployment-configs-and-tsc-p](.planning/quick/3-fix-aws-ec2-deployment-configs-and-tsc-p/) |
 | 6 | Update planning docs to reflect AWS EC2 stack (Google OAuth, AWS EC2+nginx+PM2, MongoDB Atlas) | 2026-03-10 | d5b13985 | [6-update-planning-docs-to-reflect-aws-ec2-](.planning/quick/6-update-planning-docs-to-reflect-aws-ec2-/) |
+| 7 | Fix MongoDB persistence gaps: child threads, annotations, childLeads, scroll/title sync, thread delete | 2026-03-10 | cc7b05e5 | [7-fix-mongodb-persistence-gaps-child-threa](.planning/quick/7-fix-mongodb-persistence-gaps-child-threa/) |
 
 ### Blockers/Concerns
 
