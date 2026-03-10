@@ -24,6 +24,16 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+// Check if a JWT is expired by reading the exp claim
+function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]!));
+    return typeof payload.exp === 'number' && payload.exp * 1000 < Date.now();
+  } catch {
+    return true; // treat decode failure as expired
+  }
+}
+
 // Decode JWT payload for display only — authorization is done on the backend
 function decodeGoogleToken(credential: string): AuthUser | null {
   try {
@@ -40,12 +50,18 @@ function decodeGoogleToken(credential: string): AuthUser | null {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(
-    () => localStorage.getItem(TOKEN_KEY)
-  );
+  const [token, setToken] = useState<string | null>(() => {
+    const stored = localStorage.getItem(TOKEN_KEY);
+    if (stored && isTokenExpired(stored)) {
+      localStorage.removeItem(TOKEN_KEY);
+      return null;
+    }
+    return stored;
+  });
   const [user, setUser] = useState<AuthUser | null>(() => {
     const stored = localStorage.getItem(TOKEN_KEY);
-    return stored ? decodeGoogleToken(stored) : null;
+    if (!stored || isTokenExpired(stored)) return null;
+    return decodeGoogleToken(stored);
   });
 
   const signIn = useCallback((credential: string) => {
@@ -60,11 +76,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }, []);
 
-  // Async getToken for API authorization header
-  const getToken = useCallback(async () => token, [token]);
+  // Async getToken for API authorization header — auto-clears expired tokens
+  const getToken = useCallback(async () => {
+    if (token && isTokenExpired(token)) {
+      signOut();
+      return null;
+    }
+    return token;
+  }, [token, signOut]);
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
+  if (!clientId) {
+    console.warn('[AuthProvider] VITE_GOOGLE_CLIENT_ID is not set — Google sign-in will not work');
+  }
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
+    <GoogleOAuthProvider clientId={clientId}>
       <AuthContext.Provider value={{ isSignedIn: !!token, user, token, getToken, signIn, signOut }}>
         {children}
       </AuthContext.Provider>

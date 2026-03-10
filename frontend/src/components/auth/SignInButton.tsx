@@ -15,7 +15,7 @@ export function SignInButton() {
           signIn(credentialResponse.credential);
         }
       }}
-      onError={() => console.error('Google sign-in failed')}
+      onError={() => console.error('[SignInButton] Google sign-in failed. Check VITE_GOOGLE_CLIENT_ID and browser console for details.')}
       theme="filled_black"
       shape="rectangular"
       text="signin_with"
