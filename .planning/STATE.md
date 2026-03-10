@@ -263,6 +263,7 @@ None yet.
 | 7 | Fix MongoDB persistence gaps: child threads, annotations, childLeads, scroll/title sync, thread delete | 2026-03-10 | cc7b05e5 | [7-fix-mongodb-persistence-gaps-child-threa](.planning/quick/7-fix-mongodb-persistence-gaps-child-threa/) |
 | 8 | Fix type mismatches: role enum JSDoc, 401 ApiError shape, summary createdAt, childLeads orphan cleanup | 2026-03-10 | 4c2c4dec | [8-go-over-the-code-base-to-find-and-fix-is](.planning/quick/8-go-over-the-code-base-to-find-and-fix-is/) |
 | 9 | Fix thread ops (delete dialog, summarize-as-child, compact), inline annotations, multi-para selection, dark-mode Markdown | 2026-03-10 | 845182bb | [9-fix-thread-ops-inline-annotations-multi-](.planning/quick/9-fix-thread-ops-inline-annotations-multi-/) |
+| 10 | Rich static demo chat showcasing branching, annotations, code blocks, gutter pill, breadcrumbs, context card for unauthenticated visitors | 2026-03-10 | 3470f357 | [10-update-landing-demo-chat-to-showcase-all](.planning/quick/10-update-landing-demo-chat-to-showcase-all/) |
 
 ### Blockers/Concerns
 
@@ -271,6 +272,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T15:30:00Z
-Stopped at: Completed quick-9 — thread ops, inline annotations, multi-para selection, dark-mode Markdown
+Last session: 2026-03-10T16:12:00Z
+Stopped at: Completed quick-10 — rich static demo chat showcasing all app features for unauthenticated visitors
 Resume file: None
