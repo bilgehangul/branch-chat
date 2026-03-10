@@ -32,7 +32,7 @@ simplifyRouter.post('/', async (req, res) => {
   } catch (err) {
     res.status(502).json({
       data: null,
-      error: { code: 'UPSTREAM_ERROR', message: 'AI provider request failed' },
+      error: { code: 'UPSTREAM_ERROR', message: 'AI is temporarily overloaded. Please try again in a moment.' },
     });
   }
 });

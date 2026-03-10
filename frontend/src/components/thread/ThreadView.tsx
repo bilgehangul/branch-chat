@@ -347,8 +347,8 @@ export function ThreadView() {
               messages={messages}
               onNavigate={setActiveThread}
               onDeleteThread={deleteThread}
-              onSummarize={summarizeThread}
-              onCompact={compactThread}
+              onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
+              onCompact={(threadId) => void compactThread(threadId, getToken)}
             />
           )}
         </div>

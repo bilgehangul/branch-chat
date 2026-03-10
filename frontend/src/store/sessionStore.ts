@@ -7,6 +7,7 @@ import type {
   ChildLead,
   CreateThreadParams,
 } from '../types/index';
+import { summarizeMessages } from '../api/simplify';
 
 interface SessionState {
   session: Session | null;
@@ -27,8 +28,8 @@ interface SessionState {
   setScrollPosition: (threadId: string, position: number) => void;
   setThreadTitle: (threadId: string, title: string) => void;
   deleteThread: (threadId: string) => void;
-  summarizeThread: (threadId: string) => void;
-  compactThread: (threadId: string) => void;
+  summarizeThread: (threadId: string, getToken: () => Promise<string | null>) => Promise<void>;
+  compactThread: (threadId: string, getToken: () => Promise<string | null>) => Promise<void>;
 }
 
 export const useSessionStore = create<SessionState>()((set, get) => ({
@@ -242,15 +243,105 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     });
   },
 
-  summarizeThread: (threadId: string) => {
-    // TODO: Phase 5 — call backend /api/summarize endpoint, replace messages with summary
-    // Stub: mark thread with a flag or log — no-op for now
-    console.log('[summarizeThread] threadId:', threadId);
+  summarizeThread: async (threadId: string, getToken: () => Promise<string | null>) => {
+    const thread = get().threads[threadId];
+    if (!thread) return;
+
+    const msgs = thread.messageIds.map(id => get().messages[id]).filter(Boolean) as Message[];
+    if (msgs.length === 0) return;
+
+    // Build combined text: pair user/assistant messages
+    const combinedText = msgs.map(m => {
+      const role = m.role === 'user' ? 'User' : 'AI';
+      return `[${role}]: ${m.content}`;
+    }).join('\n');
+
+    try {
+      const response = await summarizeMessages({ text: combinedText }, getToken);
+      if (response.error || !response.data) {
+        console.error('[summarizeThread] API error:', response.error);
+        return;
+      }
+
+      const summaryId = crypto.randomUUID();
+      const summaryMessage: Message = {
+        id: summaryId,
+        role: 'assistant',
+        content: '[Summary]\n' + response.data.rewritten,
+        threadId,
+        isStreaming: false,
+        childLeads: [],
+        annotations: [],
+      };
+
+      set(state => ({
+        messages: {
+          ...state.messages,
+          [summaryId]: summaryMessage,
+        },
+        threads: {
+          ...state.threads,
+          [threadId]: {
+            ...state.threads[threadId]!,
+            messageIds: [summaryId],
+          },
+        },
+      }));
+    } catch (err) {
+      console.error('[summarizeThread] failed:', err);
+    }
   },
 
-  compactThread: (threadId: string) => {
-    // TODO: Phase 5 — call backend /api/compact endpoint, condense older messages
-    console.log('[compactThread] threadId:', threadId);
+  compactThread: async (threadId: string, getToken: () => Promise<string | null>) => {
+    const thread = get().threads[threadId];
+    if (!thread) return;
+
+    const msgs = thread.messageIds.map(id => get().messages[id]).filter(Boolean) as Message[];
+    if (msgs.length <= 3) return; // nothing to compact
+
+    const toCompact = msgs.slice(0, msgs.length - 3);
+    const last3 = msgs.slice(msgs.length - 3);
+    const last3Ids = last3.map(m => m.id);
+
+    const combinedText = toCompact.map(m => {
+      const role = m.role === 'user' ? 'User' : 'AI';
+      return `[${role}]: ${m.content}`;
+    }).join('\n');
+
+    try {
+      const response = await summarizeMessages({ text: combinedText }, getToken);
+      if (response.error || !response.data) {
+        console.error('[compactThread] API error:', response.error);
+        return;
+      }
+
+      const summaryId = crypto.randomUUID();
+      const summaryMessage: Message = {
+        id: summaryId,
+        role: 'assistant',
+        content: '[Summary]\n' + response.data.rewritten,
+        threadId,
+        isStreaming: false,
+        childLeads: [],
+        annotations: [],
+      };
+
+      set(state => ({
+        messages: {
+          ...state.messages,
+          [summaryId]: summaryMessage,
+        },
+        threads: {
+          ...state.threads,
+          [threadId]: {
+            ...state.threads[threadId]!,
+            messageIds: [summaryId, ...last3Ids],
+          },
+        },
+      }));
+    } catch (err) {
+      console.error('[compactThread] failed:', err);
+    }
   },
 }));
 

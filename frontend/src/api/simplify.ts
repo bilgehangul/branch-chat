@@ -11,3 +11,14 @@ export async function simplifyText(
     getToken,
   });
 }
+
+export async function summarizeMessages(
+  params: { text: string },
+  getToken: () => Promise<string | null>
+): Promise<ApiResponse<{ rewritten: string }>> {
+  return apiRequest<{ rewritten: string }>('/api/simplify', {
+    method: 'POST',
+    body: JSON.stringify({ text: params.text, mode: 'simpler' }),
+    getToken,
+  });
+}

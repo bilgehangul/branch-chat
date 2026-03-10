@@ -1,4 +1,4 @@
-import { UserButton } from '@clerk/clerk-react';
+import { UserButton, useAuth } from '@clerk/clerk-react';
 import { ThreadView } from '../thread/ThreadView';
 import { BreadcrumbBar } from './BreadcrumbBar';
 import { AncestorPeekPanel } from './AncestorPeekPanel';
@@ -9,6 +9,7 @@ import { NetworkBanner } from '../ui/NetworkBanner';
 import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
 
 export function AppShell() {
+  const { getToken } = useAuth();
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
   const activeThreadId = useSessionStore(s => s.activeThreadId);
@@ -42,8 +43,8 @@ export function AppShell() {
             onClick={() => setActiveThread(thread.id)}
             onNavigate={setActiveThread}
             onDelete={deleteThread}
-            onSummarize={summarizeThread}
-            onCompact={compactThread}
+            onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
+            onCompact={(threadId) => void compactThread(threadId, getToken)}
           />
         );
       })}
