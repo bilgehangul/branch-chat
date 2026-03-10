@@ -55,11 +55,22 @@ export function ActionBubble({
     setMode('default');
   }, [bubble.paragraphId]);
 
-  // Dismiss when clicking outside the bubble
+  // Dismiss when clicking outside the bubble.
+  // Guard: if the user clicked within a message element to adjust their selection,
+  // give the browser a tick to finalize selection state before deciding to dismiss.
   useEffect(() => {
     function handleMouseDown(e: MouseEvent) {
       if (bubbleRef.current && !bubbleRef.current.contains(e.target as Node)) {
-        onDismiss();
+        // Don't dismiss if the user is clicking within a message element to adjust their selection.
+        // Give the browser a tick to finalize the new selection state, then check.
+        setTimeout(() => {
+          const sel = window.getSelection();
+          if (!sel || sel.isCollapsed) {
+            onDismiss();
+          }
+          // If selection is still non-collapsed, the user re-selected text — keep bubble alive.
+          // The useTextSelection mouseup handler will update bubble position if needed.
+        }, 0);
       }
     }
     document.addEventListener('mousedown', handleMouseDown);
