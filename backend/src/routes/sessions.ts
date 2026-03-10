@@ -247,6 +247,23 @@ threadsRouter.delete('/:id', async (req, res) => {
     await Thread.deleteMany({ _id: { $in: toDelete } });
     await Message.deleteMany({ threadId: { $in: toDelete } });
 
+    // Clean up childLeads references in parent thread's messages
+    // Messages in the parent thread may have childLeads pointing to deleted threads
+    if (thread.parentThreadId) {
+      const toDeleteSet = new Set(toDelete);
+      const parentMessages = await Message.find({ threadId: thread.parentThreadId }).lean();
+      for (const pm of parentMessages) {
+        if (Array.isArray(pm.childLeads) && pm.childLeads.length > 0) {
+          const filtered = (pm.childLeads as Array<{ threadId?: string }>).filter(
+            (cl) => cl.threadId && !toDeleteSet.has(cl.threadId)
+          );
+          if (filtered.length !== pm.childLeads.length) {
+            await Message.findByIdAndUpdate(pm._id, { $set: { childLeads: filtered } });
+          }
+        }
+      }
+    }
+
     res.json({ data: { deleted: toDelete.length }, error: null });
   } catch (err) {
     console.error('[DELETE /api/threads/:id]', err);
