@@ -32,7 +32,7 @@ export interface Message {
 
 export interface Annotation {
   id: string;
-  type: 'source' | 'rewrite' | 'simplification';
+  type: 'source' | 'simplification';
   targetText: string;
   paragraphIndex: number;
   originalText: string;

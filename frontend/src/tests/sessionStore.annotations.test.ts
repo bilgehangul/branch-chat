@@ -57,7 +57,7 @@ describe('updateAnnotation', () => {
 
   test('updateAnnotation: leaves other annotations in the message unchanged', () => {
     const ann1 = makeAnnotation({ id: 'ann-1', citationNote: null });
-    const ann2 = makeAnnotation({ id: 'ann-2', citationNote: 'original note', type: 'rewrite' });
+    const ann2 = makeAnnotation({ id: 'ann-2', citationNote: 'original note', type: 'simplification' });
     const msg = makeMessage({ id: 'msg-1', annotations: [ann1, ann2] });
     useSessionStore.setState({ messages: { 'msg-1': msg } });
 
@@ -66,7 +66,7 @@ describe('updateAnnotation', () => {
 
     const annotations = useSessionStore.getState().messages['msg-1']!.annotations;
     expect(annotations[1]!.citationNote).toBe('original note');
-    expect(annotations[1]!.type).toBe('rewrite');
+    expect(annotations[1]!.type).toBe('simplification');
   });
 
   test('updateAnnotation: no-op when annotationId does not exist in message', () => {
