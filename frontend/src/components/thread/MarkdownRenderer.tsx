@@ -107,21 +107,21 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
           return null;
         })}
         {isPending && pendingAnnotation && (
-          <div className="not-prose mb-2 rounded-lg border border-slate-200 bg-slate-50 p-3 animate-pulse">
-            <div className="h-3 bg-slate-300 rounded w-1/3 mb-3" />
+          <div className="not-prose mb-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 p-3 animate-pulse">
+            <div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-1/3 mb-3" />
             {pendingAnnotation.type === 'source' ? (
-              <><div className="h-3 bg-slate-300 rounded w-full mb-2" /><div className="h-3 bg-slate-300 rounded w-4/5 mb-2" /><hr className="border-slate-200 my-2" /><div className="h-3 bg-slate-300 rounded w-2/3" /></>
+              <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-full mb-2" /><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-4/5 mb-2" /><hr className="border-slate-200 dark:border-zinc-700 my-2" /><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-2/3" /></>
             ) : (
-              <><div className="h-3 bg-slate-300 rounded w-3/4 mb-2" /><div className="h-10 bg-slate-300 rounded w-full" /></>
+              <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-3/4 mb-2" /><div className="h-10 bg-slate-300 dark:bg-zinc-600 rounded w-full" /></>
             )}
           </div>
         )}
         {isError && errorAnnotation && (
-          <div className="not-prose mb-2 rounded-lg border border-red-200 bg-red-50 text-sm px-3 py-2 flex items-center justify-between" data-testid="annotation-error-block">
-            <span className="text-red-600 text-xs">
+          <div className="not-prose mb-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 text-sm px-3 py-2 flex items-center justify-between" data-testid="annotation-error-block">
+            <span className="text-red-600 dark:text-red-400 text-xs">
               {errorAnnotation.type === 'source' ? "Couldn't load sources" : "Couldn't simplify text"}
             </span>
-            <button className="text-xs text-red-500 hover:text-red-700 underline ml-2" onClick={errorAnnotation.retryFn} data-testid="annotation-retry-btn">
+            <button className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 underline ml-2" onClick={errorAnnotation.retryFn} data-testid="annotation-retry-btn">
               Retry
             </button>
           </div>
@@ -131,7 +131,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   }
 
   return (
-    <div className="prose prose-slate max-w-none text-slate-900">
+    <div className="prose prose-slate dark:prose-invert max-w-none break-words">
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeAddParagraphIds]}
@@ -158,6 +158,26 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
         ul({ children, ...props }) { const n = getPId(props); return <>{React.createElement('ul', props, children)}{annotationsAfter(n)}</>; },
         ol({ children, ...props }) { const n = getPId(props); return <>{React.createElement('ol', props, children)}{annotationsAfter(n)}</>; },
         blockquote({ children, ...props }) { const n = getPId(props); return <>{React.createElement('blockquote', props, children)}{annotationsAfter(n)}</>; },
+        table({ children, ...props }) {
+          const n = getPId(props as Record<string, unknown>);
+          return (
+            <>
+              <div className="overflow-x-auto">
+                <table {...(props as React.HTMLAttributes<HTMLTableElement>)} className="min-w-full">{children}</table>
+              </div>
+              {annotationsAfter(n)}
+            </>
+          );
+        },
+        pre({ children, ...props }) {
+          const n = getPId(props as Record<string, unknown>);
+          return (
+            <>
+              <pre {...(props as React.HTMLAttributes<HTMLPreElement>)} className="overflow-x-auto">{children}</pre>
+              {annotationsAfter(n)}
+            </>
+          );
+        },
         code({ className, children, node: _node, ...props }: React.HTMLAttributes<HTMLElement> & { node?: unknown }) {
           const match = /language-(\w+)/.exec(className ?? '');
           const isBlock = !!match;
@@ -172,7 +192,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
             </SyntaxHighlighter>
           ) : (
             <code
-              className="bg-slate-100 text-slate-800 rounded px-1 py-0.5 text-sm font-mono"
+              className="bg-slate-100 dark:bg-zinc-700 text-slate-800 dark:text-slate-200 rounded px-1 py-0.5 text-sm font-mono"
               {...(props as React.HTMLAttributes<HTMLElement>)}
             >
               {children}

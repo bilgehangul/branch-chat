@@ -50,7 +50,7 @@ export function MessageBlock({
           className={`${
             isUser
               ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto max-w-[75%]'
-              : 'bg-white text-slate-900 border border-slate-200 shadow-sm rounded-2xl rounded-tl-sm px-4 py-3 mr-auto max-w-[85%]'
+              : 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-zinc-700 shadow-sm rounded-2xl rounded-tl-sm px-4 py-3 mr-auto max-w-[85%] overflow-hidden'
           } ${streamingClasses}`}
         >
           {isUser ? (
