@@ -28,7 +28,8 @@ jobs:
       - name: Run E2E tests
         run: cd frontend && npx playwright test
         env:
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_CLERK_PUBLISHABLE_KEY: pk_test_placeholder_for_ci_only
+          VITE_GOOGLE_CLIENT_ID: "123456789-placeholder.apps.googleusercontent.com"
           VITE_API_BASE_URL: ""
 
       - uses: actions/upload-artifact@v4
