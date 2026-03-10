@@ -25,7 +25,7 @@ export async function apiRequest<T>(
   // Dispatch global event on 401 — AuthExpiredBanner listens for this
   if (res.status === 401) {
     window.dispatchEvent(new CustomEvent('auth-expired'));
-    return { error: 'Session expired. Please sign in again.' } as ApiResponse<T>;
+    return { data: null, error: { code: 'UNAUTHORIZED', message: 'Session expired. Please sign in again.' } };
   }
 
   return res.json() as Promise<ApiResponse<T>>;

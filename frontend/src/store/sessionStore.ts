@@ -278,6 +278,7 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         isStreaming: false,
         childLeads: [],
         annotations: [],
+        createdAt: Date.now(),
       };
 
       set(state => ({
@@ -330,6 +331,7 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         isStreaming: false,
         childLeads: [],
         annotations: [],
+        createdAt: Date.now(),
       };
 
       set(state => ({
