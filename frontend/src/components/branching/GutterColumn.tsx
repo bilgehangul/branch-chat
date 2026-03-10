@@ -166,12 +166,16 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
   const firstAiMsg = childMessages.find(m => m.role === 'assistant');
   const firstAiLine = firstAiMsg ? firstAiMsg.content.split('\n')[0] : '';
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const pillWidth = isMobile ? 120 : 184;
+  const pillRight = isMobile ? 4 : 8;
+
   return (
-    <div style={{ position: 'absolute', top, right: 8, width: 184 }}>
+    <div style={{ position: 'absolute', top, right: pillRight, width: pillWidth }}>
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
-        className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md bg-white border border-slate-200 shadow-sm hover:bg-slate-50 text-left text-sm transition-colors cursor-pointer"
+        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 shadow-sm hover:bg-slate-50 text-left text-sm transition-colors cursor-pointer ${isMobile ? 'bg-white/90' : 'bg-white'}`}
         onClick={() => onNavigate(lead.threadId)}
         onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
         onMouseEnter={() => setIsHovered(true)}

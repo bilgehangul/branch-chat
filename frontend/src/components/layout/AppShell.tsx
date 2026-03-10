@@ -33,19 +33,20 @@ export function AppShell() {
         // The next thread in the ancestry chain tells us which message was selected in this ancestor
         const nextThread = ancestry[idx + 1];
         return (
-          <AncestorPeekPanel
-            key={thread.id}
-            thread={thread}
-            allMessages={messages}
-            highlightMessageId={nextThread?.parentMessageId ?? undefined}
-            childThreadId={nextThread?.id}
-            width={w}
-            onClick={() => setActiveThread(thread.id)}
-            onNavigate={setActiveThread}
-            onDelete={deleteThread}
-            onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
-            onCompact={(threadId) => void compactThread(threadId, getToken)}
-          />
+          <div key={thread.id} className="hidden sm:block flex-shrink-0" style={{ width: w }}>
+            <AncestorPeekPanel
+              thread={thread}
+              allMessages={messages}
+              highlightMessageId={nextThread?.parentMessageId ?? undefined}
+              childThreadId={nextThread?.id}
+              width={w}
+              onClick={() => setActiveThread(thread.id)}
+              onNavigate={setActiveThread}
+              onDelete={deleteThread}
+              onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
+              onCompact={(threadId) => void compactThread(threadId, getToken)}
+            />
+          </div>
         );
       })}
 

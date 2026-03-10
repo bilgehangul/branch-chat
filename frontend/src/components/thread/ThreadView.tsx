@@ -309,7 +309,7 @@ export function ThreadView() {
           <div
             className={`transition-transform duration-200 ease-out ${
               isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-            } ${hasChildThreads ? 'pr-[200px]' : ''}`}
+            } ${hasChildThreads ? 'pr-[120px] sm:pr-[200px]' : ''}`}
           >
             {activeThread ? (
               orderedMessages.length > 0 ? (

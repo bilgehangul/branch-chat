@@ -102,8 +102,8 @@ export function AncestorPeekPanel({
 
   return (
     <div
-      className="relative flex-shrink-0 flex flex-col bg-slate-50 cursor-pointer group hover:bg-slate-100 transition-colors"
-      style={{ width, borderRight: `3px solid ${thread.accentColor}` }}
+      className="relative flex-shrink-0 flex flex-col bg-slate-50/80 sm:bg-slate-50 cursor-pointer group hover:bg-slate-100 transition-colors"
+      style={{ width, borderRight: `${width < 100 ? 2 : 3}px solid ${thread.accentColor}` }}
       onClick={onClick}
       onContextMenu={e => {
         if (!onDelete) return;

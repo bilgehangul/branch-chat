@@ -17,7 +17,7 @@ export function SpineStrip() {
 
   return (
     <div
-      className="w-7 flex-shrink-0 flex items-center justify-center cursor-pointer bg-zinc-900 hover:bg-zinc-800 transition-colors"
+      className="w-5 sm:w-7 flex-shrink-0 flex items-center justify-center cursor-pointer bg-zinc-900 hover:bg-zinc-800 transition-colors"
       style={{ borderLeft: `3px solid ${parentThread.accentColor}` }}
       onClick={() => setActiveThread(currentThread.parentThreadId!)}
       title={`Back to: ${parentThread.title}`}
