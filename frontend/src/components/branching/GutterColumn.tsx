@@ -75,23 +75,23 @@ function ThreadContextMenu({ x, y, threadId, onDelete, onClose, onSummarize, onC
     <>
       <div
         style={{ position: 'fixed', top: y, left: x, zIndex: 9999 }}
-        className="bg-white border border-slate-200 rounded-lg shadow-xl py-1 min-w-[160px] text-sm"
+        className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg shadow-xl py-1 min-w-[160px] text-sm"
         onMouseDown={e => e.stopPropagation()}
       >
         <button
-          className="w-full text-left px-3 py-1.5 text-red-600 hover:bg-red-50 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
           onClick={() => setPendingDelete(true)}
         >
           Delete thread
         </button>
         <button
-          className="w-full text-left px-3 py-1.5 text-slate-600 hover:bg-slate-50 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
           onClick={() => { onSummarize(threadId); onClose(); }}
         >
           Summarize
         </button>
         <button
-          className="w-full text-left px-3 py-1.5 text-slate-600 hover:bg-slate-50 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
           onClick={() => { onCompact(threadId); onClose(); }}
         >
           Compact
@@ -128,12 +128,12 @@ function DescendantPill({
   return (
     <div style={{ paddingLeft: depth * 10 }}>
       <button
-        className="flex items-center gap-1 w-full px-2 py-1 rounded text-xs text-slate-600 hover:bg-slate-100 text-left transition-colors cursor-pointer"
+        className="flex items-center gap-1 w-full px-2 py-1 rounded text-xs text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-700 text-left transition-colors cursor-pointer"
         onClick={e => { e.stopPropagation(); onNavigate(threadId); }}
       >
-        <span className="text-slate-300 flex-shrink-0 text-[10px]">↳</span>
+        <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-[10px]">↳</span>
         <span className="truncate flex-1 min-w-0">{thread.title.slice(0, 28)}</span>
-        <span className="text-[10px] text-slate-400 flex-shrink-0">{thread.messageIds.length}</span>
+        <span className="text-[10px] text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
         <span
           className="w-1.5 h-1.5 rounded-full flex-shrink-0"
           style={{ backgroundColor: thread.accentColor }}
@@ -187,15 +187,15 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
-        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 shadow-sm hover:bg-slate-50 text-left text-sm transition-colors cursor-pointer ${isMobile ? 'bg-white/90' : 'bg-white'}`}
+        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer ${isMobile ? 'bg-white/90 dark:bg-zinc-800/90' : 'bg-white dark:bg-zinc-800'}`}
         onClick={() => onNavigate(lead.threadId)}
         onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <span className="text-slate-400 flex-shrink-0">→</span>
-        <span className="text-slate-800 truncate flex-1 min-w-0">{thread.title.slice(0, 32)}</span>
-        <span className="text-xs text-slate-400 flex-shrink-0">{thread.messageIds.length}</span>
+        <span className="text-slate-400 dark:text-zinc-500 flex-shrink-0">→</span>
+        <span className="text-slate-800 dark:text-zinc-100 truncate flex-1 min-w-0">{thread.title.slice(0, 32)}</span>
+        <span className="text-xs text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
         <span
           data-testid="accent-pip"
           className="w-2 h-2 rounded-full flex-shrink-0"
@@ -205,7 +205,7 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
 
       {/* Descendant threads nested below the pill */}
       {thread.childThreadIds.length > 0 && (
-        <div className="mt-0.5 border-l border-slate-200 ml-2">
+        <div className="mt-0.5 border-l border-slate-200 dark:border-zinc-700 ml-2">
           {thread.childThreadIds.map(childId => (
             <DescendantPill
               key={childId}
@@ -221,19 +221,19 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
       {/* Preview card on hover */}
       {isHovered && (
         <div
-          className="absolute right-0 top-full mt-1 z-50 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-xs text-slate-700 space-y-2"
+          className="absolute right-0 top-full mt-1 z-50 w-64 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 text-xs text-slate-700 dark:text-zinc-200 space-y-2"
           data-testid="preview-card"
         >
-          <div className="text-slate-500 italic truncate">{lead.anchorText}</div>
+          <div className="text-slate-500 dark:text-zinc-400 italic truncate">{lead.anchorText}</div>
           {firstUserMsg && (
-            <div className="text-slate-700 truncate">
-              <span className="text-slate-500">You: </span>
+            <div className="text-slate-700 dark:text-zinc-200 truncate">
+              <span className="text-slate-500 dark:text-zinc-400">You: </span>
               {firstUserMsg.content}
             </div>
           )}
           {firstAiLine && (
-            <div className="text-slate-500 truncate">
-              <span className="text-slate-500">AI: </span>
+            <div className="text-slate-500 dark:text-zinc-400 truncate">
+              <span className="text-slate-500 dark:text-zinc-400">AI: </span>
               {firstAiLine}
             </div>
           )}

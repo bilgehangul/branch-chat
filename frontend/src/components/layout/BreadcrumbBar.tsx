@@ -50,7 +50,7 @@ export function BreadcrumbBar() {
 
   if (!activeThreadId || !currentThread) return null;
 
-  const chevron = <span className="mx-2 text-slate-400">›</span>;
+  const chevron = <span className="mx-2 text-slate-400 dark:text-zinc-600">›</span>;
 
   return (
     <div
@@ -66,7 +66,7 @@ export function BreadcrumbBar() {
         return (
           <span key={thread.id} className="flex items-center">
             <button
-              className="text-slate-500 hover:text-slate-800 cursor-pointer truncate max-w-[120px]"
+              className="text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-100 cursor-pointer truncate max-w-[120px]"
               onClick={() => setActiveThread(thread.id)}
             >
               {getCrumbLabel(thread)}
@@ -76,17 +76,17 @@ export function BreadcrumbBar() {
             {isCollapsedInsertPoint && collapsedMiddle.length > 0 && (
               <span className="flex items-center relative">
                 <button
-                  className="text-slate-500 hover:text-slate-800 cursor-pointer px-1"
+                  className="text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-100 cursor-pointer px-1"
                   onClick={() => setShowDropdown((prev) => !prev)}
                 >
                   ...
                 </button>
                 {showDropdown && (
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded shadow-lg z-50 py-1 min-w-[140px]">
+                  <div className="absolute top-full left-0 mt-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded shadow-lg z-50 py-1 min-w-[140px]">
                     {collapsedMiddle.map((collapsed) => (
                       <button
                         key={collapsed.id}
-                        className="block w-full text-left px-3 py-1 text-slate-700 hover:bg-slate-100 truncate"
+                        className="block w-full text-left px-3 py-1 text-slate-700 dark:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-700 truncate"
                         onClick={() => {
                           setActiveThread(collapsed.id);
                           setShowDropdown(false);
@@ -105,7 +105,7 @@ export function BreadcrumbBar() {
       })}
 
       {/* Current (non-clickable) crumb */}
-      <span className="text-slate-900 truncate max-w-[200px]">
+      <span className="text-slate-900 dark:text-zinc-100 truncate max-w-[200px]">
         {getCrumbLabel(currentThread)}
       </span>
     </div>

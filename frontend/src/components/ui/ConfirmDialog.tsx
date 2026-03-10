@@ -27,12 +27,12 @@ export function ConfirmDialog({
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/30" />
       {/* Dialog */}
-      <div className="relative bg-white rounded-xl shadow-2xl p-6 w-80 max-w-[90vw] space-y-4">
-        <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
-        {body && <p className="text-xs text-slate-500">{body}</p>}
+      <div className="relative bg-white dark:bg-zinc-800 rounded-xl shadow-2xl p-6 w-80 max-w-[90vw] space-y-4">
+        <h2 className="text-sm font-semibold text-slate-800 dark:text-zinc-100">{title}</h2>
+        {body && <p className="text-xs text-slate-500 dark:text-zinc-400">{body}</p>}
         <div className="flex justify-end gap-2 pt-1">
           <button
-            className="px-3 py-1.5 text-xs rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+            className="px-3 py-1.5 text-xs rounded-lg bg-slate-100 dark:bg-zinc-700 hover:bg-slate-200 dark:hover:bg-zinc-600 text-slate-600 dark:text-zinc-300 transition-colors"
             onClick={onCancel}
           >
             {cancelLabel}

@@ -93,7 +93,7 @@ export function ActionBubble({
   return (
     <div
       ref={bubbleRef}
-      className="fixed z-50 flex flex-col gap-1 bg-white border border-slate-200 rounded-xl shadow-lg p-2"
+      className="fixed z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
       style={{
         top: bubble.top,
         left: bubble.left,

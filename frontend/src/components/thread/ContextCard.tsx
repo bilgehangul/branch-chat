@@ -14,14 +14,14 @@ export function ContextCard({ thread }: { thread: Thread }) {
         style={{ backgroundColor: `${thread.accentColor}22` }}
       >
         <span className="text-base" style={{ color: thread.accentColor }}>↗</span>
-        <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+        <span className="text-xs font-semibold text-slate-600 dark:text-zinc-400 uppercase tracking-wide">
           Branched from parent thread
         </span>
       </div>
 
       {/* Selected text quote */}
-      <div className="px-4 py-3 bg-white">
-        <p className="text-xs text-slate-400 mb-1">You selected:</p>
+      <div className="px-4 py-3 bg-white dark:bg-zinc-800">
+        <p className="text-xs text-slate-400 dark:text-zinc-500 mb-1">You selected:</p>
         <p
           className="text-sm font-medium leading-relaxed"
           style={{ color: thread.accentColor }}
