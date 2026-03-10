@@ -3,11 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
+stopped_at: Completed 06-06-PLAN.md — nginx+PM2 configs generated, human EC2 deployment checkpoints pending
+last_updated: "2026-03-10T16:22:41.743Z"
+last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
+progress:
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 38
+  completed_plans: 39
+  percent: 100
+---
+
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: in_progress
 stopped_at: Completed 07-05-PLAN.md — human verification checkpoint reached
 last_updated: "2026-03-10T05:24:11.458Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
-  total_phases: 7
+  [██████████] 100%
   completed_phases: 6
   total_plans: 38
   completed_plans: 38
@@ -157,6 +173,7 @@ Progress: [██████████] 100% (Phases 1-3 complete, 3 phases r
 | Phase 06-polish-and-deployment P02 | 8 | 2 tasks | 7 files |
 | Phase 06-polish-and-deployment P03 | 8 | 2 tasks | 9 files |
 | Phase 06-polish-and-deployment P05 | 25 | 2 tasks | 9 files |
+| Phase 06-polish-and-deployment P06 | 5 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -247,6 +264,8 @@ Recent decisions affecting current work:
 - [Phase 06-polish-and-deployment]: auth-expired custom event dispatched from api/client.ts on 401 — decouples API layer from React component tree; AuthExpiredBanner subscribes via window.addEventListener
 - [Phase 06-polish-and-deployment]: onRateLimit is optional callback on streamChat — preserves backward compat, separates 429 semantics from generic error handling; rateLimitMinutes computed in hook return for display-ready value
 - [Phase 06-polish-and-deployment]: Mid-stream error preserves partial AI content in store — setMessageStreaming(false) without clearing content; streamError drives Retry UI separately
+- [Phase 06-06]: nginx /api/chat separate location block with Connection '' header keeps SSE alive; proxy_buffering off on all /api routes for real-time token streaming
+- [Phase 06-06]: ecosystem.config.cjs uses .cjs extension (not .js) — PM2 requires CommonJS module.exports syntax; .js would be treated as ESM if package.json has type:module
 
 ### Pending Todos
 
@@ -272,6 +291,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T16:12:00Z
-Stopped at: Completed quick-10 — rich static demo chat showcasing all app features for unauthenticated visitors
+Last session: 2026-03-10T16:22:41.739Z
+Stopped at: Completed 06-06-PLAN.md — nginx+PM2 configs generated, human EC2 deployment checkpoints pending
 Resume file: None

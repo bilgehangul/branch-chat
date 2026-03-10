@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
 - [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
-- [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, AWS EC2 (Ubuntu, nginx + PM2)
+- [x] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, AWS EC2 (Ubuntu, nginx + PM2) (completed 2026-03-10)
 - [x] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view (completed 2026-03-10)
 
 ## Phase Details
@@ -167,5 +167,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
 | 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
-| 6. Polish and Deployment | 5/6 | In Progress|  |
+| 6. Polish and Deployment | 6/6 | Complete   | 2026-03-10 |
 | 7. Auth Migration + Persistent Storage | 5/5 | Pending Verify | 2026-03-10 |
