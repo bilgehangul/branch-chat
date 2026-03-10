@@ -52,9 +52,21 @@ interface ContextMenuProps {
 
 function ThreadContextMenu({ x, y, threadId, onDelete, onClose, onSummarize, onCompact }: ContextMenuProps) {
   const [pendingDelete, setPendingDelete] = useState(false);
+  // Use a ref to track pendingDelete so the mousedown handler doesn't capture
+  // a stale closure — if the confirm dialog is open, do not dismiss the menu.
+  const pendingDeleteRef = useRef(false);
 
   useEffect(() => {
-    const handler = () => onClose();
+    pendingDeleteRef.current = pendingDelete;
+  }, [pendingDelete]);
+
+  useEffect(() => {
+    const handler = () => {
+      // Don't dismiss the context menu while the confirm dialog is open —
+      // the dialog overlay's own mousedown would fire first and we'd lose the dialog.
+      if (pendingDeleteRef.current) return;
+      onClose();
+    };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [onClose]);

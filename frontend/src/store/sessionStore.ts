@@ -253,14 +253,36 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     const thread = get().threads[threadId];
     if (!thread) return;
 
-    const msgs = thread.messageIds.map(id => get().messages[id]).filter(Boolean) as Message[];
-    if (msgs.length === 0) return;
+    // Recursively collect messages from thread + all descendant threads
+    function collectAllMessages(tid: string): Message[] {
+      const t = get().threads[tid];
+      if (!t) return [];
+      const directMsgs = t.messageIds.map(id => get().messages[id]).filter(Boolean) as Message[];
+      const childMsgs = t.childThreadIds.flatMap(childId => collectAllMessages(childId));
+      return [...directMsgs, ...childMsgs];
+    }
 
-    // Build combined text: pair user/assistant messages
-    const combinedText = msgs.map(m => {
-      const role = m.role === 'user' ? 'User' : 'AI';
-      return `[${role}]: ${m.content}`;
-    }).join('\n');
+    // Build combined text that includes thread structure
+    function buildCombinedText(tid: string, indent = 0): string {
+      const t = get().threads[tid];
+      if (!t) return '';
+      const prefix = '  '.repeat(indent);
+      const header = indent === 0 ? `Thread: ${t.title}\n` : `${prefix}Child thread: ${t.title}\n`;
+      const msgs = t.messageIds
+        .map(id => get().messages[id])
+        .filter(Boolean) as Message[];
+      const msgText = msgs.map(m => {
+        const role = m.role === 'user' ? 'User' : 'AI';
+        return `${prefix}[${role}]: ${m.content}`;
+      }).join('\n');
+      const childText = t.childThreadIds.map(cid => buildCombinedText(cid, indent + 1)).join('\n');
+      return [header, msgText, childText].filter(Boolean).join('\n');
+    }
+
+    const allMsgs = collectAllMessages(threadId);
+    if (allMsgs.length === 0) return;
+
+    const combinedText = buildCombinedText(threadId);
 
     try {
       const response = await summarizeMessages({ text: combinedText }, getToken);
@@ -269,31 +291,29 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         return;
       }
 
-      const summaryId = crypto.randomUUID();
+      // Create a NEW child thread under the target thread with the summary
+      const summaryThreadId = get().createThread({
+        parentThreadId: threadId,
+        anchorText: null,
+        parentMessageId: null,
+        title: 'Summary',
+        accentColor: thread.accentColor,
+      });
+
+      const summaryMsgId = crypto.randomUUID();
       const summaryMessage: Message = {
-        id: summaryId,
+        id: summaryMsgId,
         role: 'assistant',
-        content: '[Summary]\n' + response.data.rewritten,
-        threadId,
+        content: response.data.rewritten,
+        threadId: summaryThreadId,
         isStreaming: false,
         childLeads: [],
         annotations: [],
         createdAt: Date.now(),
       };
 
-      set(state => ({
-        messages: {
-          ...state.messages,
-          [summaryId]: summaryMessage,
-        },
-        threads: {
-          ...state.threads,
-          [threadId]: {
-            ...state.threads[threadId]!,
-            messageIds: [summaryId],
-          },
-        },
-      }));
+      // Add the summary message to the new child thread
+      get().addMessage(summaryMessage);
     } catch (err) {
       console.error('[summarizeThread] failed:', err);
     }
@@ -303,17 +323,34 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     const thread = get().threads[threadId];
     if (!thread) return;
 
-    const msgs = thread.messageIds.map(id => get().messages[id]).filter(Boolean) as Message[];
-    if (msgs.length <= 3) return; // nothing to compact
+    // Collect all descendant thread IDs (not including threadId itself)
+    function collectDescendantIds(tid: string): string[] {
+      const t = get().threads[tid];
+      if (!t) return [];
+      return t.childThreadIds.flatMap(cid => [cid, ...collectDescendantIds(cid)]);
+    }
 
-    const toCompact = msgs.slice(0, msgs.length - 3);
-    const last3 = msgs.slice(msgs.length - 3);
-    const last3Ids = last3.map(m => m.id);
+    // Recursively build combined text from thread + all descendants
+    function buildCombinedText(tid: string, indent = 0): string {
+      const t = get().threads[tid];
+      if (!t) return '';
+      const prefix = '  '.repeat(indent);
+      const header = indent === 0 ? `Thread: ${t.title}\n` : `${prefix}Child thread: ${t.title}\n`;
+      const msgs = t.messageIds
+        .map(id => get().messages[id])
+        .filter(Boolean) as Message[];
+      const msgText = msgs.map(m => {
+        const role = m.role === 'user' ? 'User' : 'AI';
+        return `${prefix}[${role}]: ${m.content}`;
+      }).join('\n');
+      const childText = t.childThreadIds.map(cid => buildCombinedText(cid, indent + 1)).join('\n');
+      return [header, msgText, childText].filter(Boolean).join('\n');
+    }
 
-    const combinedText = toCompact.map(m => {
-      const role = m.role === 'user' ? 'User' : 'AI';
-      return `[${role}]: ${m.content}`;
-    }).join('\n');
+    const combinedText = buildCombinedText(threadId);
+    if (!combinedText.trim()) return;
+
+    const descendantIds = collectDescendantIds(threadId);
 
     try {
       const response = await summarizeMessages({ text: combinedText }, getToken);
@@ -326,7 +363,7 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
       const summaryMessage: Message = {
         id: summaryId,
         role: 'assistant',
-        content: '[Summary]\n' + response.data.rewritten,
+        content: response.data.rewritten,
         threadId,
         isStreaming: false,
         childLeads: [],
@@ -334,19 +371,46 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         createdAt: Date.now(),
       };
 
-      set(state => ({
-        messages: {
-          ...state.messages,
-          [summaryId]: summaryMessage,
-        },
-        threads: {
-          ...state.threads,
-          [threadId]: {
-            ...state.threads[threadId]!,
-            messageIds: [summaryId, ...last3Ids],
-          },
-        },
-      }));
+      const toRemove = new Set(descendantIds);
+
+      set(state => {
+        // Remove all descendant threads from the threads map
+        const newThreads: Record<string, Thread> = {};
+        for (const [id, t] of Object.entries(state.threads)) {
+          if (toRemove.has(id)) continue;
+          newThreads[id] = {
+            ...t,
+            childThreadIds: t.childThreadIds.filter(c => !toRemove.has(c)),
+          };
+        }
+
+        // Replace target thread's messages with a single summary; clear child threads
+        newThreads[threadId] = {
+          ...newThreads[threadId]!,
+          messageIds: [summaryId],
+          childThreadIds: [],
+        };
+
+        // Remove messages from deleted threads and the original thread's messages
+        const removedMsgIds = new Set<string>();
+        for (const [, msg] of Object.entries(state.messages)) {
+          if (toRemove.has(msg.threadId) || msg.threadId === threadId) {
+            removedMsgIds.add(msg.id);
+          }
+        }
+
+        const newMessages: Record<string, Message> = { [summaryId]: summaryMessage };
+        for (const [id, msg] of Object.entries(state.messages)) {
+          if (removedMsgIds.has(id)) continue;
+          // Remove childLeads that pointed to deleted threads
+          newMessages[id] = {
+            ...msg,
+            childLeads: msg.childLeads.filter(cl => !toRemove.has(cl.threadId)),
+          };
+        }
+
+        return { threads: newThreads, messages: newMessages };
+      });
     } catch (err) {
       console.error('[compactThread] failed:', err);
     }

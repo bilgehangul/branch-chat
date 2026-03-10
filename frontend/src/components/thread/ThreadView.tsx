@@ -383,8 +383,44 @@ export function ThreadView() {
                 deleteThread(threadId);
                 void deleteThreadFromDB(threadId, getToken);
               }}
-              onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
-              onCompact={(threadId) => void compactThread(threadId, getToken)}
+              onSummarize={async (threadId) => {
+                // Snapshot child thread count before summarize
+                const beforeChildIds = new Set(
+                  useSessionStore.getState().threads[threadId]?.childThreadIds ?? []
+                );
+                await summarizeThread(threadId, getToken);
+                // Find the newly created summary child thread and persist it
+                const sessionId = useSessionStore.getState().session?.id;
+                if (sessionId) {
+                  const parentThread = useSessionStore.getState().threads[threadId];
+                  for (const cid of (parentThread?.childThreadIds ?? [])) {
+                    if (!beforeChildIds.has(cid)) {
+                      const ct = useSessionStore.getState().threads[cid];
+                      if (ct) {
+                        void createThreadOnBackend({
+                          threadId: cid,
+                          sessionId,
+                          parentThreadId: threadId,
+                          depth: ct.depth,
+                          anchorText: ct.anchorText ?? '',
+                          parentMessageId: ct.parentMessageId,
+                          title: ct.title,
+                          accentColor: ct.accentColor,
+                        }, getToken);
+                      }
+                    }
+                  }
+                }
+              }}
+              onCompact={async (threadId) => {
+                // Snapshot child thread IDs before compact (those will be deleted)
+                const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
+                await compactThread(threadId, getToken);
+                // Fire-and-forget delete each top-level child from backend (DB cascades)
+                for (const cid of childIds) {
+                  void deleteThreadFromDB(cid, getToken);
+                }
+              }}
             />
           )}
         </div>
