@@ -1,16 +1,15 @@
 // backend/src/middleware/rateLimiter.ts
-// Per-user rate limiting using express-rate-limit.
-// keyGenerator: Clerk userId for authenticated requests, req.ip for guests.
+// Per-IP rate limiting. Note: requireApiAuth runs inside apiRouter (after rate limiter),
+// so req.verifiedUser is not available here. Use IP for all rate limiting in Phase 7.
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
-import { getAuth } from '@clerk/express';
+import type { Request } from 'express';
 
 export const apiRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 100,                // 100 requests per 15 min per user/IP
-  keyGenerator: (req) => {
-    const { userId } = getAuth(req);
+  limit: 100,
+  keyGenerator: (req: Request) => {
     const ip = req.ip ?? 'anonymous';
-    return userId ?? (ip === 'anonymous' ? 'anonymous' : ipKeyGenerator(ip));
+    return ip === 'anonymous' ? 'anonymous' : ipKeyGenerator(ip);
   },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
