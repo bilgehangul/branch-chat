@@ -123,7 +123,7 @@ sessionsRouter.post('/', async (req, res) => {
     await User.findOneAndUpdate(
       { googleSub: tokenUser.sub },
       { googleSub: tokenUser.sub, email: tokenUser.email, name: tokenUser.name },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     const session = await Session.create({
