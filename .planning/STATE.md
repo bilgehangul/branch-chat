@@ -243,6 +243,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 1 | add delete thread confirmation dialog | 2026-03-09 | 8a1d9f1 | [1-add-delete-thread-confirmation-dialog](.planning/quick/1-add-delete-thread-confirmation-dialog/) |
 | 2 | delete thread modal + summarize/compact store stubs | 2026-03-09 | 3502fee | [2-the-delete-thread-should-be-like-a-pop-u](.planning/quick/2-the-delete-thread-should-be-like-a-pop-u/) |
+| 3 | Fix EC2 deploy scripts (frontend env + pm2 startup) | 2026-03-09 | 239a79e3 | [3-fix-aws-ec2-deployment-configs-and-tsc-p](.planning/quick/3-fix-aws-ec2-deployment-configs-and-tsc-p/) |
 
 ### Blockers/Concerns
 
