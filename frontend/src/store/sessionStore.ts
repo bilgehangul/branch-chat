@@ -30,6 +30,12 @@ interface SessionState {
   deleteThread: (threadId: string) => void;
   summarizeThread: (threadId: string, getToken: () => Promise<string | null>) => Promise<void>;
   compactThread: (threadId: string, getToken: () => Promise<string | null>) => Promise<void>;
+  hydrateSession: (data: {
+    session: { id: string; createdAt: number };
+    threads: Record<string, Thread>;
+    messages: Record<string, Message>;
+    activeThreadId: string | null;
+  }) => void;
 }
 
 export const useSessionStore = create<SessionState>()((set, get) => ({
@@ -342,6 +348,18 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     } catch (err) {
       console.error('[compactThread] failed:', err);
     }
+  },
+  hydrateSession: ({ session, threads, messages, activeThreadId }) => {
+    set({
+      session: {
+        id: session.id,
+        userId: '', // hydrated sessions belong to the current user; userId set by auth context
+        createdAt: session.createdAt,
+      },
+      threads,
+      messages,
+      activeThreadId,
+    });
   },
 }));
 

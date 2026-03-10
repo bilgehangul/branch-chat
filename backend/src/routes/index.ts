@@ -7,6 +7,7 @@ import { requireApiAuth } from '../middleware/auth.js';
 import { chatRouter } from './chat.js';
 import { simplifyRouter } from './simplify.js';
 import { findSourcesRouter } from './find-sources.js';
+import { sessionsRouter } from './sessions.js';
 
 export const apiRouter = Router();
 
@@ -16,3 +17,4 @@ apiRouter.use(requireApiAuth);
 apiRouter.use('/chat', chatRouter);
 apiRouter.use('/simplify', simplifyRouter);
 apiRouter.use('/find-sources', findSourcesRouter);
+apiRouter.use('/sessions', sessionsRouter);
