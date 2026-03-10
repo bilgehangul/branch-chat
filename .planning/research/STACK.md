@@ -12,7 +12,7 @@
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
-| React | 18.3.x | UI component tree | React 19 was released late 2024 but ecosystem compatibility (Clerk, Framer Motion, react-markdown) is solidly tested against 18. Use 18 to avoid upgrade friction in a greenfield experiment. |
+| React | 18.3.x | UI component tree | React 19 was released late 2024 but ecosystem compatibility (Framer Motion, react-markdown) is solidly tested against 18. Use 18 to avoid upgrade friction in a greenfield experiment. |
 | Vite | 5.x | Build tool + dev server | Standard 2025 React build tool. HMR is instant, ESM-native, no webpack config overhead. `npm create vite@latest` scaffolds correctly. |
 | TypeScript | 5.x | Type safety | Required for maintainable state modeling — thread trees with recursive depth types benefit enormously from TS. |
 
@@ -32,8 +32,8 @@
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
-| @clerk/clerk-react | 5.x | Frontend auth — `<ClerkProvider>`, `useUser`, `useAuth`, `<SignIn>` | Clerk 5 unified the React SDK. Provides pre-built UI components for sign-in/sign-up, plus hooks for JWT retrieval to attach to backend requests. |
-| @clerk/express | 1.x | Backend JWT middleware — `requireAuth()`, `clerkMiddleware()` | The official Clerk SDK for Express. Validates Clerk JWTs on the proxy backend without custom auth logic. Do NOT use the older `@clerk/clerk-sdk-node` — it is deprecated in favor of `@clerk/express`. |
+| google-auth-library | 9.x | Backend Google ID token verification | Official Google OAuth library for Node.js. `OAuth2Client.verifyIdToken()` validates the token and returns user claims (email, sub, name). No custom JWT logic needed. |
+| @react-oauth/google | 0.12.x | Frontend GoogleLogin button + credential response | Provides the `<GoogleLogin>` button component and `useGoogleLogin` hook. Wraps the Google Identity Services script. Pass the credential (ID token string) to the backend for verification. |
 
 ### AI Provider SDK
 
@@ -76,10 +76,10 @@
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
-| Node.js | 20.x LTS | Runtime | LTS version. Use 20 not 22 for Render stability. |
+| Node.js | 20.x LTS | Runtime | LTS version. Use 20 for stability. |
 | Express | 4.19.x | HTTP server + routing | Express 5 was released but ecosystem middleware (body-parser, cors, etc.) is solidly tested on 4. No async error handling improvements in 5 are needed for this scope. Use 4. |
-| cors | 2.x | CORS headers for Vite dev server | Required to allow the Vite dev server (localhost:5173) to call Express (localhost:3001). Configure to allow only the Vercel frontend origin in production. |
-| dotenv | 16.x | Environment variable loading | Load `GEMINI_API_KEY`, `TAVILY_API_KEY`, `CLERK_SECRET_KEY` from `.env`. Use `dotenv/config` import at the top of the entry file. |
+| cors | 2.x | CORS headers for Vite dev server | Required to allow the Vite dev server (localhost:5173) to call Express (localhost:3001). Configure to allow only the nginx-proxied origin in production. |
+| dotenv | 16.x | Environment variable loading | Load `GEMINI_API_KEY`, `TAVILY_API_KEY`, `GOOGLE_CLIENT_ID`, `MONGODB_URI` from `.env`. Use `dotenv/config` import at the top of the entry file. |
 
 ### SSE Streaming
 
@@ -116,8 +116,19 @@
 
 | Service | Purpose | Why |
 |---------|---------|-----|
-| Vercel | Frontend (React/Vite) | Zero-config Vite deployment. Automatic HTTPS, CDN, preview deployments. Free tier sufficient for experiment phase. |
-| Render | Backend (Express) | Simpler than Railway for always-on Express. Free tier has cold starts but is adequate for v1. Set `NODE_ENV=production` and configure environment variables in Render dashboard. |
+| AWS EC2 Ubuntu 22.04 LTS | Hosts both frontend (static files) and backend (Node.js/Express) on a single instance | Single instance eliminates CORS complexity between separate frontend/backend services; t2.micro/t3.micro is free-tier eligible and sufficient for v1 load |
+| nginx | Serves built React static files (dist/) on port 80/443; reverse-proxies /api/* to Express on port 3001 | Standard static file serving + API proxy setup; handles SSL termination with Let's Encrypt certs |
+| PM2 | Node.js process manager for the Express backend | Auto-restart on crash, startup on system reboot (`pm2 startup`), log management |
+| Let's Encrypt + Certbot | Free SSL/TLS certificate | Auto-renewal via cron; nginx plugin handles cert installation and config update |
+
+---
+
+## Database
+
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| MongoDB Atlas | Cloud managed | Stores User, Session, Thread, and Message documents | Managed cloud MongoDB — no self-hosted database infrastructure. Free M0 tier sufficient for v1. Connects via MONGODB_URI env var. |
+| Mongoose | 8.x | ODM for MongoDB | Schema validation, virtuals, and query builder over MongoDB. Defines the four data models (User, Session, Thread, Message). |
 
 ---
 
@@ -130,33 +141,35 @@
 | Search | @tavily/core | openai (Responses API) | OpenAI Responses API web search is only usable when on the OpenAI provider. The abstraction layer should make both interchangeable. Start with Tavily (Gemini path). |
 | State | Zustand | Redux Toolkit | RTK is correct for large teams and complex async flows. For this scope (ephemeral thread tree, no persistence), Zustand is proportionate. |
 | State | Zustand | Jotai | Jotai's atom-per-value model is harder to model a nested thread tree than Zustand's single store slice. |
-| Auth | @clerk/express | jsonwebtoken + manual validation | Clerk handles key rotation, session revocation, and JWT validation automatically. Manual JWT validation is error-prone. |
+| Auth | google-auth-library | @clerk/express | Clerk removed in Phase 7 — Google OAuth is simpler for a single-auth-provider app with no multi-tenant requirements |
 | Build | Vite | Create React App | CRA is deprecated. Vite is the clear successor. |
 | Routing | React Router v6 | TanStack Router | No multi-page routing needed — thread navigation is in-app state, not URL-based (v1). If URL-based deep linking is added later, TanStack Router is worth evaluating. |
 | Markdown | react-markdown | @uiw/react-md-editor | react-markdown is render-only (no editor), which is exactly what's needed. No editor functionality required. |
 | Syntax highlight | react-syntax-highlighter (Prism) | highlight.js direct | Imperative DOM mutation conflicts with React rendering. Use the React wrapper. |
 | CSS | Tailwind CSS | CSS Modules | Both are valid. Tailwind wins here because the gutter layout with dynamic accent colors is easier to prototype with utilities than with module files. |
 | HTTP | Native fetch | axios | No benefit at this complexity level. Axios adds 40KB+ for what `fetch` handles natively. |
+| Deployment | AWS EC2 + nginx | Vercel + Render | Single instance eliminates split-service CORS wiring; EC2 gives full control over nginx config and SSL; no cold start delays |
+| Database | MongoDB Atlas | No persistence (v1 original) | Phase 7 added persistence requirement; Atlas managed cloud avoids self-hosted overhead |
 
 ---
 
 ## Installation
 
 ```bash
-# Frontend (in /client or root)
-npm create vite@latest client -- --template react-ts
-cd client
+# Frontend (in /frontend)
+npm create vite@latest frontend -- --template react-ts
+cd frontend
 npm install react-markdown remark-gfm react-syntax-highlighter
-npm install @clerk/clerk-react
+npm install @react-oauth/google
 npm install zustand
 npm install framer-motion
 npm install clsx tailwind-merge
 npm install -D tailwindcss postcss autoprefixer @types/react-syntax-highlighter
 
-# Backend (in /server)
-mkdir server && cd server
+# Backend (in /backend)
+mkdir backend && cd backend
 npm init -y
-npm install express cors dotenv @google/generative-ai @tavily/core @clerk/express
+npm install express cors dotenv @google/generative-ai @tavily/core google-auth-library mongoose
 npm install -D typescript @types/express @types/node ts-node nodemon
 ```
 
@@ -198,8 +211,8 @@ Switching from Gemini+Tavily to OpenAI+Responses API is then a single environmen
 |---------|------------|-------|
 | @google/generative-ai (vs Vertex AI) | HIGH | Well-documented distinction; direct SDK is unambiguous for API-key use |
 | @tavily/core package name | MEDIUM | Package name `@tavily/core` is what Tavily publishes officially; verify on npmjs.com before install — the ecosystem is newer |
-| @clerk/clerk-react 5.x | HIGH | Clerk 5 launched mid-2024; well within training data |
-| @clerk/express (not clerk-sdk-node) | HIGH | Clerk explicitly deprecated `clerk-sdk-node` in favor of `@clerk/express` |
+| google-auth-library | HIGH | Official Google client library for Node.js; `OAuth2Client.verifyIdToken()` is the standard pattern |
+| @react-oauth/google | HIGH | Most widely used Google OAuth React wrapper; wraps Google Identity Services (GIS) |
 | Framer Motion 11.x | HIGH | v11 released early 2024; stable and widely adopted |
 | React 18 (not 19) | HIGH | React 19 exists but ecosystem compatibility risk is real for a greenfield prototype |
 | Zustand 4.5.x | HIGH | Stable, no major breaking changes expected |
@@ -208,6 +221,7 @@ Switching from Gemini+Tavily to OpenAI+Responses API is then a single environmen
 | Vite 5.x | HIGH | Clear standard; no credible alternative |
 | Express 4.x (not 5) | HIGH | Express 5 released but adoption is very early |
 | Tailwind CSS 3.4.x (not v4) | HIGH | Tailwind v4 entered beta mid-2025; avoid for production greenfield |
+| MongoDB Atlas + Mongoose | HIGH | Standard managed MongoDB + ODM combination; well-documented |
 | eventsource-parser usage | MEDIUM | SSE pattern requires verification — the Gemini SDK async iterable approach means this library may not be needed at all; verify with SDK docs |
 
 ---
@@ -217,6 +231,10 @@ Switching from Gemini+Tavily to OpenAI+Responses API is then a single environmen
 - Training data (August 2025 cutoff): HIGH confidence base for all recommendations
 - External network tools (WebFetch, WebSearch, npm registry) were unavailable during this research session
 - Verify exact patch versions at https://npmjs.com before scaffolding
-- Clerk migration guide: https://clerk.com/docs/upgrade-guides (verify @clerk/express is current name)
+- Google OAuth library docs: https://github.com/googleapis/google-auth-library-nodejs
+- Google Identity Services (frontend): https://developers.google.com/identity/gsi/web
 - Gemini SDK docs: https://ai.google.dev/api/generate-content (verify generateContentStream API)
 - Tavily JS docs: https://docs.tavily.com (verify @tavily/core package name)
+- MongoDB Atlas + Mongoose: https://mongoosejs.com/docs/
+
+*Updated 2026-03-10: Auth updated to Google OAuth (google-auth-library + @react-oauth/google), Deployment updated to AWS EC2 + nginx + PM2 (removed Vercel/Render), Database section added for MongoDB Atlas + Mongoose*
