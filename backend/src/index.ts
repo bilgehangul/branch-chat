@@ -2,6 +2,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import { connectDB } from './db/connection.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
 import { apiRouter } from './routes/index.js';
 
@@ -23,10 +24,15 @@ app.use('/api', apiRateLimiter);
 // 4. Authenticated API routes
 app.use('/api', apiRouter);
 
-// Health check — unauthenticated, not rate limited
+// Health check — unauthenticated
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-// Start server — exported for tests (tests import app directly, not server)
+// Connect to MongoDB then start listening.
+// connectDB() is a no-op when MONGODB_URI is absent (test environments).
+// server is exported synchronously so supertest can import it.
 export const server = app.listen(process.env.PORT ?? 3001, () => {
   console.log(`Backend running on port ${process.env.PORT ?? 3001}`);
 });
+
+// Initiate DB connection after listen (non-blocking for tests)
+connectDB().catch((err) => console.error('[startup] DB connection failed:', err));
