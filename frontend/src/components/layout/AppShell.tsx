@@ -8,13 +8,18 @@ import { useSessionStore } from '../../store/sessionStore';
 import { selectThreadAncestry } from '../../store/selectors';
 import { NetworkBanner } from '../ui/NetworkBanner';
 import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
+import { SessionHistory } from '../history/SessionHistory';
+import type { SessionListItem } from '../../api/sessions';
 
 interface AppShellProps {
   onSignOut: () => void;
   user: AuthUser | null;
+  sessions: SessionListItem[];
+  currentSessionId: string | null;
+  onLoadSession: (sessionId: string) => void;
 }
 
-export function AppShell({ onSignOut, user }: AppShellProps) {
+export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSession }: AppShellProps) {
   const { getToken } = useAuth();
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
@@ -32,6 +37,21 @@ export function AppShell({ onSignOut, user }: AppShellProps) {
     <div className="flex h-screen bg-stone-50 dark:bg-zinc-900 text-stone-900 dark:text-slate-100">
       <NetworkBanner />
       <AuthExpiredBanner />
+
+      {/* Session history sidebar — visible when sessions exist */}
+      {sessions.length > 0 && (
+        <aside className="hidden sm:flex flex-col flex-shrink-0 w-48 border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto">
+          <div className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-slate-500 uppercase tracking-wide border-b border-stone-100 dark:border-zinc-800">
+            History
+          </div>
+          <SessionHistory
+            sessions={sessions}
+            onLoadSession={onLoadSession}
+            currentSessionId={currentSessionId}
+          />
+        </aside>
+      )}
+
       {/* Ancestor peek panels — oldest to newest, left to right */}
       {ancestors.map((thread, idx) => {
         const distFromParent = ancestors.length - 1 - idx;

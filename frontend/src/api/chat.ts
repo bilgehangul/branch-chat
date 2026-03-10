@@ -3,7 +3,17 @@ import type { SseEvent } from '../../../shared/types';
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export async function streamChat(
-  body: { messages: Array<{ role: string; content: string }>; signal?: AbortSignal; systemInstruction?: string },
+  body: {
+    messages: Array<{ role: string; content: string }>;
+    signal?: AbortSignal;
+    systemInstruction?: string;
+    // Persistence fields — sent to backend for save-on-done (optional)
+    sessionId?: string;
+    threadId?: string;
+    userMsgId?: string;
+    aiMsgId?: string;
+    userText?: string;
+  },
   getToken: () => Promise<string | null>,
   onChunk: (text: string) => void,
   onDone: () => void,
@@ -21,6 +31,12 @@ export async function streamChat(
     body: JSON.stringify({
       messages: body.messages,
       ...(body.systemInstruction ? { systemPrompt: body.systemInstruction } : {}),
+      // Persistence fields (optional — backend ignores if absent)
+      ...(body.sessionId ? { sessionId: body.sessionId } : {}),
+      ...(body.threadId ? { threadId: body.threadId } : {}),
+      ...(body.userMsgId ? { userMsgId: body.userMsgId } : {}),
+      ...(body.aiMsgId ? { aiMsgId: body.aiMsgId } : {}),
+      ...(body.userText ? { userText: body.userText } : {}),
     }),
     signal: body.signal,
   });

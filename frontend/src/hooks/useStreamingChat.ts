@@ -19,6 +19,8 @@ export function buildChildSystemPrompt(anchorText: string, parentContext: string
  */
 export function useStreamingChat(getToken: () => Promise<string | null>) {
   const store = useSessionStore();
+  // Get session for persistence fields (read from store state at send time)
+  const sessionRef = { get: () => useSessionStore.getState().session };
   const accRef = useRef('');
   const abortRef = useRef<(() => void) | null>(null);
   const [rateLimitReset, setRateLimitReset] = useState<number | null>(null); // epoch ms
@@ -102,9 +104,22 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     const controller = new AbortController();
     abortRef.current = () => controller.abort();
 
+    // Read session from store at send time for persistence fields
+    const currentSession = sessionRef.get();
+
     try {
       await streamChat(
-        { messages: history, signal: controller.signal, systemInstruction },
+        {
+          messages: history,
+          signal: controller.signal,
+          systemInstruction,
+          // Persistence fields — backend saves user+AI messages after stream completes
+          sessionId: currentSession?.id,
+          threadId: activeThreadId,
+          userMsgId: userMsg.id,
+          aiMsgId,
+          userText: text,
+        },
         getToken,
         (chunk: string) => {
           accRef.current += chunk;
