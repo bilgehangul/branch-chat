@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
 - [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
 - [ ] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, Vercel + Render
+- [ ] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view
 
 ## Phase Details
 
@@ -136,10 +137,29 @@ Plans:
 - [x] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
 - [ ] 06-06-PLAN.md — Deployment checkpoint: Vercel + Render live, CORS wired (depends on 06-04, 06-05)
 
+### Phase 7: Auth Migration + Persistent Storage
+**Goal**: Clerk is fully removed and replaced with Google OAuth; MongoDB Atlas stores sessions, chat threads, and message history so data persists across devices and page refreshes
+**Depends on**: Phase 6
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05
+**Success Criteria** (what must be TRUE):
+  1. User can sign in with Google OAuth and be redirected to the chat interface; Clerk SDK is completely removed from both frontend and backend
+  2. The backend verifies Google ID tokens using google-auth-library on every authenticated API request
+  3. Chat threads, messages, and branch relationships are stored in MongoDB Atlas and survive page refresh
+  4. User's previous chat sessions are listed and loadable from a session history view
+  5. Signing out clears the session token and in-memory state; signing back in restores chat history from MongoDB
+**Plans**: 5 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — Backend Clerk removal: google-auth-library auth middleware, rateLimiter IP-only, index.ts cleanup, auth.test.ts update
+- [ ] 07-02-PLAN.md — Frontend Clerk removal: AuthContext + AuthProvider, SignInButton (GoogleLogin), App.tsx + AppShell rewire, main.tsx, setup.ts
+- [ ] 07-03-PLAN.md — Mongoose connection + four schema models (User, Session, Thread, Message) + sessions test scaffold
+- [ ] 07-04-PLAN.md — Session persistence routes (GET/POST /api/sessions, GET /api/sessions/:id), chat save-on-done, hydrateSession Zustand action, sessions API client
+- [ ] 07-05-PLAN.md — SessionHistory component, App.tsx post-login hydration, chat body enrichment, authContext/app tests, human verification checkpoint
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -149,3 +169,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Branching | 8/8 | Complete   | 2026-03-09 |
 | 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
 | 6. Polish and Deployment | 5/6 | In Progress|  |
+| 7. Auth Migration + Persistent Storage | 0/5 | Planned | |
