@@ -155,6 +155,33 @@ sessionsRouter.post('/', async (req, res) => {
   }
 });
 
+// DELETE /api/sessions/:id — delete session and all its threads + messages
+sessionsRouter.delete('/:id', async (req, res) => {
+  try {
+    const userId = req.verifiedUser!.sub;
+    const sessionId = req.params.id;
+
+    const session = await Session.findById(sessionId).lean();
+    if (!session) {
+      res.status(404).json({ data: null, error: { code: 'NOT_FOUND', message: 'Session not found.' } });
+      return;
+    }
+    if (session.userId !== userId) {
+      res.status(403).json({ data: null, error: { code: 'FORBIDDEN', message: 'Access denied.' } });
+      return;
+    }
+
+    await Thread.deleteMany({ sessionId });
+    await Message.deleteMany({ sessionId });
+    await Session.findByIdAndDelete(sessionId);
+
+    res.json({ data: { deleted: true }, error: null });
+  } catch (err) {
+    console.error('[DELETE /api/sessions/:id]', err);
+    res.status(500).json({ data: null, error: { code: 'INTERNAL_ERROR', message: 'Failed to delete session.' } });
+  }
+});
+
 // ---- Thread mutation routes ------------------------------------------------
 
 export const threadsRouter = Router();

@@ -159,6 +159,11 @@ export function App() {
     setSessionsList(updatedSessions);
   };
 
+  // Remove a session from the local list (after backend delete)
+  const handleRemoveSession = (sessionId: string) => {
+    setSessionsList(prev => prev.filter(s => s.id !== sessionId));
+  };
+
   if (isSignedIn) {
     return (
       <AppShell
@@ -168,6 +173,7 @@ export function App() {
         currentSessionId={session?.id ?? null}
         onLoadSession={handleLoadSession}
         onNewChat={handleNewChat}
+        onRemoveSession={handleRemoveSession}
       />
     );
   }

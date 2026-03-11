@@ -133,6 +133,17 @@ export async function deleteThreadFromDB(
   }
 }
 
+export async function deleteSessionFromDB(
+  sessionId: string,
+  getToken: () => Promise<string | null>
+): Promise<void> {
+  try {
+    await apiFetch(`/api/sessions/${sessionId}`, { method: 'DELETE' }, getToken);
+  } catch {
+    // fire-and-forget
+  }
+}
+
 export async function updateMessageOnBackend(
   messageId: string,
   patch: { annotations?: unknown[]; childLeads?: unknown[] },

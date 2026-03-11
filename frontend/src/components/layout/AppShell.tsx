@@ -10,6 +10,7 @@ import { NetworkBanner } from '../ui/NetworkBanner';
 import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
 import { SessionHistory } from '../history/SessionHistory';
 import type { SessionListItem } from '../../api/sessions';
+import { updateThreadOnBackend, deleteSessionFromDB } from '../../api/sessions';
 import { useResizableSidebar } from '../../hooks/useResizableSidebar';
 
 interface AppShellProps {
@@ -19,9 +20,10 @@ interface AppShellProps {
   currentSessionId: string | null;
   onLoadSession: (sessionId: string) => void;
   onNewChat: () => void;
+  onRemoveSession?: (sessionId: string) => void;
 }
 
-export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSession, onNewChat }: AppShellProps) {
+export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSession, onNewChat, onRemoveSession }: AppShellProps) {
   const { getToken } = useAuth();
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
@@ -31,6 +33,25 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
   const deleteThread = useSessionStore(s => s.deleteThread);
   const summarizeThread = useSessionStore(s => s.summarizeThread);
   const compactThread = useSessionStore(s => s.compactThread);
+
+  // Session-level rename: update root thread title in Zustand + persist to backend
+  const handleRenameSession = (_sessionId: string, title: string) => {
+    // Find the root thread (depth 0) — session title derives from root thread title
+    const rootThread = Object.values(threads).find(t => t.depth === 0);
+    if (rootThread) {
+      useSessionStore.getState().setThreadTitle(rootThread.id, title);
+      void updateThreadOnBackend(rootThread.id, { title }, getToken);
+    }
+  };
+
+  // Session-level delete: remove from backend, update list, navigate away if current
+  const handleDeleteSession = (sessionId: string) => {
+    void deleteSessionFromDB(sessionId, getToken);
+    onRemoveSession?.(sessionId);
+    if (sessionId === currentSessionId) {
+      onNewChat();
+    }
+  };
 
   // Ancestry = [root, ...ancestors, current] — exclude current (last element)
   const ancestry = activeThreadId ? selectThreadAncestry(threads, activeThreadId) : [];
@@ -55,8 +76,6 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
         >
           + New Chat
         </button>
-        {/* TODO: Session-level rename/delete requires backend API support.
-            Pass onRenameSession and onDeleteSession once /api/sessions/:id PATCH/DELETE endpoints exist. */}
         <SessionHistory
           sessions={sessions}
           onLoadSession={onLoadSession}
@@ -64,6 +83,8 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
           threads={threads}
           onNavigateThread={setActiveThread}
           activeThreadId={activeThreadId}
+          onRenameSession={handleRenameSession}
+          onDeleteSession={handleDeleteSession}
         />
         {/* Drag handle for resizing */}
         <div
