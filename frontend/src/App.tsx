@@ -136,6 +136,29 @@ export function App() {
     });
   };
 
+  // Start a new chat: clear current session, create fresh one, persist to backend, refresh list
+  const handleNewChat = async () => {
+    if (!user?.sub) return;
+    clearSession();
+    createSession(user.sub);
+    // Wait a tick for Zustand state to update
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const storeState = useSessionStore.getState();
+    const storeSession = storeState.session;
+    if (storeSession) {
+      const rootThread = Object.values(storeState.threads).find(t => t.depth === 0);
+      if (rootThread) {
+        await createSessionOnBackend(
+          { sessionId: storeSession.id, rootThreadId: rootThread.id },
+          getToken
+        );
+      }
+    }
+    // Refresh session list
+    const updatedSessions = await fetchSessions(getToken);
+    setSessionsList(updatedSessions);
+  };
+
   if (isSignedIn) {
     return (
       <AppShell
@@ -144,6 +167,7 @@ export function App() {
         sessions={sessionsList}
         currentSessionId={session?.id ?? null}
         onLoadSession={handleLoadSession}
+        onNewChat={handleNewChat}
       />
     );
   }

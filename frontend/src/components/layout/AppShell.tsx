@@ -17,9 +17,10 @@ interface AppShellProps {
   sessions: SessionListItem[];
   currentSessionId: string | null;
   onLoadSession: (sessionId: string) => void;
+  onNewChat: () => void;
 }
 
-export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSession }: AppShellProps) {
+export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSession, onNewChat }: AppShellProps) {
   const { getToken } = useAuth();
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
@@ -38,19 +39,25 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
       <NetworkBanner />
       <AuthExpiredBanner />
 
-      {/* Session history sidebar — visible when sessions exist */}
-      {sessions.length > 0 && (
-        <aside className="hidden sm:flex flex-col flex-shrink-0 w-48 border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto">
-          <div className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-slate-500 uppercase tracking-wide border-b border-stone-100 dark:border-zinc-800">
-            History
-          </div>
-          <SessionHistory
-            sessions={sessions}
-            onLoadSession={onLoadSession}
-            currentSessionId={currentSessionId}
-          />
-        </aside>
-      )}
+      {/* Session history sidebar — always visible on sm+ screens */}
+      <aside className="hidden sm:flex flex-col flex-shrink-0 w-48 border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto">
+        <div className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-slate-500 uppercase tracking-wide border-b border-stone-100 dark:border-zinc-800">
+          Chats
+        </div>
+        <button
+          onClick={onNewChat}
+          className="w-full text-left px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors font-medium"
+        >
+          + New Chat
+        </button>
+        <SessionHistory
+          sessions={sessions}
+          onLoadSession={onLoadSession}
+          currentSessionId={currentSessionId}
+          threads={threads}
+          onNavigateThread={setActiveThread}
+        />
+      </aside>
 
       {/* Ancestor peek panels — oldest to newest, left to right */}
       {ancestors.map((thread, idx) => {

@@ -1,21 +1,41 @@
 // frontend/src/components/history/SessionHistory.tsx
-// Lists the user's previous chat sessions (root threads).
-// Clicking a session loads it into the Zustand store via onLoadSession callback.
+// Lists the user's previous chat sessions as a folder-style tree.
+// Active session shows child threads (depth > 0) indented beneath it.
 import type { SessionListItem } from '../../api/sessions';
+import type { Thread } from '../../types/index';
 
 interface SessionHistoryProps {
   sessions: SessionListItem[];
   onLoadSession: (sessionId: string) => void;
   currentSessionId: string | null;
+  threads?: Record<string, Thread>;
+  onNavigateThread?: (threadId: string) => void;
 }
 
-export function SessionHistory({ sessions, onLoadSession, currentSessionId }: SessionHistoryProps) {
+export function SessionHistory({
+  sessions,
+  onLoadSession,
+  currentSessionId,
+  threads,
+  onNavigateThread,
+}: SessionHistoryProps) {
   if (sessions.length === 0) {
     return (
       <div className="text-sm text-stone-500 dark:text-slate-500 px-3 py-2">
         No previous sessions
       </div>
     );
+  }
+
+  // Collect child threads (depth > 0) for the active session
+  const childThreads: Thread[] = [];
+  if (threads) {
+    for (const t of Object.values(threads)) {
+      if (t.depth > 0) {
+        childThreads.push(t);
+      }
+    }
+    // Threads are in insertion order from the store (oldest first)
   }
 
   return (
@@ -39,6 +59,22 @@ export function SessionHistory({ sessions, onLoadSession, currentSessionId }: Se
                 <div className="truncate">{session.title}</div>
                 <div className="text-xs text-stone-400 dark:text-slate-500">{date}</div>
               </button>
+              {/* Show child threads for active session */}
+              {isActive && childThreads.length > 0 && (
+                <ul className="ml-2 mt-1 space-y-0.5">
+                  {childThreads.map((thread) => (
+                    <li key={thread.id}>
+                      <button
+                        onClick={() => onNavigateThread?.(thread.id)}
+                        className="w-full text-left pl-4 pr-2 py-1 rounded text-xs text-stone-600 dark:text-slate-400 truncate hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
+                        title={thread.title}
+                      >
+                        <span className="truncate block">- {thread.title}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           );
         })}
