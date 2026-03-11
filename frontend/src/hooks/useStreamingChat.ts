@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useSessionStore } from '../store/sessionStore';
 import { streamChat } from '../api/chat';
+import { updateThreadOnBackend } from '../api/sessions';
 import type { Message } from '../types/index';
 
 /**
@@ -65,6 +66,8 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     if (isFirstMessage) {
       const title = text.slice(0, 35);
       store.setThreadTitle(activeThreadId, title);
+      // Persist title to backend so it shows in session list on reload
+      void updateThreadOnBackend(activeThreadId, { title }, getToken);
     }
 
     // Add empty AI placeholder message (streaming: true)
