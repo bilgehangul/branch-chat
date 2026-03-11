@@ -34,7 +34,7 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
   const deleteThread = useSessionStore(s => s.deleteThread);
   const summarizeThread = useSessionStore(s => s.summarizeThread);
   const compactThread = useSessionStore(s => s.compactThread);
-  const [operationLoading, setOperationLoading] = useState<string | null>(null);
+  const [, setOperationLoading] = useState<string | null>(null);
 
   // Session-level rename: update root thread title in Zustand + persist to backend
   const handleRenameSession = (_sessionId: string, title: string) => {
