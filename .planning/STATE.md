@@ -288,6 +288,7 @@ None yet.
 | 13 | Fix Google auth double-popup: move GoogleOAuthProvider outside StrictMode | 2026-03-10 | c06091d3 | [13-fix-google-auth-double-popup-and-callbac](.planning/quick/13-fix-google-auth-double-popup-and-callbac/) |
 | 15 | UI adjustments: 35-char thread titles, multi-chat button, folder-style Chats sidebar, reduced pill padding | 2026-03-11 | 2489ff6c | [15-ui-adjustments-thread-naming-multi-chat-](.planning/quick/15-ui-adjustments-thread-naming-multi-chat-/) |
 | 16 | Fix sidebar hierarchy, live chat title update, ActionBubble centering | 2026-03-11 | 8918a263 | [16-fix-sidebar-hierarchy-chat-name-update-a](.planning/quick/16-fix-sidebar-hierarchy-chat-name-update-a/) |
+| 17 | Resizable sidebar with drag handle, 3-dot menu, thread tree collapse | 2026-03-11 | 35d98e3b | [17-resizable-sidebar-with-drag-handle-3-dot](.planning/quick/17-resizable-sidebar-with-drag-handle-3-dot/) |
 
 ### Blockers/Concerns
 
@@ -296,6 +297,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T02:22:33Z
-Stopped at: Completed quick-16 — sidebar hierarchy, live title update, ActionBubble centering
+Last session: 2026-03-11T02:38:00Z
+Stopped at: Completed quick-17 — resizable sidebar, 3-dot menu, thread tree collapse
 Resume file: None
