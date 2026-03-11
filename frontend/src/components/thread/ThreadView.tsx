@@ -10,6 +10,7 @@ import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
 import { GutterColumn } from '../branching/GutterColumn';
+import { HighlightOverlay } from '../branching/HighlightOverlay';
 import { searchSources, toSourceResult } from '../../api/search';
 import { simplifyText } from '../../api/simplify';
 import { createThreadOnBackend, updateThreadOnBackend, deleteThreadFromDB, updateMessageOnBackend } from '../../api/sessions';
@@ -384,6 +385,9 @@ export function ThreadView() {
             {/* Bottom anchor for auto-scroll */}
             <div ref={bottomAnchorRef} />
           </div>
+
+          {/* Highlight overlay: absolutely positioned rects over selected text, scrolls with content */}
+          {bubble && <HighlightOverlay rects={bubble.selectionRects} />}
 
           {/* Branch pills: absolutely positioned inside the relative wrapper, scrolls with content */}
           {activeThread && (
