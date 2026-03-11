@@ -286,6 +286,7 @@ None yet.
 | 11 | Codebase audit fixes: stale Clerk refs in .env.example, dark mode on 6 components, dead rewrite type | 2026-03-10 | 0e2252ea | [11-extensive-codebase-audit-find-and-fix-al](.planning/quick/11-extensive-codebase-audit-find-and-fix-al/) |
 | 12 | Fix Google auth: env validation, email_verified check, token expiration, error logging | 2026-03-10 | ae87816b | [12-fix-google-auth-issues](.planning/quick/12-fix-google-auth-issues/) |
 | 13 | Fix Google auth double-popup: move GoogleOAuthProvider outside StrictMode | 2026-03-10 | c06091d3 | [13-fix-google-auth-double-popup-and-callbac](.planning/quick/13-fix-google-auth-double-popup-and-callbac/) |
+| 15 | UI adjustments: 35-char thread titles, multi-chat button, folder-style Chats sidebar, reduced pill padding | 2026-03-11 | 2489ff6c | [15-ui-adjustments-thread-naming-multi-chat-](.planning/quick/15-ui-adjustments-thread-naming-multi-chat-/) |
 
 ### Blockers/Concerns
 
@@ -294,6 +295,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T17:55:00Z
-Stopped at: Completed quick-12 — Google auth hardening (env validation, email_verified, token expiration)
+Last session: 2026-03-11T02:14:36Z
+Stopped at: Completed quick-15 — UI adjustments (35-char titles, multi-chat, folder sidebar, pill padding)
 Resume file: None
