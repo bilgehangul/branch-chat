@@ -291,6 +291,7 @@ None yet.
 | 17 | Resizable sidebar with drag handle, 3-dot menu, thread tree collapse | 2026-03-11 | 35d98e3b | [17-resizable-sidebar-with-drag-handle-3-dot](.planning/quick/17-resizable-sidebar-with-drag-handle-3-dot/) |
 | 18 | Fix root chat 3-dot menu and first-message title persistence | 2026-03-11 | db20bcee | [18-fix-root-chat-3-dot-menu-missing-title-s](.planning/quick/18-fix-root-chat-3-dot-menu-missing-title-s/) |
 | 19 | Make 3-dot menu always visible + fix chat title "Root" fallback | 2026-03-10 | be90cdb6 | [19-make-3-dot-menu-more-visible-fix-chat-ti](.planning/quick/19-make-3-dot-menu-more-visible-fix-chat-ti/) |
+| 20 | Interactive landing page demo with real app components and 3-depth thread navigation | 2026-03-11 | 2a2a720a | [20-interactive-landing-page-demo-with-navig](.planning/quick/20-interactive-landing-page-demo-with-navig/) |
 
 ### Blockers/Concerns
 
@@ -299,6 +300,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T16:23:26Z
-Stopped at: Completed quick-19 — always-visible 3-dot menu + "Root" title filter + session list refresh
+Last session: 2026-03-11T03:31:43Z
+Stopped at: Completed quick-20 — interactive landing page demo with real app components and 3-depth navigation
 Resume file: None
