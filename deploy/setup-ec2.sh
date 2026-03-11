@@ -5,7 +5,7 @@
 
 set -e
 
-APP_DIR="/var/www/branch-chat"
+APP_DIR="/home/ubuntu/deepdive-chat"
 REPO="https://github.com/bilgehangul/branch-chat.git"
 
 echo "==> Installing Node 20, Nginx, Git"
@@ -16,8 +16,7 @@ echo "==> Installing pm2 globally"
 sudo npm install -g pm2
 
 echo "==> Cloning repo"
-sudo mkdir -p "$APP_DIR"
-sudo chown "$USER":"$USER" "$APP_DIR"
+mkdir -p "$APP_DIR"
 git clone "$REPO" "$APP_DIR"
 
 echo "==> Installing backend dependencies"
@@ -31,24 +30,25 @@ npm install
 echo "==> Writing backend .env"
 cat > "$APP_DIR/backend/.env" << 'EOF'
 # Fill in your real values from the respective dashboards
-CLERK_SECRET_KEY=sk_live_...
+GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
 GEMINI_API_KEY=AIza...
 TAVILY_API_KEY=tvly-...
 AI_PROVIDER=gemini
 PORT=3001
 CLIENT_ORIGIN=http://YOUR_EC2_PUBLIC_IP
+MONGODB_URI=mongodb+srv://YOUR_USER:YOUR_PASS@YOUR_CLUSTER.mongodb.net/deepdive?retryWrites=true&w=majority
 NODE_ENV=production
 EOF
 echo "  !! Edit $APP_DIR/backend/.env with real values"
 
 echo "==> Writing frontend .env.local"
 cat > "$APP_DIR/frontend/.env.local" << 'EOF'
-# Fill in your real Clerk publishable key from Clerk Dashboard > API Keys
-VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+# Fill in your Google OAuth client ID from Google Cloud Console > Credentials
+VITE_GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
 # Leave empty — nginx proxies /api to localhost:3001 on EC2
 VITE_API_BASE_URL=
 EOF
-echo "  !! Edit $APP_DIR/frontend/.env.local with real VITE_CLERK_PUBLISHABLE_KEY before building"
+echo "  !! Edit $APP_DIR/frontend/.env.local with real VITE_GOOGLE_CLIENT_ID before building"
 
 read -rp "Press ENTER after editing both .env files to continue the build..." _
 
@@ -61,14 +61,17 @@ cd "$APP_DIR/frontend"
 npm run build
 
 echo "==> Configuring Nginx"
-sudo cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/conf.d/branch-chat.conf
+sudo cp "$APP_DIR/deploy/nginx.conf" /etc/nginx/conf.d/deepdive-chat.conf
 sudo nginx -t
 sudo systemctl enable nginx
 sudo systemctl restart nginx
 
+echo "==> Creating logs directory"
+mkdir -p "$APP_DIR/logs"
+
 echo "==> Starting backend with pm2"
-cd "$APP_DIR/backend"
-pm2 start dist/index.js --name branch-chat-backend
+cd "$APP_DIR"
+pm2 start "$APP_DIR/ecosystem.config.cjs"
 pm2 save
 sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u "$USER" --hp "$HOME"
 

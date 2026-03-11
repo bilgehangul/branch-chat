@@ -11,12 +11,12 @@ module.exports = {
     {
       name: 'deepdive-backend',
       script: './backend/dist/index.js',
-      cwd: '/home/ubuntu/child_chats_v1',
+      cwd: '/home/ubuntu/deepdive-chat',
       env: {
         NODE_ENV: 'production',
         PORT: 3001,
       },
-      // PM2 will load additional env vars from /home/ubuntu/child_chats_v1/backend/.env
+      // PM2 will load additional env vars from /home/ubuntu/deepdive-chat/backend/.env
       instances: 1,
       autorestart: true,
       watch: false,
