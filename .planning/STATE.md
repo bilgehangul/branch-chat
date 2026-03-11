@@ -290,6 +290,7 @@ None yet.
 | 16 | Fix sidebar hierarchy, live chat title update, ActionBubble centering | 2026-03-11 | 8918a263 | [16-fix-sidebar-hierarchy-chat-name-update-a](.planning/quick/16-fix-sidebar-hierarchy-chat-name-update-a/) |
 | 17 | Resizable sidebar with drag handle, 3-dot menu, thread tree collapse | 2026-03-11 | 35d98e3b | [17-resizable-sidebar-with-drag-handle-3-dot](.planning/quick/17-resizable-sidebar-with-drag-handle-3-dot/) |
 | 18 | Fix root chat 3-dot menu and first-message title persistence | 2026-03-11 | db20bcee | [18-fix-root-chat-3-dot-menu-missing-title-s](.planning/quick/18-fix-root-chat-3-dot-menu-missing-title-s/) |
+| 19 | Make 3-dot menu always visible + fix chat title "Root" fallback | 2026-03-10 | be90cdb6 | [19-make-3-dot-menu-more-visible-fix-chat-ti](.planning/quick/19-make-3-dot-menu-more-visible-fix-chat-ti/) |
 
 ### Blockers/Concerns
 
@@ -298,6 +299,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T02:50:00Z
-Stopped at: Completed quick-18 — root chat 3-dot menu rename/delete + first-message title persistence
+Last session: 2026-03-10T16:23:26Z
+Stopped at: Completed quick-19 — always-visible 3-dot menu + "Root" title filter + session list refresh
 Resume file: None
