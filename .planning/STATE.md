@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 06-06-PLAN.md — nginx+PM2 configs generated, human EC2 deployment checkpoints pending
-last_updated: "2026-03-10T16:22:41.743Z"
+stopped_at: Completed quick-21 — DeepDive renamed to ContextDive + loading indicators
+last_updated: "2026-03-11T03:40:18.345Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 7
@@ -266,6 +266,7 @@ Recent decisions affecting current work:
 - [Phase 06-polish-and-deployment]: Mid-stream error preserves partial AI content in store — setMessageStreaming(false) without clearing content; streamError drives Retry UI separately
 - [Phase 06-06]: nginx /api/chat separate location block with Connection '' header keeps SSE alive; proxy_buffering off on all /api routes for real-time token streaming
 - [Phase 06-06]: ecosystem.config.cjs uses .cjs extension (not .js) — PM2 requires CommonJS module.exports syntax; .js would be treated as ESM if package.json has type:module
+- [Phase quick-21]: operationLoading state managed locally in ThreadView and AppShell (not shared context) for summarize/compact spinner
 
 ### Pending Todos
 
@@ -292,6 +293,7 @@ None yet.
 | 18 | Fix root chat 3-dot menu and first-message title persistence | 2026-03-11 | db20bcee | [18-fix-root-chat-3-dot-menu-missing-title-s](.planning/quick/18-fix-root-chat-3-dot-menu-missing-title-s/) |
 | 19 | Make 3-dot menu always visible + fix chat title "Root" fallback | 2026-03-10 | be90cdb6 | [19-make-3-dot-menu-more-visible-fix-chat-ti](.planning/quick/19-make-3-dot-menu-more-visible-fix-chat-ti/) |
 | 20 | Interactive landing page demo with real app components and 3-depth thread navigation | 2026-03-11 | 2a2a720a | [20-interactive-landing-page-demo-with-navig](.planning/quick/20-interactive-landing-page-demo-with-navig/) |
+| 21 | Rename DeepDive to ContextDive + loading indicators for summarize/compact | 2026-03-11 | 164fe082 | [21-rename-deepdive-to-contextdive-in-tab-ti](.planning/quick/21-rename-deepdive-to-contextdive-in-tab-ti/) |
 
 ### Blockers/Concerns
 
@@ -300,6 +302,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T03:31:43Z
-Stopped at: Completed quick-20 — interactive landing page demo with real app components and 3-depth navigation
+Last session: 2026-03-11T03:40:13.163Z
+Stopped at: Completed quick-21 — DeepDive renamed to ContextDive + loading indicators
 Resume file: None
