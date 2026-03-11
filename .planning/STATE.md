@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed quick-22 — text selection highlight preserved when ActionBubble appears
-last_updated: "2026-03-11T03:40:18.345Z"
+stopped_at: Completed quick-23 — CSS overlay highlight replacing Range save/restore for text selection
+last_updated: "2026-03-11T04:05:33Z"
 last_activity: "2026-03-09 — Phase 3 complete, human verified: streaming, Markdown, Stop, multi-turn, navigation chrome"
 progress:
   total_phases: 7
@@ -295,6 +295,7 @@ None yet.
 | 20 | Interactive landing page demo with real app components and 3-depth thread navigation | 2026-03-11 | 2a2a720a | [20-interactive-landing-page-demo-with-navig](.planning/quick/20-interactive-landing-page-demo-with-navig/) |
 | 21 | Rename DeepDive to ContextDive + loading indicators for summarize/compact | 2026-03-11 | 164fe082 | [21-rename-deepdive-to-contextdive-in-tab-ti](.planning/quick/21-rename-deepdive-to-contextdive-in-tab-ti/) |
 | 22 | Fix text selection highlight disappearing when ActionBubble appears | 2026-03-10 | e7ad077b | [22-fix-text-selection-disappearing-keep-hig](.planning/quick/22-fix-text-selection-disappearing-keep-hig/) |
+| 23 | CSS overlay highlight replacing Range save/restore for text selection | 2026-03-11 | 51d599cb | [23-fix-text-selection-highlight-with-css-cu](.planning/quick/23-fix-text-selection-highlight-with-css-cu/) |
 
 ### Blockers/Concerns
 
@@ -303,6 +304,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T03:40:13.163Z
-Stopped at: Completed quick-22 — text selection highlight preserved when ActionBubble appears
+Last session: 2026-03-11T04:05:33Z
+Stopped at: Completed quick-23 — CSS overlay highlight replacing Range save/restore for text selection
 Resume file: None
