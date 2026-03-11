@@ -289,6 +289,7 @@ None yet.
 | 15 | UI adjustments: 35-char thread titles, multi-chat button, folder-style Chats sidebar, reduced pill padding | 2026-03-11 | 2489ff6c | [15-ui-adjustments-thread-naming-multi-chat-](.planning/quick/15-ui-adjustments-thread-naming-multi-chat-/) |
 | 16 | Fix sidebar hierarchy, live chat title update, ActionBubble centering | 2026-03-11 | 8918a263 | [16-fix-sidebar-hierarchy-chat-name-update-a](.planning/quick/16-fix-sidebar-hierarchy-chat-name-update-a/) |
 | 17 | Resizable sidebar with drag handle, 3-dot menu, thread tree collapse | 2026-03-11 | 35d98e3b | [17-resizable-sidebar-with-drag-handle-3-dot](.planning/quick/17-resizable-sidebar-with-drag-handle-3-dot/) |
+| 18 | Fix root chat 3-dot menu and first-message title persistence | 2026-03-11 | db20bcee | [18-fix-root-chat-3-dot-menu-missing-title-s](.planning/quick/18-fix-root-chat-3-dot-menu-missing-title-s/) |
 
 ### Blockers/Concerns
 
@@ -297,6 +298,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T02:38:00Z
-Stopped at: Completed quick-17 — resizable sidebar, 3-dot menu, thread tree collapse
+Last session: 2026-03-11T02:50:00Z
+Stopped at: Completed quick-18 — root chat 3-dot menu rename/delete + first-message title persistence
 Resume file: None
