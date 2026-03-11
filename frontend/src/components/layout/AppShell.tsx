@@ -55,6 +55,8 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
         >
           + New Chat
         </button>
+        {/* TODO: Session-level rename/delete requires backend API support.
+            Pass onRenameSession and onDeleteSession once /api/sessions/:id PATCH/DELETE endpoints exist. */}
         <SessionHistory
           sessions={sessions}
           onLoadSession={onLoadSession}
