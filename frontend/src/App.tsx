@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import { AppShell } from './components/layout/AppShell';
-import { DemoChat } from './components/demo/DemoChat';
+import { DemoAppShell } from './components/demo/DemoAppShell';
 import { useSessionStore } from './store/sessionStore';
 import { SignInButton } from './components/auth/SignInButton';
 import { fetchSessions, loadSession, createSessionOnBackend } from './api/sessions';
 import type { SessionListItem } from './api/sessions';
 import type { Thread, Message } from './types/index';
+import { DEMO_SESSION, DEMO_THREADS, DEMO_MESSAGES, DEMO_ROOT_THREAD_ID } from './components/demo/demoData';
 
 function SignInModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
@@ -108,6 +109,26 @@ export function App() {
     if (isSignedIn) setIsModalOpen(false);
   }, [isSignedIn]);
 
+  // Hydrate Zustand store with demo data when not signed in
+  const demoHydratedRef = useRef(false);
+  useEffect(() => {
+    if (isSignedIn) {
+      demoHydratedRef.current = false;
+      return;
+    }
+    // Only hydrate when store is empty (no session) and not already hydrated
+    const storeSession = useSessionStore.getState().session;
+    if (!storeSession && !demoHydratedRef.current) {
+      demoHydratedRef.current = true;
+      useSessionStore.getState().hydrateSession({
+        session: DEMO_SESSION,
+        threads: DEMO_THREADS,
+        messages: DEMO_MESSAGES,
+        activeThreadId: DEMO_ROOT_THREAD_ID,
+      });
+    }
+  }, [isSignedIn]);
+
   // Load a session from history
   const handleLoadSession = async (sessionId: string) => {
     const data = await loadSession(sessionId, getToken);
@@ -184,7 +205,7 @@ export function App() {
 
   return (
     <>
-      <DemoChat onSignInClick={() => setIsModalOpen(true)} />
+      <DemoAppShell onSignInClick={() => setIsModalOpen(true)} />
       <SignInModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
