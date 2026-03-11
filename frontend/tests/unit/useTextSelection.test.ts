@@ -16,6 +16,13 @@ describe('useTextSelection', () => {
 
   beforeEach(() => {
     container = document.createElement('div');
+    // Mock container geometry for selectionRects calculation
+    Object.defineProperty(container, 'getBoundingClientRect', {
+      value: () => ({ top: 100, left: 50, right: 850, bottom: 600, width: 800, height: 500 }),
+      configurable: true,
+    });
+    Object.defineProperty(container, 'scrollTop', { value: 0, writable: true, configurable: true });
+    Object.defineProperty(container, 'scrollLeft', { value: 0, writable: true, configurable: true });
     document.body.appendChild(container);
     vi.restoreAllMocks();
   });
@@ -84,7 +91,9 @@ describe('useTextSelection', () => {
 
     const mockRange = {
       getBoundingClientRect: () => ({ top: 100, right: 200, bottom: 120, left: 10, width: 190, height: 20 }),
-      cloneRange: () => mockRange,
+      getClientRects: () => [
+        { top: 100, left: 10, width: 190, height: 20 },
+      ],
     };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
@@ -106,7 +115,7 @@ describe('useTextSelection', () => {
     expect(result.current.bubble).toBeNull();
   });
 
-  it('returns bubble state for valid single-block selection with messageId', async () => {
+  it('returns bubble state with selectionRects for valid single-block selection', async () => {
     const ref = makeContainerRef(container);
     const { result } = renderHook(() => useTextSelection(ref));
 
@@ -121,9 +130,14 @@ describe('useTextSelection', () => {
     container.appendChild(msgEl);
 
     const mockRect = { top: 150, right: 300, bottom: 170, left: 50, width: 250, height: 20 };
+    // getClientRects returns viewport-relative rects; hook converts to container-relative
+    const mockClientRects = [
+      { top: 150, left: 50, width: 250, height: 20 },
+      { top: 170, left: 50, width: 120, height: 20 },
+    ];
     const mockRange = {
       getBoundingClientRect: () => mockRect,
-      cloneRange: () => mockRange,
+      getClientRects: () => mockClientRects,
     };
 
     vi.stubGlobal('getSelection', () => ({
@@ -147,6 +161,61 @@ describe('useTextSelection', () => {
     expect(result.current.bubble?.top).toBe(150);
     // left = rect.left + rect.width / 2 = 50 + 125 = 175
     expect(result.current.bubble?.left).toBe(175);
+
+    // selectionRects: container offset is {top:100, left:50}, scrollTop=0, scrollLeft=0
+    // So relative coords: rect.top - 100, rect.left - 50
+    expect(result.current.bubble?.selectionRects).toEqual([
+      { top: 50, left: 0, width: 250, height: 20 },
+      { top: 70, left: 0, width: 120, height: 20 },
+    ]);
+  });
+
+  it('computes selectionRects accounting for scroll offset', async () => {
+    // Set container scroll offset
+    Object.defineProperty(container, 'scrollTop', { value: 200, writable: true, configurable: true });
+    Object.defineProperty(container, 'scrollLeft', { value: 30, writable: true, configurable: true });
+
+    const ref = makeContainerRef(container);
+    const { result } = renderHook(() => useTextSelection(ref));
+
+    const msgEl = document.createElement('div');
+    msgEl.setAttribute('data-message-id', 'msg-scroll');
+    const paraEl = document.createElement('p');
+    paraEl.setAttribute('data-paragraph-id', '0');
+    const textNode = document.createTextNode('Scrolled text');
+    paraEl.appendChild(textNode);
+    msgEl.appendChild(paraEl);
+    container.appendChild(msgEl);
+
+    const mockRect = { top: 120, right: 250, bottom: 140, left: 80, width: 170, height: 20 };
+    const mockClientRects = [
+      { top: 120, left: 80, width: 170, height: 20 },
+    ];
+    const mockRange = {
+      getBoundingClientRect: () => mockRect,
+      getClientRects: () => mockClientRects,
+    };
+
+    vi.stubGlobal('getSelection', () => ({
+      isCollapsed: false,
+      toString: () => 'Scrolled text',
+      anchorNode: textNode,
+      focusNode: textNode,
+      removeAllRanges: vi.fn(),
+      getRangeAt: () => mockRange,
+    }));
+
+    await act(async () => {
+      container.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+      await new Promise(resolve => setTimeout(resolve, 10));
+    });
+
+    // container rect: {top:100, left:50}, scrollTop=200, scrollLeft=30
+    // relativeTop = 120 - 100 + 200 = 220
+    // relativeLeft = 80 - 50 + 30 = 60
+    expect(result.current.bubble?.selectionRects).toEqual([
+      { top: 220, left: 60, width: 170, height: 20 },
+    ]);
   });
 
   it('clearBubble sets bubble back to null', async () => {
@@ -164,7 +233,9 @@ describe('useTextSelection', () => {
 
     const mockRange = {
       getBoundingClientRect: () => ({ top: 100, right: 200, left: 100, width: 100, height: 20 }),
-      cloneRange: () => mockRange,
+      getClientRects: () => [
+        { top: 100, left: 100, width: 100, height: 20 },
+      ],
     };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
@@ -202,7 +273,9 @@ describe('useTextSelection', () => {
 
     const mockRange = {
       getBoundingClientRect: () => ({ top: 50, right: 100, left: 50, width: 50, height: 20 }),
-      cloneRange: () => mockRange,
+      getClientRects: () => [
+        { top: 50, left: 50, width: 50, height: 20 },
+      ],
     };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,

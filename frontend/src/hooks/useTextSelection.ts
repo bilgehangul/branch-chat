@@ -3,15 +3,26 @@
  *
  * Attaches a mouseup listener to the container ref. On mouseup, validates
  * the current browser selection (single-block only) and surfaces bubble state
- * { anchorText, paragraphId, messageId, top, left } for upstream consumers.
+ * { anchorText, paragraphId, messageId, top, left, selectionRects } for upstream consumers.
  *
  * CRITICAL: anchorText is captured in the mouseup handler, NOT at click time,
  * because the browser collapses the selection when a bubble button receives focus.
  *
+ * The selectionRects array stores DOMRect coordinates relative to the scroll container,
+ * enabling a CSS overlay highlight that persists independently of browser selection
+ * and React re-renders.
+ *
  * Requirements: BRANCH-01, BRANCH-02
  */
 
-import { type RefObject, useState, useEffect, useRef } from 'react';
+import { type RefObject, useState, useEffect } from 'react';
+
+export interface SelectionRect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
 
 export interface SelectionState {
   anchorText: string;
@@ -19,30 +30,13 @@ export interface SelectionState {
   messageId: string;   // id of the Message that contains the selected paragraph
   top: number;         // viewport-relative from getBoundingClientRect().top
   left: number;        // viewport-relative, centered over selection, clamped within viewport
+  selectionRects: SelectionRect[]; // rects relative to scroll container for CSS overlay highlight
 }
 
 export function useTextSelection(
   containerRef: RefObject<HTMLElement | null>
 ): { bubble: SelectionState | null; clearBubble: () => void } {
   const [bubble, setBubble] = useState<SelectionState | null>(null);
-  const savedRangeRef = useRef<Range | null>(null);
-
-  // Restore selection after React re-render when bubble becomes non-null.
-  // React may recreate DOM nodes that the browser Selection anchors reference,
-  // destroying the native highlight. We restore it from the cloned range.
-  useEffect(() => {
-    if (!bubble) return;
-    const frameId = requestAnimationFrame(() => {
-      const sel = window.getSelection();
-      if (sel && savedRangeRef.current) {
-        if (sel.isCollapsed || sel.rangeCount === 0) {
-          sel.removeAllRanges();
-          sel.addRange(savedRangeRef.current);
-        }
-      }
-    });
-    return () => cancelAnimationFrame(frameId);
-  }, [bubble]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -106,8 +100,21 @@ export function useTextSelection(
         const rawLeft = rect.left + rect.width / 2;
         const clampedLeft = Math.max(8, Math.min(rawLeft, window.innerWidth - 200));
 
-        // Clone the range before React re-render so we can restore the highlight
-        savedRangeRef.current = range.cloneRange();
+        // Capture selection rects relative to scroll container for CSS overlay highlight
+        const container = containerRef.current;
+        let selectionRects: SelectionRect[] = [];
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const scrollTop = container.scrollTop;
+          const scrollLeft = container.scrollLeft;
+          const clientRects = range.getClientRects();
+          selectionRects = Array.from(clientRects).map((r) => ({
+            top: r.top - containerRect.top + scrollTop,
+            left: r.left - containerRect.left + scrollLeft,
+            width: r.width,
+            height: r.height,
+          }));
+        }
 
         setBubble({
           anchorText,
@@ -115,6 +122,7 @@ export function useTextSelection(
           messageId,
           top: rect.top,
           left: clampedLeft,
+          selectionRects,
         });
       }, 0);
     }
@@ -129,7 +137,6 @@ export function useTextSelection(
     bubble,
     clearBubble: () => {
       setBubble(null);
-      savedRangeRef.current = null;
     },
   };
 }
