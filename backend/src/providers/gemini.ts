@@ -8,6 +8,10 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 // Free-tier models in priority order — tried in sequence on 503/overload errors.
 // Reduced to 2 reliable models; the preview/pro variants hammer rate limits.
 const FREE_TIER_MODELS = [
+  'gemini-3-flash-preview',
+  'gemini-2.5-pro',
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
 ] as const;
