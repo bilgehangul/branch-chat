@@ -10,6 +10,7 @@ import { NetworkBanner } from '../ui/NetworkBanner';
 import { AuthExpiredBanner } from '../ui/AuthExpiredBanner';
 import { SessionHistory } from '../history/SessionHistory';
 import type { SessionListItem } from '../../api/sessions';
+import { useResizableSidebar } from '../../hooks/useResizableSidebar';
 
 interface AppShellProps {
   onSignOut: () => void;
@@ -25,6 +26,7 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
   const threads = useSessionStore(s => s.threads);
   const messages = useSessionStore(s => s.messages);
   const activeThreadId = useSessionStore(s => s.activeThreadId);
+  const { width: sidebarWidth, onMouseDown: onResizeMouseDown, onTouchStart: onResizeTouchStart, isResizing } = useResizableSidebar();
   const setActiveThread = useSessionStore(s => s.setActiveThread);
   const deleteThread = useSessionStore(s => s.deleteThread);
   const summarizeThread = useSessionStore(s => s.summarizeThread);
@@ -35,12 +37,15 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
   const ancestors = ancestry.slice(0, -1);
 
   return (
-    <div className="flex h-screen bg-stone-50 dark:bg-zinc-900 text-stone-900 dark:text-slate-100">
+    <div className={`flex h-screen bg-stone-50 dark:bg-zinc-900 text-stone-900 dark:text-slate-100${isResizing ? ' select-none cursor-col-resize' : ''}`}>
       <NetworkBanner />
       <AuthExpiredBanner />
 
       {/* Session history sidebar — always visible on sm+ screens */}
-      <aside className="hidden sm:flex flex-col flex-shrink-0 w-48 border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto">
+      <aside
+        className="hidden sm:flex flex-col flex-shrink-0 relative border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto"
+        style={{ width: sidebarWidth }}
+      >
         <div className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-slate-500 uppercase tracking-wide border-b border-stone-100 dark:border-zinc-800">
           Chats
         </div>
@@ -56,6 +61,13 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
           currentSessionId={currentSessionId}
           threads={threads}
           onNavigateThread={setActiveThread}
+          activeThreadId={activeThreadId}
+        />
+        {/* Drag handle for resizing */}
+        <div
+          onMouseDown={onResizeMouseDown}
+          onTouchStart={onResizeTouchStart}
+          className={`absolute right-0 top-0 h-full w-1 cursor-col-resize transition-colors hover:bg-blue-400/50${isResizing ? ' bg-blue-400/60' : ''}`}
         />
       </aside>
 
