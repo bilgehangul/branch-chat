@@ -82,15 +82,17 @@ describe('useTextSelection', () => {
 
     const removeAllRanges = vi.fn();
 
+    const mockRange = {
+      getBoundingClientRect: () => ({ top: 100, right: 200, bottom: 120, left: 10, width: 190, height: 20 }),
+      cloneRange: () => mockRange,
+    };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
       toString: () => 'cross block text',
       anchorNode: block1,
       focusNode: block2,
       removeAllRanges,
-      getRangeAt: () => ({
-        getBoundingClientRect: () => ({ top: 100, right: 200, bottom: 120, left: 10, width: 190, height: 20 }),
-      }),
+      getRangeAt: () => mockRange,
     }));
 
     await act(async () => {
@@ -119,6 +121,10 @@ describe('useTextSelection', () => {
     container.appendChild(msgEl);
 
     const mockRect = { top: 150, right: 300, bottom: 170, left: 50, width: 250, height: 20 };
+    const mockRange = {
+      getBoundingClientRect: () => mockRect,
+      cloneRange: () => mockRange,
+    };
 
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
@@ -126,9 +132,7 @@ describe('useTextSelection', () => {
       anchorNode: textNode,
       focusNode: textNode,
       removeAllRanges: vi.fn(),
-      getRangeAt: () => ({
-        getBoundingClientRect: () => mockRect,
-      }),
+      getRangeAt: () => mockRange,
     }));
 
     await act(async () => {
@@ -141,7 +145,8 @@ describe('useTextSelection', () => {
     expect(result.current.bubble?.paragraphId).toBe('2');
     expect(result.current.bubble?.messageId).toBe('msg-1');
     expect(result.current.bubble?.top).toBe(150);
-    expect(result.current.bubble?.left).toBe(300);
+    // left = rect.left + rect.width / 2 = 50 + 125 = 175
+    expect(result.current.bubble?.left).toBe(175);
   });
 
   it('clearBubble sets bubble back to null', async () => {
@@ -157,15 +162,17 @@ describe('useTextSelection', () => {
     msgEl.appendChild(paraEl);
     container.appendChild(msgEl);
 
+    const mockRange = {
+      getBoundingClientRect: () => ({ top: 100, right: 200, left: 100, width: 100, height: 20 }),
+      cloneRange: () => mockRange,
+    };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
       toString: () => 'Some text',
       anchorNode: textNode,
       focusNode: textNode,
       removeAllRanges: vi.fn(),
-      getRangeAt: () => ({
-        getBoundingClientRect: () => ({ top: 100, right: 200 }),
-      }),
+      getRangeAt: () => mockRange,
     }));
 
     await act(async () => {
@@ -182,7 +189,7 @@ describe('useTextSelection', () => {
     expect(result.current.bubble).toBeNull();
   });
 
-  it('returns empty string messageId when no data-message-id ancestor exists', async () => {
+  it('returns null when no data-message-id ancestor exists', async () => {
     const ref = makeContainerRef(container);
     const { result } = renderHook(() => useTextSelection(ref));
 
@@ -193,15 +200,17 @@ describe('useTextSelection', () => {
     paraEl.appendChild(textNode);
     container.appendChild(paraEl);
 
+    const mockRange = {
+      getBoundingClientRect: () => ({ top: 50, right: 100, left: 50, width: 50, height: 20 }),
+      cloneRange: () => mockRange,
+    };
     vi.stubGlobal('getSelection', () => ({
       isCollapsed: false,
       toString: () => 'Text without message',
       anchorNode: textNode,
       focusNode: textNode,
       removeAllRanges: vi.fn(),
-      getRangeAt: () => ({
-        getBoundingClientRect: () => ({ top: 50, right: 100 }),
-      }),
+      getRangeAt: () => mockRange,
     }));
 
     await act(async () => {
@@ -209,8 +218,8 @@ describe('useTextSelection', () => {
       await new Promise(resolve => setTimeout(resolve, 10));
     });
 
-    expect(result.current.bubble).not.toBeNull();
-    expect(result.current.bubble?.messageId).toBe('');
+    // Hook requires data-message-id ancestor — returns null without one
+    expect(result.current.bubble).toBeNull();
   });
 
   it.todo('handles selection update after bubble is shown');

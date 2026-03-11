@@ -11,7 +11,7 @@
  * Requirements: BRANCH-01, BRANCH-02
  */
 
-import { type RefObject, useState, useEffect } from 'react';
+import { type RefObject, useState, useEffect, useRef } from 'react';
 
 export interface SelectionState {
   anchorText: string;
@@ -25,6 +25,24 @@ export function useTextSelection(
   containerRef: RefObject<HTMLElement | null>
 ): { bubble: SelectionState | null; clearBubble: () => void } {
   const [bubble, setBubble] = useState<SelectionState | null>(null);
+  const savedRangeRef = useRef<Range | null>(null);
+
+  // Restore selection after React re-render when bubble becomes non-null.
+  // React may recreate DOM nodes that the browser Selection anchors reference,
+  // destroying the native highlight. We restore it from the cloned range.
+  useEffect(() => {
+    if (!bubble) return;
+    const frameId = requestAnimationFrame(() => {
+      const sel = window.getSelection();
+      if (sel && savedRangeRef.current) {
+        if (sel.isCollapsed || sel.rangeCount === 0) {
+          sel.removeAllRanges();
+          sel.addRange(savedRangeRef.current);
+        }
+      }
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [bubble]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -88,6 +106,9 @@ export function useTextSelection(
         const rawLeft = rect.left + rect.width / 2;
         const clampedLeft = Math.max(8, Math.min(rawLeft, window.innerWidth - 200));
 
+        // Clone the range before React re-render so we can restore the highlight
+        savedRangeRef.current = range.cloneRange();
+
         setBubble({
           anchorText,
           paragraphId,
@@ -106,6 +127,9 @@ export function useTextSelection(
 
   return {
     bubble,
-    clearBubble: () => setBubble(null),
+    clearBubble: () => {
+      setBubble(null);
+      savedRangeRef.current = null;
+    },
   };
 }

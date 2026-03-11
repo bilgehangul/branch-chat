@@ -93,11 +93,14 @@ export function ActionBubble({
   return (
     <div
       ref={bubbleRef}
+      tabIndex={-1}
+      onMouseDown={(e) => e.preventDefault()}
       className="fixed z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
       style={{
         top: bubble.top,
         left: bubble.left,
         transform: 'translateY(calc(-100% - 8px))',
+        userSelect: 'none',
       }}
     >
       {mode === 'default' ? (
