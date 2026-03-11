@@ -12,6 +12,7 @@ import { SessionHistory } from '../history/SessionHistory';
 import type { SessionListItem } from '../../api/sessions';
 import { updateThreadOnBackend, deleteSessionFromDB } from '../../api/sessions';
 import { useResizableSidebar } from '../../hooks/useResizableSidebar';
+import { useState } from 'react';
 
 interface AppShellProps {
   onSignOut: () => void;
@@ -33,6 +34,7 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
   const deleteThread = useSessionStore(s => s.deleteThread);
   const summarizeThread = useSessionStore(s => s.summarizeThread);
   const compactThread = useSessionStore(s => s.compactThread);
+  const [operationLoading, setOperationLoading] = useState<string | null>(null);
 
   // Session-level rename: update root thread title in Zustand + persist to backend
   const handleRenameSession = (_sessionId: string, title: string) => {
@@ -111,8 +113,14 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
               onClick={() => setActiveThread(thread.id)}
               onNavigate={setActiveThread}
               onDelete={deleteThread}
-              onSummarize={(threadId) => void summarizeThread(threadId, getToken)}
-              onCompact={(threadId) => void compactThread(threadId, getToken)}
+              onSummarize={async (threadId) => {
+                setOperationLoading(threadId);
+                try { await summarizeThread(threadId, getToken); } finally { setOperationLoading(null); }
+              }}
+              onCompact={async (threadId) => {
+                setOperationLoading(threadId);
+                try { await compactThread(threadId, getToken); } finally { setOperationLoading(null); }
+              }}
             />
           </div>
         );

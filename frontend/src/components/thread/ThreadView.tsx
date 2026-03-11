@@ -75,6 +75,9 @@ export function ThreadView() {
   // Text selection bubble state
   const { bubble, clearBubble } = useTextSelection(scrollRef);
 
+  // Loading state for summarize/compact operations
+  const [operationLoading, setOperationLoading] = useState<string | null>(null);
+
   // Ephemeral annotation UI state (NOT in Zustand — doesn't survive thread nav, that's correct)
   const [pendingAnnotation, setPendingAnnotation] = useState<PendingAnnotation | null>(null);
   const [errorAnnotation, setErrorAnnotation] = useState<ErrorAnnotation | null>(null);
@@ -346,6 +349,15 @@ export function ThreadView() {
               isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
             } ${hasChildThreads ? 'pr-[80px] sm:pr-[140px]' : ''}`}
           >
+            {operationLoading && (
+              <div className="flex items-center gap-2 px-4 py-2 text-sm text-stone-500 dark:text-slate-400 bg-stone-100 dark:bg-slate-800 rounded-lg mx-4 mt-2">
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                Processing...
+              </div>
+            )}
             {activeThread ? (
               orderedMessages.length > 0 ? (
                 <MessageList
@@ -386,41 +398,51 @@ export function ThreadView() {
                 void deleteThreadFromDB(threadId, getToken);
               }}
               onSummarize={async (threadId) => {
-                // Snapshot child thread count before summarize
-                const beforeChildIds = new Set(
-                  useSessionStore.getState().threads[threadId]?.childThreadIds ?? []
-                );
-                await summarizeThread(threadId, getToken);
-                // Find the newly created summary child thread and persist it
-                const sessionId = useSessionStore.getState().session?.id;
-                if (sessionId) {
-                  const parentThread = useSessionStore.getState().threads[threadId];
-                  for (const cid of (parentThread?.childThreadIds ?? [])) {
-                    if (!beforeChildIds.has(cid)) {
-                      const ct = useSessionStore.getState().threads[cid];
-                      if (ct) {
-                        void createThreadOnBackend({
-                          threadId: cid,
-                          sessionId,
-                          parentThreadId: threadId,
-                          depth: ct.depth,
-                          anchorText: ct.anchorText ?? '',
-                          parentMessageId: ct.parentMessageId,
-                          title: ct.title,
-                          accentColor: ct.accentColor,
-                        }, getToken);
+                setOperationLoading(threadId);
+                try {
+                  // Snapshot child thread count before summarize
+                  const beforeChildIds = new Set(
+                    useSessionStore.getState().threads[threadId]?.childThreadIds ?? []
+                  );
+                  await summarizeThread(threadId, getToken);
+                  // Find the newly created summary child thread and persist it
+                  const sessionId = useSessionStore.getState().session?.id;
+                  if (sessionId) {
+                    const parentThread = useSessionStore.getState().threads[threadId];
+                    for (const cid of (parentThread?.childThreadIds ?? [])) {
+                      if (!beforeChildIds.has(cid)) {
+                        const ct = useSessionStore.getState().threads[cid];
+                        if (ct) {
+                          void createThreadOnBackend({
+                            threadId: cid,
+                            sessionId,
+                            parentThreadId: threadId,
+                            depth: ct.depth,
+                            anchorText: ct.anchorText ?? '',
+                            parentMessageId: ct.parentMessageId,
+                            title: ct.title,
+                            accentColor: ct.accentColor,
+                          }, getToken);
+                        }
                       }
                     }
                   }
+                } finally {
+                  setOperationLoading(null);
                 }
               }}
               onCompact={async (threadId) => {
-                // Snapshot child thread IDs before compact (those will be deleted)
-                const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
-                await compactThread(threadId, getToken);
-                // Fire-and-forget delete each top-level child from backend (DB cascades)
-                for (const cid of childIds) {
-                  void deleteThreadFromDB(cid, getToken);
+                setOperationLoading(threadId);
+                try {
+                  // Snapshot child thread IDs before compact (those will be deleted)
+                  const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
+                  await compactThread(threadId, getToken);
+                  // Fire-and-forget delete each top-level child from backend (DB cascades)
+                  for (const cid of childIds) {
+                    void deleteThreadFromDB(cid, getToken);
+                  }
+                } finally {
+                  setOperationLoading(null);
                 }
               }}
             />
