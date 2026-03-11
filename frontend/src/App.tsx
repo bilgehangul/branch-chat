@@ -134,6 +134,10 @@ export function App() {
       messages: messagesRecord,
       activeThreadId: data.threads.find(t => t.depth === 0)?.id ?? null,
     });
+
+    // Refresh session list to pick up any title changes from backend
+    const updatedSessions = await fetchSessions(getToken);
+    setSessionsList(updatedSessions);
   };
 
   // Start a new chat: clear current session, create fresh one, persist to backend, refresh list

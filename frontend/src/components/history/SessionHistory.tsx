@@ -48,10 +48,10 @@ function ThreeDotButton({ onClick }: { onClick: (e: React.MouseEvent) => void })
   return (
     <button
       onClick={onClick}
-      className="absolute right-1 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 px-1 py-0.5 rounded text-stone-400 dark:text-slate-500 hover:bg-stone-200 dark:hover:bg-zinc-700 hover:text-stone-600 dark:hover:text-slate-300 transition-all text-xs leading-none"
+      className="absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-1 rounded text-stone-500 dark:text-slate-400 hover:bg-stone-200 dark:hover:bg-zinc-700 hover:text-stone-600 dark:hover:text-slate-300 transition-all text-sm leading-none"
       title="Actions"
     >
-      &#x2026;
+      &#x22EE;
     </button>
   );
 }
@@ -351,7 +351,8 @@ export function SessionHistory({
   const liveTitle =
     liveRootThread &&
     liveRootThread.title &&
-    liveRootThread.title !== 'New chat'
+    liveRootThread.title !== 'New chat' &&
+    liveRootThread.title.toLowerCase() !== 'root'
       ? liveRootThread.title
       : null;
 
