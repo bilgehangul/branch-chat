@@ -18,7 +18,7 @@ export interface SelectionState {
   paragraphId: string;
   messageId: string;   // id of the Message that contains the selected paragraph
   top: number;         // viewport-relative from getBoundingClientRect().top
-  left: number;        // viewport-relative from getBoundingClientRect().right
+  left: number;        // viewport-relative, centered over selection, clamped within viewport
 }
 
 export function useTextSelection(
@@ -84,12 +84,16 @@ export function useTextSelection(
         const anchorText = sel.toString().trim();
         const rect = range.getBoundingClientRect();
 
+        // Center bubble horizontally over selection, clamped within viewport
+        const rawLeft = rect.left + rect.width / 2;
+        const clampedLeft = Math.max(8, Math.min(rawLeft, window.innerWidth - 200));
+
         setBubble({
           anchorText,
           paragraphId,
           messageId,
           top: rect.top,
-          left: rect.right,
+          left: clampedLeft,
         });
       }, 0);
     }
