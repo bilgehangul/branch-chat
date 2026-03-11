@@ -63,7 +63,7 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     store.addMessage(userMsg);
 
     if (isFirstMessage) {
-      const title = text.split(' ').slice(0, 6).join(' ');
+      const title = text.slice(0, 35);
       store.setThreadTitle(activeThreadId, title);
     }
 

@@ -220,7 +220,7 @@ export function ThreadView() {
     if (!bubble || !activeThread || !activeThreadId) return;
     const { anchorText, paragraphId, messageId } = bubble;
     const accentColor = getNextAccentColor(activeThread);
-    const title = anchorText.split(' ').slice(0, 6).join(' ');
+    const title = anchorText.slice(0, 35);
     const newThreadId = createThread({
       parentThreadId: activeThreadId,
       anchorText,
@@ -344,7 +344,7 @@ export function ThreadView() {
           <div
             className={`transition-transform duration-200 ease-out ${
               isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-            } ${hasChildThreads ? 'pr-[120px] sm:pr-[200px]' : ''}`}
+            } ${hasChildThreads ? 'pr-[80px] sm:pr-[140px]' : ''}`}
           >
             {activeThread ? (
               orderedMessages.length > 0 ? (
