@@ -24,7 +24,7 @@ test.describe('navigation', () => {
     const textarea = page.locator('textarea[placeholder="Ask anything..."]');
     await textarea.fill('Navigation breadcrumb test');
     await page.getByRole('button', { name: 'Send' }).click();
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
 
     // Wait for streaming to complete
     await expect(textarea).toBeEnabled({ timeout: 10000 });
@@ -73,7 +73,7 @@ test.describe('navigation', () => {
       const textarea = page.locator('textarea[placeholder="Ask anything..."]');
       await textarea.fill('depth test message');
       await page.getByRole('button', { name: 'Send' }).click();
-      await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+      await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
 
       // Wait for streaming to complete
       await expect(textarea).toBeEnabled({ timeout: 10000 });
@@ -112,7 +112,7 @@ test.describe('navigation', () => {
     const textarea = page.locator('textarea[placeholder="Ask anything..."]');
     await textarea.fill('depth limit check');
     await page.getByRole('button', { name: 'Send' }).click();
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
     await expect(textarea).toBeEnabled({ timeout: 10000 });
 
     const responseEl = page.locator('.prose').first();

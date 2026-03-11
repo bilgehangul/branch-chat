@@ -26,7 +26,7 @@ test.describe('go deeper', () => {
     await page.getByRole('button', { name: 'Send' }).click();
 
     // Wait for AI response text to appear
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
 
     // Wait for streaming to complete (textarea should re-enable)
     await expect(textarea).toBeEnabled({ timeout: 10000 });

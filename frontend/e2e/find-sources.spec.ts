@@ -33,7 +33,7 @@ test.describe('find sources', () => {
     const textarea = page.locator('textarea[placeholder="Ask anything..."]');
     await textarea.fill('Find sources test');
     await page.getByRole('button', { name: 'Send' }).click();
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
 
     // Wait for streaming to complete
     await expect(textarea).toBeEnabled({ timeout: 10000 });
@@ -62,6 +62,6 @@ test.describe('find sources', () => {
     await page.locator('button[aria-label="Expand sources"]').click();
 
     // Source title from fixture should be visible
-    await expect(page.locator('text=DeepDive Research Tool')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=ContextDive Research Tool')).toBeVisible({ timeout: 5000 });
   });
 });

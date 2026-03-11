@@ -72,12 +72,12 @@ test.describe('root chat streaming', () => {
 
     // Type and send a message
     const textarea = page.locator('textarea[placeholder="Ask anything..."]');
-    await textarea.fill('Hello, what is DeepDive?');
+    await textarea.fill('Hello, what is ContextDive?');
 
     // Click send
     await page.getByRole('button', { name: 'Send' }).click();
 
-    // Wait for AI response to appear (fixture contains "DeepDive" text)
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    // Wait for AI response to appear (fixture contains "ContextDive" text)
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
   });
 });

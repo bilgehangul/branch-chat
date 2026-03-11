@@ -1,4 +1,4 @@
-data: {"type":"chunk","text":"**DeepDive**"}
+data: {"type":"chunk","text":"**ContextDive**"}
 
 data: {"type":"chunk","text":" is a tool"}
 

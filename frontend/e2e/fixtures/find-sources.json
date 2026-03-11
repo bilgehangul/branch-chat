@@ -1,6 +1,6 @@
 {
   "results": [
-    { "title": "DeepDive Research Tool", "url": "https://example.com/deepdive", "content": "A tool for branching research conversations." },
+    { "title": "ContextDive Research Tool", "url": "https://example.com/contextdive", "content": "A tool for branching research conversations." },
     { "title": "AI-Powered Research", "url": "https://example.com/ai-research", "content": "Leveraging AI for deeper research." },
     { "title": "Conversational AI", "url": "https://example.com/conv-ai", "content": "Building context-aware conversations." }
   ],

@@ -33,7 +33,7 @@ test.describe('simplify', () => {
     const textarea = page.locator('textarea[placeholder="Ask anything..."]');
     await textarea.fill('Simplify test');
     await page.getByRole('button', { name: 'Send' }).click();
-    await expect(page.locator('text=DeepDive').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ContextDive').first()).toBeVisible({ timeout: 10000 });
 
     // Wait for streaming to complete
     await expect(textarea).toBeEnabled({ timeout: 10000 });

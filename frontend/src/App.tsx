@@ -20,7 +20,7 @@ function SignInModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
         className="bg-white dark:bg-zinc-800 rounded-xl p-8 flex flex-col items-center gap-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-slate-100">Sign in to DeepDive Chat</h2>
+        <h2 className="text-lg font-semibold text-stone-900 dark:text-slate-100">Sign in to ContextDive Chat</h2>
         <SignInButton />
       </div>
     </div>

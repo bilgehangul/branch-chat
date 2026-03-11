@@ -20,6 +20,6 @@ test.describe('auth', () => {
 
   test('page title is set', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/DeepDive|frontend/);
+    await expect(page).toHaveTitle(/ContextDive|frontend/);
   });
 });
