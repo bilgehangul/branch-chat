@@ -2,23 +2,13 @@
 // Tests for Settings modal integration: gear icon, modal open/close, focus trap, BYOK section.
 // PROV-01, PROV-02, PROV-03, XCUT-02
 
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, beforeEach } from 'vitest';
 import React from 'react';
 import { SettingsProvider } from '../contexts/SettingsContext';
+import { AuthProvider } from '../contexts/AuthContext';
 import { SettingsModal } from '../components/settings/SettingsModal';
-
-// Minimal harness that has a gear icon button wired to openModal
-function TestHarness() {
-  const { openModal } = React.useContext(
-    React.createContext({ openModal: () => {} })
-  );
-  // Instead, use the context directly
-  return null;
-}
-
-// Use SettingsProvider + SettingsModal directly, plus a trigger button
 import { useSettings } from '../contexts/SettingsContext';
 
 function GearButton() {
@@ -32,10 +22,12 @@ function GearButton() {
 
 function TestApp() {
   return (
-    <SettingsProvider userId={null}>
-      <GearButton />
-      <SettingsModal />
-    </SettingsProvider>
+    <AuthProvider>
+      <SettingsProvider userId={null}>
+        <GearButton />
+        <SettingsModal />
+      </SettingsProvider>
+    </AuthProvider>
   );
 }
 
