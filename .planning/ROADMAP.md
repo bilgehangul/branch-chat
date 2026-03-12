@@ -49,12 +49,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Annotation cards (SimplificationBlock, CitationBlock) render with correct colors in both light and dark mode
   4. The model label next to AI responses reflects the currently active provider/model, not a hardcoded string
   5. All new interactive elements have aria-labels, keyboard navigation, and focus-visible outlines; existing tests pass with updated DOM structure
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
 - [ ] 08-01: Text selection filtering (TSEL-01 through TSEL-06)
 - [ ] 08-02: Annotation display fixes and light-mode variants (ANNO-01 through ANNO-05)
 - [ ] 08-03: Model label fix, accessibility, and test updates (MSGE-01, XCUT-01 through XCUT-05)
+- [ ] 08-04: Gap closure — correct ANNO-02 and XCUT-02 in REQUIREMENTS.md
 
 ### Phase 9: Layout & Positioning
 **Goal**: Branch pills use CSS Grid layout instead of JS measurement, thread transitions are smooth crossfades, and ancestor panels are redesigned as collapsible hover-expand rails
@@ -122,7 +123,7 @@ Phases execute in numeric order: 1 through 11 (decimal phases inserted between i
 | 5. Inline Annotations | v1.0 | 7/7 | Complete | 2026-03-09 |
 | 6. Polish and Deployment | v1.0 | 6/6 | Complete | 2026-03-10 |
 | 7. Auth Migration + Persistent Storage | v1.0 | 5/5 | Complete | 2026-03-10 |
-| 8. Foundation Fixes | 3/3 | Complete   | 2026-03-12 | - |
+| 8. Foundation Fixes | 3/4 | In progress   | 2026-03-12 | - |
 | 9. Layout & Positioning | v2.0 | 0/3 | Not started | - |
 | 10. Visual Polish | v2.0 | 0/4 | Not started | - |
 | 11. Multi-Provider Settings | v2.0 | 0/4 | Not started | - |
