@@ -103,13 +103,13 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 - [x] **BKND-03**: Free-tier fallback chain narrowed to gemini-2.0-flash → gemini-2.0-flash-lite only
 - [x] **BKND-04**: GeminiProvider constructor accepts apiKey + model parameters (not process.env at module level)
 - [x] **BKND-05**: OpenAIProvider constructor accepts dynamic apiKey + model
-- [ ] **BKND-06**: Anthropic Claude provider implementing AIProvider interface (streamChat, simplify, generateCitationNote)
-- [ ] **BKND-07**: API keys never logged — sanitization middleware redacts byok.apiKey in all logging
-- [ ] **BKND-08**: API keys never persisted — exists only in request handler scope
-- [ ] **BKND-09**: Error responses redact any API key substrings
-- [ ] **BKND-10**: Key format validation rejects malformed keys before hitting third-party APIs
-- [ ] **BKND-11**: Per-user rate limiting for BYOK requests (30 req/min)
-- [ ] **BKND-12**: CORS restricted to app domain only
+- [x] **BKND-06**: Anthropic Claude provider implementing AIProvider interface (streamChat, simplify, generateCitationNote)
+- [x] **BKND-07**: API keys never logged — sanitization middleware redacts byok.apiKey in all logging
+- [x] **BKND-08**: API keys never persisted — exists only in request handler scope
+- [x] **BKND-09**: Error responses redact any API key substrings
+- [x] **BKND-10**: Key format validation rejects malformed keys before hitting third-party APIs
+- [x] **BKND-11**: Per-user rate limiting for BYOK requests (30 req/min)
+- [x] **BKND-12**: CORS restricted to app domain only
 
 ### Cross-Cutting
 
@@ -219,13 +219,13 @@ Deferred beyond v2.0.
 | BKND-03 | Phase 11 | Complete |
 | BKND-04 | Phase 11 | Complete |
 | BKND-05 | Phase 11 | Complete |
-| BKND-06 | Phase 11 | Pending |
-| BKND-07 | Phase 11 | Pending |
-| BKND-08 | Phase 11 | Pending |
-| BKND-09 | Phase 11 | Pending |
-| BKND-10 | Phase 11 | Pending |
-| BKND-11 | Phase 11 | Pending |
-| BKND-12 | Phase 11 | Pending |
+| BKND-06 | Phase 11 | Complete |
+| BKND-07 | Phase 11 | Complete |
+| BKND-08 | Phase 11 | Complete |
+| BKND-09 | Phase 11 | Complete |
+| BKND-10 | Phase 11 | Complete |
+| BKND-11 | Phase 11 | Complete |
+| BKND-12 | Phase 11 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 85 total
