@@ -251,7 +251,7 @@ function ThreadNode({
   menuRef: React.RefObject<HTMLDivElement | null>;
   onRequestDelete: (threadId: string) => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const setThreadTitle = useSessionStore((s) => s.setThreadTitle);
 
   const children = thread.childThreadIds
