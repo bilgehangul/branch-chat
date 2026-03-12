@@ -5,6 +5,7 @@
 import { GeminiProvider } from './providers/gemini.js';
 import { TavilyProvider } from './providers/tavily.js';
 import { OpenAIProvider } from './providers/openai.js';
+import { AnthropicProvider } from './providers/anthropic.js';
 import type { AIProvider, SearchProvider } from './providers/types.js';
 
 // Default providers — created once at startup using server-side API keys
@@ -28,6 +29,6 @@ export function createByokProvider(
 ): AIProvider {
   if (provider === 'gemini') return new GeminiProvider(apiKey, model);
   if (provider === 'openai') return new OpenAIProvider(apiKey, model);
+  if (provider === 'anthropic') return new AnthropicProvider(apiKey, model);
   throw new Error(`Unknown provider: ${provider}`);
-  // anthropic added in plan 11-02
 }
