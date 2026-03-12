@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSessionStore } from '../../store/sessionStore';
 import { useStreamingChat } from '../../hooks/useStreamingChat';
@@ -64,8 +65,6 @@ export function ThreadView() {
 
   // Refs for scroll management
   const scrollRef = useRef<HTMLDivElement>(null);
-  // Ref for the CSS Grid content wrapper
-  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const bottomAnchorRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);
 
@@ -76,7 +75,7 @@ export function ThreadView() {
   const prevActiveThreadIdRef = useRef(activeThreadId);
 
   // Text selection bubble state
-  const { bubble, clearBubble } = useTextSelection(scrollRef, contentWrapperRef);
+  const { bubble, clearBubble } = useTextSelection(scrollRef);
 
   // Persist highlight rects after bubble dismiss (cleared on click elsewhere)
   const lastSelectionRectsRef = useRef<import('../../hooks/useTextSelection').SelectionRect[]>([]);
@@ -454,7 +453,7 @@ export function ThreadView() {
           Pills align to their anchor message's grid row with zero JS measurement.
           The auto column collapses to 0px when no pills exist.
         */}
-        <div ref={contentWrapperRef} className={`grid relative px-4 ${fadeState === 'fading-out' ? 'opacity-0 transition-opacity duration-[75ms]' : fadeState === 'fading-in' ? 'opacity-100 transition-opacity duration-[75ms]' : 'opacity-100'}`} style={{ gridTemplateColumns: '1fr auto' }}>
+        <div className={`grid px-4 ${fadeState === 'fading-out' ? 'opacity-0 transition-opacity duration-[75ms]' : fadeState === 'fading-in' ? 'opacity-100 transition-opacity duration-[75ms]' : 'opacity-100'}`} style={{ gridTemplateColumns: '1fr auto' }}>
           {operationLoading && (
             <div className="col-span-full flex items-center gap-2 px-4 py-2 text-sm text-stone-500 dark:text-slate-400 bg-stone-100 dark:bg-slate-800 rounded-lg mx-4 mt-2">
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -497,53 +496,40 @@ export function ThreadView() {
           )}
           {/* Bottom anchor for auto-scroll */}
           <div ref={bottomAnchorRef} className="col-span-full" />
-
-          {/*
-            Overlay layer: single col-span-full grid row with height:0 and overflow:visible.
-            This means it does NOT add height to the grid but children can position absolutely
-            relative to contentWrapperRef (which has `relative`), allowing overlays to cover
-            content without blocking text selection in the grid cells above.
-          */}
-          <div
-            className="col-span-full"
-            style={{ position: 'relative', height: 0, overflow: 'visible', pointerEvents: 'none' }}
-          >
-            {/* Highlight overlay: rects relative to contentWrapperRef */}
-            {(bubble || lastSelectionRectsRef.current.length > 0) && (
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 10 }}>
-                <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
-              </div>
-            )}
-
-            {/* ActionBubble: positioned inside contentWrapperRef, scrolls with content */}
-            {bubble && activeThread && (
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 20 }}>
-                <div style={{ pointerEvents: 'auto' }}>
-                  <ActionBubble
-                    bubble={{
-                      anchorText: bubble.anchorText,
-                      paragraphId: bubble.paragraphId,
-                      messageId: bubble.messageId,
-                      top: bubble.absoluteTop,
-                      left: bubble.absoluteLeft,
-                    }}
-                    isAtMaxDepth={isAtMaxDepth(activeThread)}
-                    flipped={bubble.absoluteTop < 60}
-                    onGoDeeper={handleGoDeeper}
-                    onFindSources={(anchorText, paragraphId, messageId) =>
-                      void handleFindSources(anchorText, paragraphId, messageId)
-                    }
-                    onSimplify={(anchorText, paragraphId, messageId, mode) =>
-                      void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
-                    }
-                    onDismiss={clearBubble}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
+
+      {/* Portal: ActionBubble + HighlightOverlay rendered outside the grid (position:fixed) */}
+      {bubble && activeThread && createPortal(
+        <ActionBubble
+          bubble={{
+            anchorText: bubble.anchorText,
+            paragraphId: bubble.paragraphId,
+            messageId: bubble.messageId,
+            top: bubble.top,
+            left: bubble.left,
+          }}
+          isAtMaxDepth={isAtMaxDepth(activeThread)}
+          flipped={bubble.top < 80}
+          onGoDeeper={handleGoDeeper}
+          onFindSources={(anchorText, paragraphId, messageId) =>
+            void handleFindSources(anchorText, paragraphId, messageId)
+          }
+          onSimplify={(anchorText, paragraphId, messageId, mode) =>
+            void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
+          }
+          onDismiss={clearBubble}
+        />,
+        document.body
+      )}
+      {(bubble || lastSelectionRectsRef.current.length > 0) && createPortal(
+        <HighlightOverlay
+          rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current}
+          annotationType={undefined}
+          scrollRef={scrollRef}
+        />,
+        document.body
+      )}
 
       {/* Chat input at bottom */}
       <ChatInput

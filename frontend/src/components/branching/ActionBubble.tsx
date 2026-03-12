@@ -1,8 +1,9 @@
 /**
  * ActionBubble component
  *
- * Floating action menu that appears after text selection. Positioned 8px above
- * the selection using position:absolute inside the content wrapper (scrolls with text).
+ * Floating action menu that appears after text selection. Positioned using
+ * position:fixed with viewport-relative coordinates (rendered via React Portal
+ * to document.body so it escapes the CSS Grid and never blocks mouse events).
  *
  * Requirements: BRANCH-02, BRANCH-03, BRANCH-12, INLINE-01, INLINE-05
  *
@@ -100,7 +101,7 @@ export function ActionBubble({
       data-action-bubble
       tabIndex={-1}
       onMouseDown={(e) => e.preventDefault()}
-      className="absolute z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
+      className="fixed z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
       style={{
         top: bubble.top,
         left: bubble.left,
