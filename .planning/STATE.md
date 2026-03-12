@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: completed
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-03-12T04:36:02.586Z"
-last_activity: 2026-03-12 — Completed 09-03 ancestor rail redesign (ANCS-01 through ANCS-06)
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-12T04:37:29Z"
+last_activity: 2026-03-12 — Completed 09-01 CSS Grid pill layout migration (PILL-01, PILL-02, PILL-03)
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 7
-  completed_plans: 5
-  percent: 36
+  completed_plans: 6
+  percent: 43
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 9 of 11 (Layout & Positioning) -- IN PROGRESS
-Plan: 3 of 3 complete (09-03 ancestor rails done)
-Status: 09-03 complete; 09-01 (grid migration) and 09-02 (crossfade) still pending
-Last activity: 2026-03-12 — Completed 09-03 ancestor rail redesign (ANCS-01 through ANCS-06)
+Plan: 2 of 3 complete in current phase (09-01 grid + 09-03 rails done)
+Status: 09-01 and 09-03 complete; 09-02 (crossfade) still pending
+Last activity: 2026-03-12 — Completed 09-01 CSS Grid pill layout migration (PILL-01, PILL-02, PILL-03)
 
-Progress: [█████░░░░░] 36% (v2.0 scope: 5/14 plans)
+Progress: [██████░░░░] 43% (v2.0 scope: 6/14 plans)
 
 ## v1.0 Summary
 
@@ -44,7 +44,7 @@ Shipped: Auth, streaming chat, branching, annotations, dark/light theme, E2E tes
 - Phases: 7
 
 **v2.0:**
-- Plans: 5/14 completed
+- Plans: 6/14 completed
 - Phases: 1/4 completed (Phase 9 in progress)
 
 ## Accumulated Context
@@ -70,6 +70,8 @@ Key decisions carried forward:
 - [Phase 08]: ANNO-02 description corrected to remove caret reference per user locked decision
 - [Phase 09]: Ancestor rail width 28px, overlay 220px — no dynamic sizing
 - [Phase 09]: Branch badge is decorative span (not button) — entire expanded panel clickable to navigate
+- [Phase 09]: CSS Grid (1fr auto) replaces JS measurement for pill alignment — measurePillTop/ResizeObserver removed
+- [Phase 09]: BranchPillCell exported from GutterColumn.tsx — file preserved for import compatibility
 
 ### Pending Todos
 
@@ -77,11 +79,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Branch pill JS measurement drift is the primary motivation for Phase 9 layout redesign
+- Branch pill JS measurement drift resolved in 09-01 (CSS Grid migration)
 - Annotation light-mode colors fixed in 08-02 (indigo-50/stone-50 backgrounds)
 
 ## Session Continuity
 
-Last session: 2026-03-12T04:36:02.583Z
-Stopped at: Completed 09-03-PLAN.md
+Last session: 2026-03-12T04:37:29Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None

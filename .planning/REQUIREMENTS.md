@@ -33,9 +33,9 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Branch Pills
 
-- [ ] **PILL-01**: Branch pills use layout-based positioning (CSS Grid: grid-template-columns 1fr auto) instead of JS absolute positioning
-- [ ] **PILL-02**: Pills are rendered inline within message flow, eliminating JS measurement and ResizeObserver drift
-- [ ] **PILL-03**: Padding pr-[80px]/pr-[140px] always applied regardless of hasChildThreads to prevent layout shift
+- [x] **PILL-01**: Branch pills use layout-based positioning (CSS Grid: grid-template-columns 1fr auto) instead of JS absolute positioning
+- [x] **PILL-02**: Pills are rendered inline within message flow, eliminating JS measurement and ResizeObserver drift
+- [x] **PILL-03**: Padding pr-[80px]/pr-[140px] always applied regardless of hasChildThreads to prevent layout shift
 - [ ] **PILL-04**: Thread transition uses gentle crossfade (opacity fade over 150ms) instead of jarring -100% slide
 - [ ] **PILL-05**: Transition is interruptible — navigating mid-transition cancels current animation
 - [ ] **PILL-06**: Hover preview card uses auto-positioning (Popover/Tooltip) to prevent off-screen overflow
@@ -158,9 +158,9 @@ Deferred beyond v2.0.
 | XCUT-03 | Phase 8 | Complete |
 | XCUT-04 | Phase 8 | Complete |
 | XCUT-05 | Phase 8 | Complete |
-| PILL-01 | Phase 9 | Pending |
-| PILL-02 | Phase 9 | Pending |
-| PILL-03 | Phase 9 | Pending |
+| PILL-01 | Phase 9 | Complete |
+| PILL-02 | Phase 9 | Complete |
+| PILL-03 | Phase 9 | Complete |
 | PILL-04 | Phase 9 | Pending |
 | PILL-05 | Phase 9 | Pending |
 | PILL-06 | Phase 9 | Pending |
