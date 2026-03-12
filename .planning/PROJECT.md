@@ -1,35 +1,60 @@
-# DeepDive Chat
+# ContextDive Chat
 
 ## What This Is
 
-DeepDive Chat is a web-based AI chat interface for researchers, students, and knowledge workers who need to explore complex topics without losing their place or context. The AI's response is a living document — users select text, branch into focused sub-conversations, annotate with sources or rewrites, and navigate back through a visual thread tree. It mirrors how humans naturally read and learn: non-linear, layered, always returnable.
+ContextDive Chat is a web-based AI chat interface for researchers, students, and knowledge workers who need to explore complex topics without losing their place or context. The AI's response is a living document — users select text, branch into focused sub-conversations, annotate with sources or rewrites, and navigate back through a visual thread tree. It mirrors how humans naturally read and learn: non-linear, layered, always returnable.
 
 ## Core Value
 
 A user must be able to branch off any paragraph into a focused child conversation and return to the exact spot in the parent — with a visible lead marker showing where they went and what they found.
 
+## Current Milestone: v2.0 BranchChat Redesign
+
+**Goal:** Comprehensive UI/UX redesign — polished sidebar, ancestor panels, branch pill alignment, text selection fixes, annotation improvements, message rendering polish, and multi-provider BYOK settings.
+
+**Target features:**
+- Polished sidebar with IDE-grade session tree, accent colors, relative dates, hover menus
+- Ancestor peek panels redesigned as collapsible rails with hover expansion
+- Branch pills switched to layout-based positioning (CSS Grid) to eliminate JS drift
+- Text selection filtered to assistant-only messages, ActionBubble scroll-relative
+- Annotation cards with light-mode support, text highlighting, enter animations
+- Message rendering: code copy button, heading hierarchy, table striping, blockquote styling
+- Multi-provider settings: free tier (Gemini Flash 2.0/Lite) + BYOK (Gemini/OpenAI/Anthropic) with encrypted key storage
+
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] User can authenticate with Google OAuth before accessing the chat interface — v1.0
+- [x] User can start a root-level chat thread and receive streaming AI responses — v1.0
+- [x] User can select up to one paragraph of AI response text and see an action bubble — v1.0
+- [x] User can create a child thread ("Go Deeper") from selected text, with slide transition — v1.0
+- [x] User can navigate back to parent threads via breadcrumb bar or left spine — v1.0
+- [x] User can see child lead tags in parent message gutters, anchored to the originating paragraph — v1.0
+- [x] User can find sources for selected text via Tavily (or OpenAI Responses API when on OpenAI) — v1.0
+- [x] User can simplify selected text with 4 modes; toggle back to original — v1.0
+- [x] Thread tree supports up to 5 depth levels; Go Deeper disabled at depth 4 — v1.0
+- [x] Accent colors auto-assigned from 8-color palette per child thread — v1.0
+- [x] Annotated text (simplified or sourced) remains fully re-selectable for any action — v1.0
+- [x] AI provider is abstracted so switching to OpenAI changes only config, not code — v1.0
+- [x] App deployed on AWS EC2 Ubuntu (single instance — nginx serves React static files + reverse-proxies /api to Express on port 3001; PM2 manages Node.js; Let's Encrypt SSL) — v1.0
+- [x] Session history: past chat sessions are loadable from the SessionHistory sidebar (MongoDB Atlas persistence) — v1.0
 
 ### Active
 
-- [ ] User can authenticate with Google OAuth before accessing the chat interface
-- [ ] User can start a root-level chat thread and receive streaming AI responses
-- [ ] User can select up to one paragraph of AI response text and see an action bubble
-- [ ] User can create a child thread ("Go Deeper") from selected text, with slide transition
-- [ ] User can navigate back to parent threads via breadcrumb bar or left spine
-- [ ] User can see child lead tags in parent message gutters, anchored to the originating paragraph
-- [ ] User can find sources for selected text via Tavily (or OpenAI Responses API when on OpenAI)
-- [ ] User can simplify selected text with 4 modes; toggle back to original
-- [ ] Thread tree supports up to 5 depth levels; Go Deeper disabled at depth 4
-- [ ] Accent colors auto-assigned from 8-color palette per child thread
-- [ ] Annotated text (simplified or sourced) remains fully re-selectable for any action
-- [ ] AI provider is abstracted so switching to OpenAI changes only config, not code
-- [ ] App deployed on AWS EC2 Ubuntu (single instance — nginx serves React static files + reverse-proxies /api to Express on port 3001; PM2 manages Node.js; Let's Encrypt SSL)
-- [ ] Session history: past chat sessions are loadable from the SessionHistory sidebar (MongoDB Atlas persistence)
+- [ ] Sidebar redesigned with polished session tree, accent colors, relative dates, hover menus
+- [ ] Ancestor peek panels redesigned as collapsible hover-expand rails
+- [ ] Branch pills use layout-based positioning (no JS measurement drift)
+- [ ] Text selection fires only on assistant message content
+- [ ] ActionBubble positioned scroll-relative (not viewport-fixed)
+- [ ] Annotation cards support light mode with proper color variants
+- [ ] Annotation target text highlighted inline with visual connection to card
+- [ ] Code blocks have copy-to-clipboard button
+- [ ] Message rendering polished: heading hierarchy, list spacing, table striping, blockquote styling
+- [ ] Multi-provider settings: free tier model toggle + BYOK with encrypted key storage
+- [ ] Backend provider factory pattern with per-request BYOK instantiation
+- [ ] Anthropic Claude provider implementation
+- [ ] BYOK security: key encryption, sanitization middleware, format validation, rate limiting
 
 ### Out of Scope
 
@@ -79,4 +104,4 @@ The fundamental design insight is that current AI chat UIs force linear conversa
 | Max 5 thread depth levels | Encourages synthesis before further exploration; prevents infinite nesting | — Pending |
 
 ---
-*Last updated: 2026-03-10 — Updated auth to Google OAuth (removed Clerk); updated deployment to AWS EC2 Ubuntu + nginx + PM2 (removed Vercel/Render); added MongoDB Atlas persistence (shipped Phase 7); removed "Session persistence" from Out of Scope*
+*Last updated: 2026-03-11 after milestone v2.0 BranchChat Redesign initialization*
