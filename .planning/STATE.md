@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: "Checkpoint reached: Task 3 human-verify in 11-04-PLAN.md"
-last_updated: "2026-03-12T17:11:34.725Z"
+stopped_at: Completed 11-04-PLAN.md (Phase 11 complete)
+last_updated: "2026-03-12T17:32:03.193Z"
 last_activity: "2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix"
 progress:
   total_phases: 4
@@ -93,6 +93,8 @@ Key decisions carried forward:
 - [Phase 11-04]: Key masked to ****...last4 after save; clears on focus for re-entry
 - [Phase 11-04]: ByokCredentials injected via spread in streamChat body — zero-cost when tier=free
 - [Phase 11-04]: AuthContext signOut removes byok_key and byok_settings localStorage entries on sign-out
+- [Phase 11-multi-provider-settings]: setByokProvider clears byokApiKey in context so old provider key never bleeds into new provider input
+- [Phase 11-multi-provider-settings]: Manage Keys text button replaces gear icon in AppShell header for clearer affordance
 
 ### Pending Todos
 
@@ -115,6 +117,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T17:11:34.722Z
-Stopped at: Checkpoint reached: Task 3 human-verify in 11-04-PLAN.md
+Last session: 2026-03-12T17:32:03.190Z
+Stopped at: Completed 11-04-PLAN.md (Phase 11 complete)
 Resume file: None
