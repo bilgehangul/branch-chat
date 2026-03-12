@@ -30,11 +30,14 @@ export interface SelectionState {
   messageId: string;   // id of the Message that contains the selected paragraph
   top: number;         // viewport-relative from getBoundingClientRect().top
   left: number;        // viewport-relative, centered over selection, clamped within viewport
+  absoluteTop: number;   // position relative to wrapperRef (for absolute positioning)
+  absoluteLeft: number;  // position relative to wrapperRef (for absolute positioning)
   selectionRects: SelectionRect[]; // rects relative to scroll container for CSS overlay highlight
 }
 
 export function useTextSelection(
-  containerRef: RefObject<HTMLElement | null>
+  containerRef: RefObject<HTMLElement | null>,
+  wrapperRef?: RefObject<HTMLElement | null>
 ): { bubble: SelectionState | null; clearBubble: () => void } {
   const [bubble, setBubble] = useState<SelectionState | null>(null);
 
@@ -129,12 +132,24 @@ export function useTextSelection(
           }));
         }
 
+        // Compute absolute coordinates relative to wrapperRef (for position:absolute bubble)
+        let absoluteTop = rect.top;
+        let absoluteLeft = clampedLeft;
+        if (wrapperRef?.current) {
+          const wrapperRect = wrapperRef.current.getBoundingClientRect();
+          const scrollTop = containerRef.current?.scrollTop ?? 0;
+          absoluteTop = rect.top - wrapperRect.top + scrollTop;
+          absoluteLeft = rawLeft - wrapperRect.left;
+        }
+
         setBubble({
           anchorText,
           paragraphId,
           messageId,
           top: rect.top,
           left: clampedLeft,
+          absoluteTop,
+          absoluteLeft,
           selectionRects,
         });
       }, 0);
@@ -144,7 +159,7 @@ export function useTextSelection(
     return () => {
       el.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [containerRef]);
+  }, [containerRef, wrapperRef]);
 
   return {
     bubble,

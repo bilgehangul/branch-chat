@@ -122,6 +122,7 @@ describe('useTextSelection', () => {
     // Build DOM: container > msgEl[data-message-id] > paraEl[data-paragraph-id] > textNode
     const msgEl = document.createElement('div');
     msgEl.setAttribute('data-message-id', 'msg-1');
+    msgEl.setAttribute('data-message-role', 'assistant');
     const paraEl = document.createElement('p');
     paraEl.setAttribute('data-paragraph-id', '2');
     const textNode = document.createTextNode('Selected text');
@@ -180,6 +181,7 @@ describe('useTextSelection', () => {
 
     const msgEl = document.createElement('div');
     msgEl.setAttribute('data-message-id', 'msg-scroll');
+    msgEl.setAttribute('data-message-role', 'assistant');
     const paraEl = document.createElement('p');
     paraEl.setAttribute('data-paragraph-id', '0');
     const textNode = document.createTextNode('Scrolled text');
@@ -224,6 +226,7 @@ describe('useTextSelection', () => {
 
     const msgEl = document.createElement('div');
     msgEl.setAttribute('data-message-id', 'msg-2');
+    msgEl.setAttribute('data-message-role', 'assistant');
     const paraEl = document.createElement('p');
     paraEl.setAttribute('data-paragraph-id', '0');
     const textNode = document.createTextNode('Some text');

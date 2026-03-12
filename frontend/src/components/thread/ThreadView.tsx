@@ -74,7 +74,52 @@ export function ThreadView() {
   const prevActiveThreadIdRef = useRef(activeThreadId);
 
   // Text selection bubble state
-  const { bubble, clearBubble } = useTextSelection(scrollRef);
+  const { bubble, clearBubble } = useTextSelection(scrollRef, contentWrapperRef);
+
+  // Persist highlight rects after bubble dismiss (cleared on click elsewhere)
+  const lastSelectionRectsRef = useRef<import('../../hooks/useTextSelection').SelectionRect[]>([]);
+
+  // Update persisted rects when bubble changes
+  useEffect(() => {
+    if (bubble) {
+      lastSelectionRectsRef.current = bubble.selectionRects;
+    }
+  }, [bubble]);
+
+  // Clear persisted highlight rects when clicking outside the bubble
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      // Don't clear if clicking within a message (user might be re-selecting)
+      const target = e.target as HTMLElement;
+      const inBubble = target.closest?.('[data-action-bubble]');
+      if (inBubble) return;
+
+      // If bubble is already null (dismissed by scroll), clear the overlay
+      if (!bubble) {
+        lastSelectionRectsRef.current = [];
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [bubble]);
+
+  // Scroll-dismiss: dismiss ActionBubble after 100px of scrolling (TSEL-05)
+  const initialScrollTopRef = useRef<number>(0);
+  useEffect(() => {
+    if (!bubble || !scrollRef.current) return;
+    initialScrollTopRef.current = scrollRef.current.scrollTop;
+    const scrollEl = scrollRef.current;
+
+    function handleScrollDismiss() {
+      const delta = Math.abs(scrollEl.scrollTop - initialScrollTopRef.current);
+      if (delta > 100) {
+        clearBubble();
+      }
+    }
+
+    scrollEl.addEventListener('scroll', handleScrollDismiss, { passive: true });
+    return () => scrollEl.removeEventListener('scroll', handleScrollDismiss);
+  }, [bubble, clearBubble]);
 
   // Loading state for summarize/compact operations
   const [operationLoading, setOperationLoading] = useState<string | null>(null);
@@ -387,7 +432,10 @@ export function ThreadView() {
           </div>
 
           {/* Highlight overlay: absolutely positioned rects over selected text, scrolls with content */}
-          {bubble && <HighlightOverlay rects={bubble.selectionRects} />}
+          {/* Persists after bubble dismiss (scroll-dismiss); clears on click elsewhere */}
+          {(bubble || lastSelectionRectsRef.current.length > 0) && (
+            <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
+          )}
 
           {/* Branch pills: absolutely positioned inside the relative wrapper, scrolls with content */}
           {activeThread && (
@@ -451,24 +499,31 @@ export function ThreadView() {
               }}
             />
           )}
+
+          {/* ActionBubble: absolutely positioned inside contentWrapperRef, scrolls with content */}
+          {bubble && activeThread && (
+            <ActionBubble
+              bubble={{
+                anchorText: bubble.anchorText,
+                paragraphId: bubble.paragraphId,
+                messageId: bubble.messageId,
+                top: bubble.absoluteTop,
+                left: bubble.absoluteLeft,
+              }}
+              isAtMaxDepth={isAtMaxDepth(activeThread)}
+              flipped={bubble.absoluteTop < 60}
+              onGoDeeper={handleGoDeeper}
+              onFindSources={(anchorText, paragraphId, messageId) =>
+                void handleFindSources(anchorText, paragraphId, messageId)
+              }
+              onSimplify={(anchorText, paragraphId, messageId, mode) =>
+                void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
+              }
+              onDismiss={clearBubble}
+            />
+          )}
         </div>
       </div>
-
-      {/* ActionBubble: appears on valid text selection when not at max depth */}
-      {bubble && activeThread && (
-        <ActionBubble
-          bubble={bubble}
-          isAtMaxDepth={isAtMaxDepth(activeThread)}
-          onGoDeeper={handleGoDeeper}
-          onFindSources={(anchorText, paragraphId, messageId) =>
-            void handleFindSources(anchorText, paragraphId, messageId)
-          }
-          onSimplify={(anchorText, paragraphId, messageId, mode) =>
-            void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
-          }
-          onDismiss={clearBubble}
-        />
-      )}
 
       {/* Chat input at bottom */}
       <ChatInput

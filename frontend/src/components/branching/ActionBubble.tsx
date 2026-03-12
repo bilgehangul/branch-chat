@@ -2,7 +2,7 @@
  * ActionBubble component
  *
  * Floating action menu that appears after text selection. Positioned 8px above
- * the top-right of the selection using position:fixed.
+ * the selection using position:absolute inside the content wrapper (scrolls with text).
  *
  * Requirements: BRANCH-02, BRANCH-03, BRANCH-12, INLINE-01, INLINE-05
  *
@@ -33,6 +33,8 @@ export interface ActionBubbleProps {
     left: number;
   };
   isAtMaxDepth: boolean;
+  /** When true, bubble renders below the selection instead of above */
+  flipped?: boolean;
   onGoDeeper: (anchorText: string, paragraphId: string) => void;
   onFindSources: (anchorText: string, paragraphId: string, messageId: string) => void;
   onSimplify: (anchorText: string, paragraphId: string, messageId: string, mode: SimplifyMode) => void;
@@ -42,6 +44,7 @@ export interface ActionBubbleProps {
 export function ActionBubble({
   bubble,
   isAtMaxDepth,
+  flipped = false,
   onGoDeeper,
   onFindSources,
   onSimplify,
@@ -93,13 +96,14 @@ export function ActionBubble({
   return (
     <div
       ref={bubbleRef}
+      data-action-bubble
       tabIndex={-1}
       onMouseDown={(e) => e.preventDefault()}
-      className="fixed z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
+      className="absolute z-50 flex flex-col gap-1 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl shadow-lg p-2"
       style={{
         top: bubble.top,
         left: bubble.left,
-        transform: 'translateY(calc(-100% - 8px))',
+        transform: flipped ? 'translateY(8px)' : 'translateY(calc(-100% - 8px))',
         userSelect: 'none',
       }}
     >
