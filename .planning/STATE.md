@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-03-12T03:37:00.000Z"
-last_activity: 2026-03-12 — Completed 08-02 annotation rendering fixes
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-12T03:34:00.000Z"
+last_activity: 2026-03-12 — Completed 08-01 text selection filtering and ActionBubble repositioning
 progress:
   total_phases: 4
   completed_phases: 0
@@ -62,6 +62,8 @@ Key decisions carried forward:
 - Light-mode annotation colors: indigo-50 for simplification, stone-50 for citation
 - Highlight overlay per-type colors: amber 25%, indigo 20%, teal 20% (highlighter pen feel)
 - Inline annotation highlighting wraps first occurrence of targetText per paragraph with per-type tint
+- data-message-role attribute on MessageBlock for DOM-based role filtering of text selection
+- ActionBubble uses position:absolute inside contentWrapperRef (scrolls with text, not fixed)
 
 ### Pending Todos
 
@@ -74,6 +76,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:37:00Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-03-12T03:34:00Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: .planning/phases/08-foundation-fixes/08-03-PLAN.md

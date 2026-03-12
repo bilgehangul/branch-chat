@@ -44,12 +44,12 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Text Selection
 
-- [ ] **TSEL-01**: Text selection only triggers ActionBubble on assistant message content (not user messages, context cards, annotations, or UI elements)
-- [ ] **TSEL-02**: MessageBlock wrapper has data-message-role="assistant" attribute for selection filtering
-- [ ] **TSEL-03**: Annotation blocks, context cards, and UI buttons have data-no-selection attribute
-- [ ] **TSEL-04**: ActionBubble uses position:absolute inside scroll container (not position:fixed) so it scrolls with text
-- [ ] **TSEL-05**: ActionBubble dismisses if user scrolls more than ~100px from selection
-- [ ] **TSEL-06**: Bubble position computed relative to content wrapper (rect.top - wrapperRect.top + scrollTop)
+- [x] **TSEL-01**: Text selection only triggers ActionBubble on assistant message content (not user messages, context cards, annotations, or UI elements)
+- [x] **TSEL-02**: MessageBlock wrapper has data-message-role="assistant" attribute for selection filtering
+- [x] **TSEL-03**: Annotation blocks, context cards, and UI buttons have data-no-selection attribute
+- [x] **TSEL-04**: ActionBubble uses position:absolute inside scroll container (not position:fixed) so it scrolls with text
+- [x] **TSEL-05**: ActionBubble dismisses if user scrolls more than ~100px from selection
+- [x] **TSEL-06**: Bubble position computed relative to content wrapper (rect.top - wrapperRect.top + scrollTop)
 
 ### Annotations
 
@@ -141,12 +141,12 @@ Deferred beyond v2.0.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| TSEL-01 | Phase 8 | Pending |
-| TSEL-02 | Phase 8 | Pending |
-| TSEL-03 | Phase 8 | Pending |
-| TSEL-04 | Phase 8 | Pending |
-| TSEL-05 | Phase 8 | Pending |
-| TSEL-06 | Phase 8 | Pending |
+| TSEL-01 | Phase 8 | Complete |
+| TSEL-02 | Phase 8 | Complete |
+| TSEL-03 | Phase 8 | Complete |
+| TSEL-04 | Phase 8 | Complete |
+| TSEL-05 | Phase 8 | Complete |
+| TSEL-06 | Phase 8 | Complete |
 | ANNO-01 | Phase 8 | Complete |
 | ANNO-02 | Phase 8 | Complete |
 | ANNO-03 | Phase 8 | Complete |
