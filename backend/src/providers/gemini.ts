@@ -4,11 +4,12 @@ import { GoogleGenAI } from '@google/genai';
 import type { AIProvider, Message, SearchResult } from './types.js';
 
 // Free-tier models in priority order — tried in sequence on 503/overload errors.
-// Narrowed to 2 reliable models; preview/pro variants hammer rate limits.
-// TODO: Update FREE_TIER_MODELS when gemini-2.0-flash retires (June 2026)
+// Keep at least 4 models so transient quota hits don't exhaust the list.
 export const FREE_TIER_MODELS = [
+  'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
+  'gemini-1.5-flash',
 ] as const;
 
 export const SIMPLIFY_PROMPTS: Record<string, string> = {
@@ -74,29 +75,31 @@ export class GeminiProvider implements AIProvider {
       return;
     }
 
-    // No model set — iterate FREE_TIER_MODELS with fallback
+    // No model set — iterate FREE_TIER_MODELS with fallback, 2 attempts each
     let lastErr: Error | null = null;
     for (const model of FREE_TIER_MODELS) {
-      if (signal?.aborted) { onDone(); return; }
-      try {
-        const response = await this.ai.models.generateContentStream({
-          model,
-          contents,
-          config: { systemInstruction: systemPrompt || undefined },
-        });
+      for (let attempt = 0; attempt < 2; attempt++) {
+        if (signal?.aborted) { onDone(); return; }
+        try {
+          const response = await this.ai.models.generateContentStream({
+            model,
+            contents,
+            config: { systemInstruction: systemPrompt || undefined },
+          });
 
-        for await (const chunk of response) {
-          if (signal?.aborted) break;
-          const text = chunk.text;
-          if (text) onChunk(text);
+          for await (const chunk of response) {
+            if (signal?.aborted) break;
+            const text = chunk.text;
+            if (text) onChunk(text);
+          }
+          onDone();
+          return;
+        } catch (err) {
+          lastErr = err instanceof Error ? err : new Error(String(err));
+          if (!isRetryableError(err)) { onError(lastErr); return; }
+          console.warn(`[GeminiProvider] ${model} unavailable (attempt ${attempt + 1}/2), ${attempt === 0 ? 'retrying...' : 'trying next model...'}`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
         }
-        onDone();
-        return;
-      } catch (err) {
-        lastErr = err instanceof Error ? err : new Error(String(err));
-        if (!isRetryableError(err)) break; // non-retryable: fail immediately
-        console.warn(`[GeminiProvider] ${model} unavailable, trying next model...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
     onError(lastErr ?? new Error('All Gemini models unavailable'));
@@ -116,18 +119,20 @@ export class GeminiProvider implements AIProvider {
 
     let lastErr: Error | null = null;
     for (const model of FREE_TIER_MODELS) {
-      try {
-        const response = await this.ai.models.generateContent({
-          model,
-          contents: `${instruction}\n\nText to rewrite:\n${text}`,
-          config: { systemInstruction: 'You are a writing assistant. Return only the rewritten text, no preamble.' },
-        });
-        return response.text ?? '';
-      } catch (err) {
-        lastErr = err instanceof Error ? err : new Error(String(err));
-        if (!isRetryableError(err)) break;
-        console.warn(`[GeminiProvider] ${model} unavailable for simplify, trying next...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const response = await this.ai.models.generateContent({
+            model,
+            contents: `${instruction}\n\nText to rewrite:\n${text}`,
+            config: { systemInstruction: 'You are a writing assistant. Return only the rewritten text, no preamble.' },
+          });
+          return response.text ?? '';
+        } catch (err) {
+          lastErr = err instanceof Error ? err : new Error(String(err));
+          if (!isRetryableError(err)) throw lastErr;
+          console.warn(`[GeminiProvider] ${model} unavailable for simplify (attempt ${attempt + 1}/2)`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+        }
       }
     }
     throw lastErr ?? new Error('All Gemini models unavailable');
@@ -151,18 +156,20 @@ export class GeminiProvider implements AIProvider {
 
     let lastErr: Error | null = null;
     for (const model of FREE_TIER_MODELS) {
-      try {
-        const response = await this.ai.models.generateContent({
-          model,
-          contents: prompt,
-          config: { systemInstruction: 'You are a research assistant. Return only the citation note.' },
-        });
-        return response.text ?? '';
-      } catch (err) {
-        lastErr = err instanceof Error ? err : new Error(String(err));
-        if (!isRetryableError(err)) break;
-        console.warn(`[GeminiProvider] ${model} unavailable for citation note, trying next...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const response = await this.ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: { systemInstruction: 'You are a research assistant. Return only the citation note.' },
+          });
+          return response.text ?? '';
+        } catch (err) {
+          lastErr = err instanceof Error ? err : new Error(String(err));
+          if (!isRetryableError(err)) throw lastErr;
+          console.warn(`[GeminiProvider] ${model} unavailable for citation note (attempt ${attempt + 1}/2)`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+        }
       }
     }
     throw lastErr ?? new Error('All Gemini models unavailable');
