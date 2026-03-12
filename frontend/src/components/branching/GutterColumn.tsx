@@ -1,42 +1,20 @@
 /**
- * GutterColumn (Inline Branch Pills)
+ * GutterColumn (Branch Pill Components)
  *
- * Pills are absolutely positioned INSIDE the scroll container's content wrapper,
- * so they scroll with the text rather than sitting in a separate fixed column.
+ * Simplified pill components for CSS Grid inline layout.
+ * Pills are rendered inline in grid cells by MessageList — no JS measurement,
+ * no absolute positioning. CSS Grid handles alignment natively.
  *
- * Each pill aligns to the paragraph where the branch was created.
- * Right-click shows a context menu with Delete / Summarize / Compact.
+ * Exports:
+ * - BranchPillCell: renders all pills for a message in a flex column
+ * - LeadPill: individual pill button with preview card and context menu
  *
- * Requirements: BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11
- *
- * KEY DECISIONS:
- * - Positions measured as anchorRect.top - wrapperRect.top (both in viewport coords;
- *   scrollTop cancels out, so no scroll listener needed)
- * - Pills are position:absolute inside a position:relative wrapper — they scroll with content
- * - ResizeObserver (guarded for jsdom) recomputes only on content reflow, not scroll
+ * Requirements: PILL-01, PILL-02, BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useState } from 'react';
 import type { Thread, Message, ChildLead } from '../../types/index';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
-
-// ── DOM measurement ────────────────────────────────────────────────────────
-
-function measurePillTop(
-  messageId: string,
-  paragraphId: string,
-  wrapper: HTMLElement
-): number | null {
-  const anchor = wrapper.querySelector(
-    `[data-message-id="${messageId}"] [data-paragraph-id="${paragraphId}"]`
-  );
-  if (!anchor) return null;
-  const anchorRect = anchor.getBoundingClientRect();
-  const wrapperRect = wrapper.getBoundingClientRect();
-  // anchorRect.top - wrapperRect.top gives content-relative offset.
-  // scrollTop cancels because both elements are in the same scroll container.
-  return anchorRect.top - wrapperRect.top;
-}
 
 // ── Context menu ─────────────────────────────────────────────────────────
 
@@ -52,24 +30,6 @@ interface ContextMenuProps {
 
 function ThreadContextMenu({ x, y, threadId, onDelete, onClose, onSummarize, onCompact }: ContextMenuProps) {
   const [pendingDelete, setPendingDelete] = useState(false);
-  // Use a ref to track pendingDelete so the mousedown handler doesn't capture
-  // a stale closure — if the confirm dialog is open, do not dismiss the menu.
-  const pendingDeleteRef = useRef(false);
-
-  useEffect(() => {
-    pendingDeleteRef.current = pendingDelete;
-  }, [pendingDelete]);
-
-  useEffect(() => {
-    const handler = () => {
-      // Don't dismiss the context menu while the confirm dialog is open —
-      // the dialog overlay's own mousedown would fire first and we'd lose the dialog.
-      if (pendingDeleteRef.current) return;
-      onClose();
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [onClose]);
 
   return (
     <>
@@ -135,7 +95,7 @@ function DescendantPill({
         aria-label={`Navigate to branch: ${threads[threadId]?.title ?? 'Untitled'}`}
         onClick={e => { e.stopPropagation(); onNavigate(threadId); }}
       >
-        <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-[10px]">↳</span>
+        <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-[10px]">&#8627;</span>
         <span className="truncate flex-1 min-w-0">{thread.title.slice(0, 28)}</span>
         <span className="text-[10px] text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
         <span
@@ -156,21 +116,20 @@ function DescendantPill({
   );
 }
 
-// ── LeadPill ─────────────────────────────────────────────────────────────
+// ── LeadPill (inline, no absolute positioning) ───────────────────────────
 
 interface LeadPillProps {
   lead: ChildLead;
   thread: Thread;
   allThreads: Record<string, Thread>;
   messages: Record<string, Message>;
-  top: number;
   onNavigate: (threadId: string) => void;
   onDeleteThread: (threadId: string) => void;
   onSummarize: (threadId: string) => void;
   onCompact: (threadId: string) => void;
 }
 
-function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDeleteThread, onSummarize, onCompact }: LeadPillProps) {
+function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThread, onSummarize, onCompact }: LeadPillProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
@@ -182,23 +141,19 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
   const firstAiMsg = childMessages.find(m => m.role === 'assistant');
   const firstAiLine = firstAiMsg ? firstAiMsg.content.split('\n')[0] : '';
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const pillWidth = isMobile ? 120 : 184;
-  const pillRight = isMobile ? 4 : 8;
-
   return (
-    <div style={{ position: 'absolute', top, right: pillRight, width: pillWidth }}>
+    <div className="relative">
       {/* The lead pill button */}
       <button
-        aria-label={`→ ${thread.title.slice(0, 32)}`}
-        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none ${isMobile ? 'bg-white/90 dark:bg-zinc-800/90' : 'bg-white dark:bg-zinc-800'}`}
+        aria-label={`Go to branch: ${thread.title.slice(0, 32)}`}
+        className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none bg-white dark:bg-zinc-800"
         onClick={() => onNavigate(lead.threadId)}
         onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <span className="text-slate-400 dark:text-zinc-500 flex-shrink-0">→</span>
-        <span className="text-slate-800 dark:text-zinc-100 truncate flex-1 min-w-0">{thread.title.slice(0, 32)}</span>
+        <span className="text-slate-400 dark:text-zinc-500 flex-shrink-0">&rarr;</span>
+        <span className="text-slate-800 dark:text-zinc-100 truncate flex-1 min-w-0">{thread.title.slice(0, 20)}</span>
         <span className="text-xs text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
         <span
           data-testid="accent-pip"
@@ -260,12 +215,10 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
   );
 }
 
-// ── Main component ─────────────────────────────────────────────────────────
+// ── BranchPillCell ────────────────────────────────────────────────────────
 
-export interface GutterColumnProps {
-  /** The position:relative wrapper div inside the scroll container */
-  wrapperRef: React.RefObject<HTMLElement | null>;
-  activeThread: Thread;
+export interface BranchPillCellProps {
+  leads: ChildLead[];
   threads: Record<string, Thread>;
   messages: Record<string, Message>;
   onNavigate: (threadId: string) => void;
@@ -274,78 +227,24 @@ export interface GutterColumnProps {
   onCompact: (threadId: string) => void;
 }
 
-export function GutterColumn({
-  wrapperRef,
-  activeThread,
+/**
+ * BranchPillCell renders all pills for a single message in a flex column.
+ * Used as the grid column 2 cell in the CSS Grid layout.
+ */
+export function BranchPillCell({
+  leads,
   threads,
   messages,
   onNavigate,
   onDeleteThread,
   onSummarize,
   onCompact,
-}: GutterColumnProps) {
-  // BRANCH-08: render nothing when no child threads
-  if (activeThread.childThreadIds.length === 0) return null;
-
-  // Collect all childLeads from every message in the active thread
-  const childLeads = activeThread.messageIds.flatMap(
-    id => messages[id]?.childLeads ?? []
-  );
-
-  // Pill position tracking — stored in ref, never in Zustand
-  const pillPositions = useRef<Record<string, number>>({});
-  const [posVersion, setPosVersion] = useState(0);
-
-  const recomputePositions = useCallback(() => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    let changed = false;
-
-    for (const lead of childLeads) {
-      const containingMessageId = activeThread.messageIds.find(id =>
-        messages[id]?.childLeads.some(cl => cl.threadId === lead.threadId)
-      );
-      if (!containingMessageId) continue;
-
-      const top = measurePillTop(
-        containingMessageId,
-        String(lead.paragraphIndex),
-        wrapper
-      );
-      if (top !== null) {
-        const prev = pillPositions.current[lead.threadId];
-        if (prev === undefined || Math.abs(prev - top) > 1) {
-          pillPositions.current[lead.threadId] = top;
-          changed = true;
-        }
-      }
-    }
-
-    if (changed) setPosVersion(v => v + 1);
-  }, [wrapperRef, childLeads, activeThread.messageIds, messages]);
-
-  // ResizeObserver — guarded for jsdom, observes the content wrapper
-  useEffect(() => {
-    recomputePositions();
-    if (typeof ResizeObserver === 'undefined') return;
-
-    const ro = new ResizeObserver(() => {
-      requestAnimationFrame(recomputePositions);
-    });
-    if (wrapperRef.current) {
-      ro.observe(wrapperRef.current);
-    }
-    return () => ro.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [childLeads.length, posVersion]);
-
-  // Pills are position:absolute inside the relative wrapper — render as fragment
+}: BranchPillCellProps) {
   return (
-    <>
-      {childLeads.map(lead => {
+    <div className="flex flex-col gap-1">
+      {leads.map(lead => {
         const childThread = threads[lead.threadId];
         if (!childThread) return null;
-        const top = pillPositions.current[lead.threadId] ?? 0;
         return (
           <LeadPill
             key={lead.threadId}
@@ -353,7 +252,6 @@ export function GutterColumn({
             thread={childThread}
             allThreads={threads}
             messages={messages}
-            top={top}
             onNavigate={onNavigate}
             onDeleteThread={onDeleteThread}
             onSummarize={onSummarize}
@@ -361,6 +259,6 @@ export function GutterColumn({
           />
         );
       })}
-    </>
+    </div>
   );
 }

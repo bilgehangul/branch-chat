@@ -9,7 +9,6 @@ import { ContextCard } from './ContextCard';
 import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
-import { GutterColumn } from '../branching/GutterColumn';
 import { HighlightOverlay } from '../branching/HighlightOverlay';
 import { searchSources, toSourceResult } from '../../api/search';
 import { simplifyText } from '../../api/simplify';
@@ -29,11 +28,12 @@ type ErrorAnnotation = PendingAnnotation & { retryFn: () => void };
 /**
  * ThreadView
  *
- * Scroll container + auto-scroll + 200ms slide transition + ChatInput wiring.
+ * Scroll container + auto-scroll + ChatInput wiring.
+ * Uses CSS Grid (1fr auto) for message-pill alignment.
  * Also wires useTextSelection and ActionBubble for the "Go Deeper" branching flow.
  *
- * Branch pills (GutterColumn) are absolutely-positioned INSIDE the scroll container's
- * content wrapper so they scroll with the text, aligned to their anchor paragraph.
+ * Branch pills are rendered inline by MessageList in grid column 2,
+ * aligned to their anchor message's grid row. No JS measurement needed.
  *
  * This is the ONLY place useStreamingChat is called.
  */
@@ -64,13 +64,12 @@ export function ThreadView() {
 
   // Refs for scroll management
   const scrollRef = useRef<HTMLDivElement>(null);
-  // Ref for the position:relative inner wrapper (GutterColumn measures relative to this)
+  // Ref for the CSS Grid content wrapper
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const bottomAnchorRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);
 
-  // Slide transition state
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  // Thread transition state (slide removed — crossfade will be added in Plan 09-02)
   const prevActiveThreadIdRef = useRef(activeThreadId);
 
   // Text selection bubble state
@@ -310,7 +309,7 @@ export function ThreadView() {
     }
   }
 
-  // Track activeThreadId changes for scroll save + slide transition
+  // Track activeThreadId changes for scroll save
   useEffect(() => {
     const prevId = prevActiveThreadIdRef.current;
     if (prevId !== activeThreadId) {
@@ -320,12 +319,7 @@ export function ThreadView() {
         void updateThreadOnBackend(prevId, { scrollPosition: scrollRef.current.scrollTop }, getToken);
       }
 
-      // Trigger slide transition
-      setIsTransitioning(true);
-      const timer = setTimeout(() => setIsTransitioning(false), 200);
-
       prevActiveThreadIdRef.current = activeThreadId;
-      return () => clearTimeout(timer);
     }
   }, [activeThreadId, setScrollPosition]);
 
@@ -378,149 +372,144 @@ export function ThreadView() {
     };
   }, []);
 
-  const hasChildThreads = activeThread && activeThread.childThreadIds.length > 0;
+  // Handler wrappers for pill actions (same logic as previously passed to GutterColumn)
+  const handleDeleteThread = (threadId: string) => {
+    deleteThread(threadId);
+    void deleteThreadFromDB(threadId, getToken);
+  };
+
+  const handleSummarize = async (threadId: string) => {
+    setOperationLoading(threadId);
+    try {
+      const beforeChildIds = new Set(
+        useSessionStore.getState().threads[threadId]?.childThreadIds ?? []
+      );
+      await summarizeThread(threadId, getToken);
+      const sessionId = useSessionStore.getState().session?.id;
+      if (sessionId) {
+        const parentThread = useSessionStore.getState().threads[threadId];
+        for (const cid of (parentThread?.childThreadIds ?? [])) {
+          if (!beforeChildIds.has(cid)) {
+            const ct = useSessionStore.getState().threads[cid];
+            if (ct) {
+              void createThreadOnBackend({
+                threadId: cid,
+                sessionId,
+                parentThreadId: threadId,
+                depth: ct.depth,
+                anchorText: ct.anchorText ?? '',
+                parentMessageId: ct.parentMessageId,
+                title: ct.title,
+                accentColor: ct.accentColor,
+              }, getToken);
+            }
+          }
+        }
+      }
+    } finally {
+      setOperationLoading(null);
+    }
+  };
+
+  const handleCompact = async (threadId: string) => {
+    setOperationLoading(threadId);
+    try {
+      const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
+      await compactThread(threadId, getToken);
+      for (const cid of childIds) {
+        void deleteThreadFromDB(cid, getToken);
+      }
+    } finally {
+      setOperationLoading(null);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full">
       {/* Scroll area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {/*
-          position:relative wrapper — GutterColumn pills are absolutely-positioned
-          inside this wrapper so they scroll with content and align to their anchor paragraph.
+          CSS Grid wrapper — messages in column 1, pills in auto-sized column 2.
+          Pills align to their anchor message's grid row with zero JS measurement.
+          The auto column collapses to 0px when no pills exist.
         */}
-        <div ref={contentWrapperRef} className="relative px-4">
-          {/* Slide transition wrapper — right padding reserves space for pills */}
-          <div
-            className={`transition-transform duration-200 ease-out ${
-              isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-            } ${hasChildThreads ? 'pr-[80px] sm:pr-[140px]' : ''}`}
-          >
-            {operationLoading && (
-              <div className="flex items-center gap-2 px-4 py-2 text-sm text-stone-500 dark:text-slate-400 bg-stone-100 dark:bg-slate-800 rounded-lg mx-4 mt-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                </svg>
-                Processing...
-              </div>
-            )}
-            {activeThread ? (
-              orderedMessages.length > 0 ? (
-                <MessageList
-                  messages={orderedMessages}
-                  thread={activeThread}
-                  onTryAnother={handleTryAnother}
-                  pendingAnnotation={pendingAnnotation}
-                  errorAnnotation={errorAnnotation}
-                />
-              ) : (
-                <>
-                  {/* Always show anchor context for child threads even before first message */}
-                  <ContextCard thread={activeThread} />
-                  <div className="flex items-center justify-center h-full min-h-[200px]">
-                    <p className="text-slate-400 text-sm">Ask anything to begin</p>
-                  </div>
-                </>
-              )
+        <div ref={contentWrapperRef} className="grid relative px-4" style={{ gridTemplateColumns: '1fr auto' }}>
+          {operationLoading && (
+            <div className="col-span-full flex items-center gap-2 px-4 py-2 text-sm text-stone-500 dark:text-slate-400 bg-stone-100 dark:bg-slate-800 rounded-lg mx-4 mt-2">
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+              </svg>
+              Processing...
+            </div>
+          )}
+          {activeThread ? (
+            orderedMessages.length > 0 ? (
+              <MessageList
+                messages={orderedMessages}
+                thread={activeThread}
+                threads={threads}
+                allMessages={messages}
+                onNavigate={setActiveThread}
+                onDeleteThread={handleDeleteThread}
+                onSummarize={handleSummarize}
+                onCompact={handleCompact}
+                onTryAnother={handleTryAnother}
+                pendingAnnotation={pendingAnnotation}
+                errorAnnotation={errorAnnotation}
+              />
             ) : (
-              <div className="flex items-center justify-center h-full min-h-[200px]">
-                <p className="text-slate-400 text-sm">Ask anything to begin</p>
-              </div>
-            )}
-            {/* Bottom anchor for auto-scroll */}
-            <div ref={bottomAnchorRef} />
-          </div>
+              <>
+                {/* Always show anchor context for child threads even before first message */}
+                <div className="col-span-full">
+                  <ContextCard thread={activeThread} />
+                </div>
+                <div className="col-span-full flex items-center justify-center h-full min-h-[200px]">
+                  <p className="text-slate-400 text-sm">Ask anything to begin</p>
+                </div>
+              </>
+            )
+          ) : (
+            <div className="col-span-full flex items-center justify-center h-full min-h-[200px]">
+              <p className="text-slate-400 text-sm">Ask anything to begin</p>
+            </div>
+          )}
+          {/* Bottom anchor for auto-scroll */}
+          <div ref={bottomAnchorRef} className="col-span-full" />
 
           {/* Highlight overlay: absolutely positioned rects over selected text, scrolls with content */}
           {/* Persists after bubble dismiss (scroll-dismiss); clears on click elsewhere */}
           {(bubble || lastSelectionRectsRef.current.length > 0) && (
-            <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
-          )}
-
-          {/* Branch pills: absolutely positioned inside the relative wrapper, scrolls with content */}
-          {activeThread && (
-            <GutterColumn
-              wrapperRef={contentWrapperRef}
-              activeThread={activeThread}
-              threads={threads}
-              messages={messages}
-              onNavigate={setActiveThread}
-              onDeleteThread={(threadId) => {
-                deleteThread(threadId);
-                void deleteThreadFromDB(threadId, getToken);
-              }}
-              onSummarize={async (threadId) => {
-                setOperationLoading(threadId);
-                try {
-                  // Snapshot child thread count before summarize
-                  const beforeChildIds = new Set(
-                    useSessionStore.getState().threads[threadId]?.childThreadIds ?? []
-                  );
-                  await summarizeThread(threadId, getToken);
-                  // Find the newly created summary child thread and persist it
-                  const sessionId = useSessionStore.getState().session?.id;
-                  if (sessionId) {
-                    const parentThread = useSessionStore.getState().threads[threadId];
-                    for (const cid of (parentThread?.childThreadIds ?? [])) {
-                      if (!beforeChildIds.has(cid)) {
-                        const ct = useSessionStore.getState().threads[cid];
-                        if (ct) {
-                          void createThreadOnBackend({
-                            threadId: cid,
-                            sessionId,
-                            parentThreadId: threadId,
-                            depth: ct.depth,
-                            anchorText: ct.anchorText ?? '',
-                            parentMessageId: ct.parentMessageId,
-                            title: ct.title,
-                            accentColor: ct.accentColor,
-                          }, getToken);
-                        }
-                      }
-                    }
-                  }
-                } finally {
-                  setOperationLoading(null);
-                }
-              }}
-              onCompact={async (threadId) => {
-                setOperationLoading(threadId);
-                try {
-                  // Snapshot child thread IDs before compact (those will be deleted)
-                  const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
-                  await compactThread(threadId, getToken);
-                  // Fire-and-forget delete each top-level child from backend (DB cascades)
-                  for (const cid of childIds) {
-                    void deleteThreadFromDB(cid, getToken);
-                  }
-                } finally {
-                  setOperationLoading(null);
-                }
-              }}
-            />
+            <div className="col-span-full" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+              <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
+            </div>
           )}
 
           {/* ActionBubble: absolutely positioned inside contentWrapperRef, scrolls with content */}
           {bubble && activeThread && (
-            <ActionBubble
-              bubble={{
-                anchorText: bubble.anchorText,
-                paragraphId: bubble.paragraphId,
-                messageId: bubble.messageId,
-                top: bubble.absoluteTop,
-                left: bubble.absoluteLeft,
-              }}
-              isAtMaxDepth={isAtMaxDepth(activeThread)}
-              flipped={bubble.absoluteTop < 60}
-              onGoDeeper={handleGoDeeper}
-              onFindSources={(anchorText, paragraphId, messageId) =>
-                void handleFindSources(anchorText, paragraphId, messageId)
-              }
-              onSimplify={(anchorText, paragraphId, messageId, mode) =>
-                void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
-              }
-              onDismiss={clearBubble}
-            />
+            <div className="col-span-full" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
+              <div style={{ pointerEvents: 'auto' }}>
+                <ActionBubble
+                  bubble={{
+                    anchorText: bubble.anchorText,
+                    paragraphId: bubble.paragraphId,
+                    messageId: bubble.messageId,
+                    top: bubble.absoluteTop,
+                    left: bubble.absoluteLeft,
+                  }}
+                  isAtMaxDepth={isAtMaxDepth(activeThread)}
+                  flipped={bubble.absoluteTop < 60}
+                  onGoDeeper={handleGoDeeper}
+                  onFindSources={(anchorText, paragraphId, messageId) =>
+                    void handleFindSources(anchorText, paragraphId, messageId)
+                  }
+                  onSimplify={(anchorText, paragraphId, messageId, mode) =>
+                    void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
+                  }
+                  onDismiss={clearBubble}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>
