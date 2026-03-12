@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Phase 11 context gathered
-last_updated: "2026-03-12T16:19:33.193Z"
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-12T16:51:49.242Z"
 last_activity: "2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 16
+  completed_plans: 13
   percent: 96
 ---
 
@@ -82,6 +82,9 @@ Key decisions carried forward:
 - [Phase 10-01]: Sidebar gradient via CSS custom property (--sidebar-gradient) to avoid Tailwind v4 gradient syntax issues
 - [Phase 10-01]: formatRelativeDate accepts Date | string | number for maximum compatibility
 - [Phase 10-01]: Session entry hover border uses inline event handlers for dynamic accent color
+- [Phase 11-multi-provider-settings]: config.ts factory functions replace singleton exports; no more AI_PROVIDER env var switching
+- [Phase 11-multi-provider-settings]: BYOK apiKey extracted from body and deleted immediately before any downstream processing (BKND-07/08)
+- [Phase 11-multi-provider-settings]: Search provider always defaults in find-sources.ts; BYOK search deferred to plan 11-04
 
 ### Pending Todos
 
@@ -101,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:19:33.187Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-multi-provider-settings/11-CONTEXT.md
+Last session: 2026-03-12T16:51:44.716Z
+Stopped at: Completed 11-01-PLAN.md
+Resume file: None

@@ -98,11 +98,11 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Backend Provider
 
-- [ ] **BKND-01**: config.ts refactored from singleton to factory: getDefaultProvider(model?) + createByokProvider(provider, model, apiKey)
-- [ ] **BKND-02**: All API routes accept optional byok field in request body with provider, model, apiKey
-- [ ] **BKND-03**: Free-tier fallback chain narrowed to gemini-2.0-flash → gemini-2.0-flash-lite only
-- [ ] **BKND-04**: GeminiProvider constructor accepts apiKey + model parameters (not process.env at module level)
-- [ ] **BKND-05**: OpenAIProvider constructor accepts dynamic apiKey + model
+- [x] **BKND-01**: config.ts refactored from singleton to factory: getDefaultProvider(model?) + createByokProvider(provider, model, apiKey)
+- [x] **BKND-02**: All API routes accept optional byok field in request body with provider, model, apiKey
+- [x] **BKND-03**: Free-tier fallback chain narrowed to gemini-2.0-flash → gemini-2.0-flash-lite only
+- [x] **BKND-04**: GeminiProvider constructor accepts apiKey + model parameters (not process.env at module level)
+- [x] **BKND-05**: OpenAIProvider constructor accepts dynamic apiKey + model
 - [ ] **BKND-06**: Anthropic Claude provider implementing AIProvider interface (streamChat, simplify, generateCitationNote)
 - [ ] **BKND-07**: API keys never logged — sanitization middleware redacts byok.apiKey in all logging
 - [ ] **BKND-08**: API keys never persisted — exists only in request handler scope
@@ -214,11 +214,11 @@ Deferred beyond v2.0.
 | PROV-13 | Phase 11 | Pending |
 | PROV-14 | Phase 11 | Pending |
 | PROV-15 | Phase 11 | Pending |
-| BKND-01 | Phase 11 | Pending |
-| BKND-02 | Phase 11 | Pending |
-| BKND-03 | Phase 11 | Pending |
-| BKND-04 | Phase 11 | Pending |
-| BKND-05 | Phase 11 | Pending |
+| BKND-01 | Phase 11 | Complete |
+| BKND-02 | Phase 11 | Complete |
+| BKND-03 | Phase 11 | Complete |
+| BKND-04 | Phase 11 | Complete |
+| BKND-05 | Phase 11 | Complete |
 | BKND-06 | Phase 11 | Pending |
 | BKND-07 | Phase 11 | Pending |
 | BKND-08 | Phase 11 | Pending |
