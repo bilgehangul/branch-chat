@@ -263,41 +263,28 @@ function ThreadNode({
   const isEditing = editingId === thread.id;
   const isMenuTarget = menuId === thread.id;
 
-  // Connecting line position: left offset for vertical/horizontal lines
-  const lineLeft = thread.depth > 0 ? (thread.depth - 1) * 16 + 7 : 0;
-
   return (
     <>
       <li
-        className="group relative"
-        style={{ paddingLeft: thread.depth * 16 }}
+        className={[
+          'group relative',
+          thread.depth === 1
+            ? 'bg-stone-50/50 dark:bg-zinc-800/30 rounded-md px-1 py-0.5 mb-1'
+            : '',
+        ].join(' ')}
+        style={{
+          paddingLeft: thread.depth * 16,
+          borderLeft: thread.depth > 0 ? '2px solid' : 'none',
+          borderLeftColor: thread.depth > 0 ? thread.accentColor : undefined,
+        }}
       >
-        {/* VS Code-style connecting lines for nested threads */}
-        {thread.depth > 0 && (
-          <>
-            {/* Vertical line from parent */}
-            <span
-              className="absolute top-0 bottom-0 border-l border-zinc-700 dark:border-zinc-700 border-stone-300"
-              style={{ left: lineLeft }}
-              aria-hidden="true"
-            />
-            {/* Horizontal stub to node content */}
-            <span
-              className="absolute border-t border-zinc-700 dark:border-zinc-700 border-stone-300"
-              style={{ left: lineLeft, top: '50%', width: 8 }}
-              aria-hidden="true"
-            />
-          </>
-        )}
-
         <div
           className={[
             'flex items-center gap-1 pr-6 py-1 rounded text-xs transition-colors',
             isActive
-              ? 'font-semibold bg-stone-100 dark:bg-zinc-800/50 border-l-2'
+              ? 'font-semibold bg-stone-100 dark:bg-zinc-800/50'
               : 'text-stone-600 dark:text-slate-400 hover:bg-stone-100 dark:hover:bg-zinc-800',
           ].join(' ')}
-          style={isActive ? { borderLeftColor: thread.accentColor } : undefined}
           data-testid={isActive ? 'active-thread-row' : undefined}
         >
           {/* SVG Chevron expand/collapse toggle */}
@@ -557,7 +544,7 @@ export function SessionHistory({
 
               {/* Show child threads hierarchically for active session */}
               {isActive && childThreadsExist && threads && (
-                <ul className="ml-2 mt-1 space-y-0.5">
+                <ul className="mt-1 space-y-1 pl-1">
                   {rootThreads.map((root) =>
                     root.childThreadIds
                       .map((id) => threads[id])
