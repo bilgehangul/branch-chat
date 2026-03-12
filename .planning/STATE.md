@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-12T16:51:49.242Z"
+stopped_at: Completed 11-03-PLAN.md
+last_updated: "2026-03-12T17:01:37.652Z"
 last_activity: "2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 16
-  completed_plans: 13
+  completed_plans: 14
   percent: 96
 ---
 
@@ -85,6 +85,8 @@ Key decisions carried forward:
 - [Phase 11-multi-provider-settings]: config.ts factory functions replace singleton exports; no more AI_PROVIDER env var switching
 - [Phase 11-multi-provider-settings]: BYOK apiKey extracted from body and deleted immediately before any downstream processing (BKND-07/08)
 - [Phase 11-multi-provider-settings]: Search provider always defaults in find-sources.ts; BYOK search deferred to plan 11-04
+- [Phase 11-03]: SettingsProvider placed in App.tsx (not main.tsx) to access user.sub from AuthContext for AES-GCM crypto keying
+- [Phase 11-03]: SettingsModal self-renders via portal (isModalOpen gate) so no prop drilling needed across app tree
 
 ### Pending Todos
 
@@ -101,9 +103,10 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 24 | Fix 5 UI bugs: text selection, action bubble, branch pill alignment, subbranch hover collapse, sidebar parent branch layout | 2026-03-12 | 8d809975 | [24-fix-5-ui-bugs-text-selection-action-bubb](./quick/24-fix-5-ui-bugs-text-selection-action-bubb/) |
 | 25 | Rewrite text selection system with position:fixed portal; fix sidebar ThreadNode collapsed by default | 2026-03-12 | 5a581ff4 | [25-rewrite-text-selection-actionbubble-from](./quick/25-rewrite-text-selection-actionbubble-from/) |
+| Phase 11-multi-provider-settings P03 | 6 | 3 tasks | 11 files |
 
 ## Session Continuity
 
-Last session: 2026-03-12T16:51:44.716Z
-Stopped at: Completed 11-01-PLAN.md
+Last session: 2026-03-12T17:01:37.647Z
+Stopped at: Completed 11-03-PLAN.md
 Resume file: None

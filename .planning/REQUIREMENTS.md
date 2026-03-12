@@ -80,19 +80,19 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Provider Settings
 
-- [ ] **PROV-01**: Gear icon button in header opens Settings panel (slide-over or modal)
-- [ ] **PROV-02**: Settings Section A — "Default Model" toggle between Gemini Flash 2.0 and Gemini Flash 2.0 Lite (labeled "Free")
-- [ ] **PROV-03**: Settings Section B — "Use Your Own API Key" collapsible section (default collapsed)
-- [ ] **PROV-04**: BYOK provider selector: Gemini | OpenAI | Anthropic
-- [ ] **PROV-05**: API key input with show/hide toggle, provider-specific placeholder
+- [x] **PROV-01**: Gear icon button in header opens Settings panel (slide-over or modal)
+- [x] **PROV-02**: Settings Section A — "Default Model" toggle between Gemini Flash 2.0 and Gemini Flash 2.0 Lite (labeled "Free")
+- [x] **PROV-03**: Settings Section B — "Use Your Own API Key" collapsible section (default collapsed)
+- [x] **PROV-04**: BYOK provider selector: Gemini | OpenAI | Anthropic
+- [x] **PROV-05**: API key input with show/hide toggle, provider-specific placeholder
 - [ ] **PROV-06**: "Verify Key" button makes lightweight backend call, shows green check or red error
 - [ ] **PROV-07**: Model selector populates only after key verification with provider-specific model list
 - [ ] **PROV-08**: Search provider selector: Tavily (default) or OpenAI web search (if OpenAI key provided)
 - [ ] **PROV-09**: "Clear Key & Reset to Free" button removes stored key and reverts to Tier 1
 - [ ] **PROV-10**: Active model shown as small badge in ChatInput area, clickable to open Settings
 - [ ] **PROV-11**: BYOK mode shows key icon next to model name
-- [ ] **PROV-12**: SettingsContext manages tier, freeModel, byokProvider, byokModel, byokApiKey, byokKeyVerified, searchProvider
-- [ ] **PROV-13**: API key encrypted in localStorage using Web Crypto AES-GCM (keyed to userId + app salt)
+- [x] **PROV-12**: SettingsContext manages tier, freeModel, byokProvider, byokModel, byokApiKey, byokKeyVerified, searchProvider
+- [x] **PROV-13**: API key encrypted in localStorage using Web Crypto AES-GCM (keyed to userId + app salt)
 - [ ] **PROV-14**: Key cleared from localStorage on sign-out
 - [ ] **PROV-15**: Full key never displayed after entry — show only last 4 characters
 
@@ -114,7 +114,7 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 ### Cross-Cutting
 
 - [x] **XCUT-01**: All new interactive elements have aria-label, keyboard navigation, focus-visible outlines
-- [ ] **XCUT-02**: Settings modal traps focus (deferred to Phase 11 — no modals exist yet)
+- [x] **XCUT-02**: Settings modal traps focus (deferred to Phase 11 — no modals exist yet)
 - [x] **XCUT-03**: Color choices meet WCAG AA contrast ratios (4.5:1 normal text, 3:1 large text)
 - [x] **XCUT-04**: Existing tests updated to match new DOM structure and class names
 - [x] **XCUT-05**: New tests for text selection filtering, settings context, and light-mode annotations
@@ -154,7 +154,7 @@ Deferred beyond v2.0.
 | ANNO-05 | Phase 8 | Complete |
 | MSGE-01 | Phase 8 | Complete |
 | XCUT-01 | Phase 8 | Complete |
-| XCUT-02 | Phase 11 | Pending |
+| XCUT-02 | Phase 11 | Complete |
 | XCUT-03 | Phase 8 | Complete |
 | XCUT-04 | Phase 8 | Complete |
 | XCUT-05 | Phase 8 | Complete |
@@ -199,19 +199,19 @@ Deferred beyond v2.0.
 | ANNO-10 | Phase 10 | Pending |
 | ANNO-11 | Phase 10 | Pending |
 | ANNO-12 | Phase 10 | Pending |
-| PROV-01 | Phase 11 | Pending |
-| PROV-02 | Phase 11 | Pending |
-| PROV-03 | Phase 11 | Pending |
-| PROV-04 | Phase 11 | Pending |
-| PROV-05 | Phase 11 | Pending |
+| PROV-01 | Phase 11 | Complete |
+| PROV-02 | Phase 11 | Complete |
+| PROV-03 | Phase 11 | Complete |
+| PROV-04 | Phase 11 | Complete |
+| PROV-05 | Phase 11 | Complete |
 | PROV-06 | Phase 11 | Pending |
 | PROV-07 | Phase 11 | Pending |
 | PROV-08 | Phase 11 | Pending |
 | PROV-09 | Phase 11 | Pending |
 | PROV-10 | Phase 11 | Pending |
 | PROV-11 | Phase 11 | Pending |
-| PROV-12 | Phase 11 | Pending |
-| PROV-13 | Phase 11 | Pending |
+| PROV-12 | Phase 11 | Complete |
+| PROV-13 | Phase 11 | Complete |
 | PROV-14 | Phase 11 | Pending |
 | PROV-15 | Phase 11 | Pending |
 | BKND-01 | Phase 11 | Complete |
