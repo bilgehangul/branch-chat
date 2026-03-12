@@ -14,10 +14,6 @@ export function StreamingCursor({
           0%, 60%, 100% { transform: translateY(0); }
           30% { transform: translateY(-6px); }
         }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
       `}</style>
       {!hasContent ? (
         <span className="inline-flex items-center gap-0.5 text-zinc-400 ml-1" aria-label="typing">
@@ -31,7 +27,7 @@ export function StreamingCursor({
           style={{ animation: 'blink 1s step-end infinite', display: 'inline-block' }}
           aria-hidden="true"
         >
-          _
+          |
         </span>
       )}
     </>

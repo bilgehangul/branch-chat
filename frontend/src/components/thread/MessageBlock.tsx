@@ -4,6 +4,7 @@ import { useSessionStore } from '../../store/sessionStore';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { StreamingCursor } from './StreamingCursor';
 import { getModelLabel } from '../../api/config';
+import { formatRelativeDate } from '../../utils/formatRelativeDate';
 
 type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
 
@@ -40,6 +41,8 @@ export function MessageBlock({
 
   // Build underline map from childLeads: paragraphIndex -> accentColor
   const threads = useSessionStore(s => s.threads);
+  const activeThreadId = useSessionStore(s => s.activeThreadId);
+  const activeAccentColor = activeThreadId ? threads[activeThreadId]?.accentColor : undefined;
   const underlineMap: Record<number, string> = {};
   for (const lead of message.childLeads) {
     const threadColor = threads[lead.threadId]?.accentColor;
@@ -55,14 +58,19 @@ export function MessageBlock({
       {/* Bubble */}
       <div className={isUser ? 'flex justify-end' : 'flex justify-start'}>
         <div
-          className={`${
+          className={`group ${
             isUser
               ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto max-w-[75%]'
               : 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-zinc-700 shadow-sm rounded-2xl rounded-tl-sm px-4 py-3 mr-auto max-w-[85%] overflow-hidden'
           } ${streamingClasses}`}
         >
           {isUser ? (
-            <p className="whitespace-pre-wrap">{message.content}</p>
+            <>
+              <p className="whitespace-pre-wrap break-words">{message.content}</p>
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-blue-200 mt-1 block" data-testid="user-timestamp">
+                {formatRelativeDate(new Date(message.createdAt))}
+              </span>
+            </>
           ) : (
             <>
               {/* Annotations render inline after their target paragraph inside MarkdownRenderer */}
@@ -74,6 +82,7 @@ export function MessageBlock({
                 errorAnnotation={errorAnnotation}
                 messageId={message.id}
                 onTryAnother={onTryAnother}
+                accentColor={activeAccentColor}
               />
               <StreamingCursor
                 isStreaming={message.isStreaming}

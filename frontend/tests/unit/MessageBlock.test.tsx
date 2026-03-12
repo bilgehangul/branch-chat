@@ -115,6 +115,28 @@ describe('MessageBlock', () => {
     );
     expect(container.querySelector('strong')).toBeInTheDocument();
   });
+
+  // MSGE-07: User message whitespace
+  it('user message has whitespace-pre-wrap and break-words classes', () => {
+    const { container } = render(
+      <MessageBlock message={makeMessage({ role: 'user', content: 'Hello world' })} />
+    );
+    // The content paragraph has whitespace-pre-wrap (not the label paragraph)
+    const contentP = container.querySelector('p.whitespace-pre-wrap');
+    expect(contentP).toBeInTheDocument();
+    expect(contentP?.className).toContain('break-words');
+  });
+
+  // MSGE-08: Hover timestamp
+  it('user message has timestamp element', () => {
+    const { container } = render(
+      <MessageBlock message={makeMessage({ role: 'user', content: 'Test', createdAt: Date.now() - 60000 })} />
+    );
+    const timestamp = container.querySelector('[data-testid="user-timestamp"]');
+    expect(timestamp).toBeInTheDocument();
+    // Should contain some relative date text
+    expect(timestamp?.textContent).toBeTruthy();
+  });
 });
 
 describe('MessageBlock anchor underline (BRANCH-07)', () => {
