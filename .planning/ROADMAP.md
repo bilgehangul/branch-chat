@@ -66,7 +66,7 @@ Plans:
   2. Navigating between threads uses a gentle crossfade (opacity fade over 150ms) that can be interrupted by navigating again mid-transition
   3. Ancestor panels appear as thin accent-colored spine rails (24-32px) that expand to ~220px on hover with card-like overlay appearance, shadow, and bottom fade gradient
   4. The anchor message in expanded ancestor panels is visually highlighted with larger text, colored border, and branch badge
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 09-01: Branch pill CSS Grid migration and layout stabilization (PILL-01 through PILL-03)
