@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed 08-03-PLAN.md
-last_updated: "2026-03-12T03:43:11.000Z"
-last_activity: 2026-03-12 — Completed 08-03 dynamic model label, accessibility, and test updates
+stopped_at: Completed 08-04-PLAN.md (Phase 8 complete)
+last_updated: "2026-03-12T03:57:20Z"
+last_activity: 2026-03-12 — Completed 08-04 requirements gap closure (ANNO-02 and XCUT-02 corrections)
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 3
-  percent: 21
+  completed_plans: 4
+  percent: 29
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 8 of 11 (Foundation Fixes) -- COMPLETE
-Plan: 3 of 3 in current phase (all complete)
+Plan: 4 of 4 in current phase (all complete)
 Status: Phase 8 complete, ready for Phase 9
-Last activity: 2026-03-12 — Completed 08-03 dynamic model label, accessibility, and test updates
+Last activity: 2026-03-12 — Completed 08-04 requirements gap closure (ANNO-02 and XCUT-02 corrections)
 
-Progress: [██░░░░░░░░] 21% (v2.0 scope: 3/14 plans)
+Progress: [██▓░░░░░░░] 29% (v2.0 scope: 4/14 plans)
 
 ## v1.0 Summary
 
@@ -44,7 +44,7 @@ Shipped: Auth, streaming chat, branching, annotations, dark/light theme, E2E tes
 - Phases: 7
 
 **v2.0:**
-- Plans: 3/14 completed
+- Plans: 4/14 completed
 - Phases: 1/4 completed
 
 ## Accumulated Context
@@ -67,6 +67,7 @@ Key decisions carried forward:
 - Inline annotation highlighting wraps first occurrence of targetText per paragraph with per-type tint
 - data-message-role attribute on MessageBlock for DOM-based role filtering of text selection
 - ActionBubble uses position:absolute inside contentWrapperRef (scrolls with text, not fixed)
+- [Phase 08]: ANNO-02 description corrected to remove caret reference per user locked decision
 
 ### Pending Todos
 
@@ -79,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:43:11Z
-Stopped at: Completed 08-03-PLAN.md (Phase 8 complete)
+Last session: 2026-03-12T03:57:20Z
+Stopped at: Completed 08-04-PLAN.md (Phase 8 complete)
 Resume file: .planning/phases/09-layout-redesign/09-01-PLAN.md
