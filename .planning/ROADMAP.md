@@ -66,12 +66,13 @@ Plans:
   2. Navigating between threads uses a gentle crossfade (opacity fade over 150ms) that can be interrupted by navigating again mid-transition
   3. Ancestor panels appear as thin accent-colored spine rails (24-32px) that expand to ~220px on hover with card-like overlay appearance, shadow, and bottom fade gradient
   4. The anchor message in expanded ancestor panels is visually highlighted with larger text, colored border, and branch badge
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
 - [ ] 09-01: Branch pill CSS Grid migration and layout stabilization (PILL-01 through PILL-03)
 - [ ] 09-02: Thread transition crossfade and hover preview improvements (PILL-04 through PILL-08)
 - [ ] 09-03: Ancestor panel rail redesign (ANCS-01 through ANCS-06)
+- [ ] 09-04: Gap closure — replace text-[10px] with text-xs in DescendantPill (ANCS-06)
 
 ### Phase 10: Visual Polish
 **Goal**: Sidebar is redesigned with IDE-grade session tree, message rendering is polished with proper typography and code copy, and annotation cards have enter animations and improved content display
@@ -124,6 +125,6 @@ Phases execute in numeric order: 1 through 11 (decimal phases inserted between i
 | 6. Polish and Deployment | v1.0 | 6/6 | Complete | 2026-03-10 |
 | 7. Auth Migration + Persistent Storage | v1.0 | 5/5 | Complete | 2026-03-10 |
 | 8. Foundation Fixes | 4/4 | Complete   | 2026-03-12 | - |
-| 9. Layout & Positioning | 3/3 | Complete   | 2026-03-12 | - |
+| 9. Layout & Positioning | 3/4 | In Progress | 2026-03-12 | - |
 | 10. Visual Polish | v2.0 | 0/4 | Not started | - |
 | 11. Multi-Provider Settings | v2.0 | 0/4 | Not started | - |
