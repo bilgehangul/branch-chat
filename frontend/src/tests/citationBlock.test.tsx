@@ -85,4 +85,25 @@ describe('CitationBlock', () => {
     expect(screen.getByText(/1 source found/i)).toBeTruthy();
     expect(screen.queryByText(/1 sources found/i)).toBeNull();
   });
+
+  test('has data-no-selection attribute on outer div', () => {
+    const { container } = render(<CitationBlock annotation={makeAnnotation()} />);
+    const outer = container.querySelector('[data-no-selection]');
+    expect(outer).toBeTruthy();
+  });
+
+  test('shows quoted targetText at top', () => {
+    render(<CitationBlock annotation={makeAnnotation({ targetText: 'hello world' })} />);
+    // Uses smart quotes: \u201C and \u201D
+    expect(screen.getByText(/hello world/)).toBeTruthy();
+  });
+
+  test('source links have aria-labels', () => {
+    render(<CitationBlock annotation={makeAnnotation()} />);
+    fireEvent.click(screen.getByRole('button'));
+    const links = screen.getAllByRole('link');
+    links.forEach((link, i) => {
+      expect(link.getAttribute('aria-label')).toBe(`Source: Source ${i + 1}`);
+    });
+  });
 });

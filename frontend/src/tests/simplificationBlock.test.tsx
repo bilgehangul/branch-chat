@@ -96,4 +96,44 @@ describe('SimplificationBlock', () => {
     btn.dispatchEvent(event);
     expect(event.defaultPrevented).toBe(true);
   });
+
+  test('has data-no-selection attribute on outer div', () => {
+    const { container } = render(
+      <SimplificationBlock
+        annotation={makeAnnotation()}
+        modeLabel="Simpler"
+        onSelectMode={() => {}}
+      />
+    );
+    const outer = container.querySelector('[data-no-selection]');
+    expect(outer).toBeTruthy();
+  });
+
+  test('shows quoted targetText at top truncated to 50 chars', () => {
+    const longText = 'A'.repeat(60);
+    render(
+      <SimplificationBlock
+        annotation={makeAnnotation({ targetText: longText })}
+        modeLabel="Simpler"
+        onSelectMode={() => {}}
+      />
+    );
+    // Should show first 50 chars + '...'
+    expect(screen.getByText(/A{50}\.\.\./)).toBeTruthy();
+  });
+
+  test('has aria-labels on mode picker buttons', () => {
+    render(
+      <SimplificationBlock
+        annotation={makeAnnotation()}
+        modeLabel="Example"
+        onSelectMode={() => {}}
+      />
+    );
+    fireEvent.click(screen.getByText('Try another mode'));
+    expect(screen.getByRole('button', { name: /simplify using simpler mode/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /simplify using example mode/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /simplify using analogy mode/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /simplify using technical mode/i })).toBeTruthy();
+  });
 });

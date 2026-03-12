@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { describe, test, expect, vi } from 'vitest';
 import { MessageBlock } from '../components/thread/MessageBlock';
 import type { Message, Annotation } from '../types/index';
@@ -8,6 +8,11 @@ vi.mock('../store/sessionStore', () => ({
   useSessionStore: vi.fn((selector: (s: { threads: Record<string, unknown> }) => unknown) =>
     selector({ threads: {} })
   ),
+}));
+
+// Mock getModelLabel to return a test label
+vi.mock('../api/config', () => ({
+  getModelLabel: vi.fn(() => Promise.resolve('Test AI Model')),
 }));
 
 const makeAnnotation = (overrides: Partial<Annotation> = {}): Annotation => ({
@@ -109,5 +114,29 @@ describe('MessageBlock annotation rendering', () => {
     const simplBlock = messageWrapper!.querySelector('.bg-indigo-50');
     expect(citationBlock).toBeTruthy();
     expect(simplBlock).toBeTruthy();
+  });
+
+  test('renders data-message-role="assistant" for assistant messages', () => {
+    const msg = makeMessage({ role: 'assistant' });
+    const { container } = render(<MessageBlock message={msg} />);
+    const el = container.querySelector('[data-message-role="assistant"]');
+    expect(el).toBeTruthy();
+  });
+
+  test('renders data-message-role="user" for user messages', () => {
+    const msg = makeMessage({ role: 'user' });
+    const { container } = render(<MessageBlock message={msg} />);
+    const el = container.querySelector('[data-message-role="user"]');
+    expect(el).toBeTruthy();
+  });
+
+  test('renders dynamic model label from getModelLabel instead of hardcoded Gemini', async () => {
+    const msg = makeMessage({ role: 'assistant', content: 'Hello' });
+    const { container } = render(<MessageBlock message={msg} />);
+    await waitFor(() => {
+      const label = container.querySelector('[data-message-role="assistant"]')
+        ?.querySelector('p');
+      expect(label?.textContent).toBe('Test AI Model');
+    });
   });
 });

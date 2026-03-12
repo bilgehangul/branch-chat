@@ -122,3 +122,53 @@ describe('ActionBubble — simplify mode', () => {
     expect(onDismiss).toHaveBeenCalled();
   });
 });
+
+describe('ActionBubble — accessibility', () => {
+  test('renders with position absolute', () => {
+    const { container } = render(
+      <ActionBubble
+        bubble={defaultBubble}
+        isAtMaxDepth={false}
+        onGoDeeper={vi.fn()}
+        onFindSources={vi.fn()}
+        onSimplify={vi.fn()}
+        onDismiss={vi.fn()}
+      />
+    );
+    const bubble = container.querySelector('[data-action-bubble]') as HTMLElement;
+    expect(bubble.className).toContain('absolute');
+  });
+
+  test('all default mode buttons have aria-labels', () => {
+    render(
+      <ActionBubble
+        bubble={defaultBubble}
+        isAtMaxDepth={false}
+        onGoDeeper={vi.fn()}
+        onFindSources={vi.fn()}
+        onSimplify={vi.fn()}
+        onDismiss={vi.fn()}
+      />
+    );
+    expect(screen.getByRole('button', { name: /go deeper into selected text/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /find sources for selected text/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /simplify selected text/i })).toBeInTheDocument();
+  });
+
+  test('all buttons have focus-visible ring classes', () => {
+    const { container } = render(
+      <ActionBubble
+        bubble={defaultBubble}
+        isAtMaxDepth={false}
+        onGoDeeper={vi.fn()}
+        onFindSources={vi.fn()}
+        onSimplify={vi.fn()}
+        onDismiss={vi.fn()}
+      />
+    );
+    const buttons = container.querySelectorAll('button');
+    buttons.forEach((btn) => {
+      expect(btn.className).toContain('focus-visible:ring-2');
+    });
+  });
+});
