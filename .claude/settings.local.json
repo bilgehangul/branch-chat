@@ -12,7 +12,21 @@
       "Skill(gsd:discuss-phase)",
       "Bash(npm test:*)",
       "Bash(npm run:*)",
-      "Skill(gsd:verify-work)"
+      "Skill(gsd:verify-work)",
+      "Skill(gsd:plan-phase)",
+      "Bash(gh run:*)",
+      "Bash(cat:*)",
+      "Bash(VITE_CLERK_PUBLISHABLE_KEY=pk_test_placeholder_for_ci_only npx vite:*)",
+      "Bash(python3:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Read(//c/gmu/coding/GenAI Web interface/child_chats_v1/$HOME/.claude/get-shit-done/**)",
+      "Read(//c/Users/bilge/.claude/get-shit-done/bin//**)",
+      "Bash(find backend/src -name \"*.ts\" | xargs grep -l \"Schema\\\\|mongoose\\\\|model\" 2>/dev/null)",
+      "Bash(find frontend/src -name \"SessionHistory*\" -o -name \"session*\" 2>/dev/null | head -10)",
+      "Skill(gsd:new-milestone)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/api/health 2>&1 || echo \"Backend not reachable\")",
+      "Skill(gsd:quick)"
     ]
   }
 }

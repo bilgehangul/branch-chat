@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSessionStore } from '../../store/sessionStore';
+import { useTextSelection } from '../../hooks/useTextSelection';
 import { MessageList } from '../thread/MessageList';
 import type { Message } from '../../types/index';
+import { ActionBubble } from '../branching/ActionBubble';
+import { isAtMaxDepth } from '../../store/selectors';
 
 /**
  * DemoThreadView -- simplified ThreadView for unauthenticated demo mode.
@@ -20,18 +24,39 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
 
   // Derive active thread and ordered messages
   const activeThread = activeThreadId ? threads[activeThreadId] : null;
-  const orderedMessages = activeThread
-    ? activeThread.messageIds.map(id => messages[id]).filter(Boolean) as Message[]
-    : [];
+  const orderedMessages = useMemo(
+    () => (
+      activeThread
+        ? activeThread.messageIds.map(id => messages[id]).filter(Boolean) as Message[]
+        : []
+    ),
+    [activeThread, messages]
+  );
 
   // Refs for scroll management
   const scrollRef = useRef<HTMLDivElement>(null);
-  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const bottomAnchorRef = useRef<HTMLDivElement>(null);
 
   // Slide transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prevActiveThreadIdRef = useRef(activeThreadId);
+  const { bubble, clearBubble } = useTextSelection(scrollRef);
+
+  // Scroll-dismiss: mirror authenticated behavior for selection menu.
+  const initialScrollTopRef = useRef<number>(0);
+  useEffect(() => {
+    if (!bubble || !scrollRef.current) return;
+    initialScrollTopRef.current = scrollRef.current.scrollTop;
+    const scrollEl = scrollRef.current;
+
+    function handleScrollDismiss() {
+      const delta = Math.abs(scrollEl.scrollTop - initialScrollTopRef.current);
+      if (delta > 100) clearBubble();
+    }
+
+    scrollEl.addEventListener('scroll', handleScrollDismiss, { passive: true });
+    return () => scrollEl.removeEventListener('scroll', handleScrollDismiss);
+  }, [bubble, clearBubble]);
 
   // Track activeThreadId changes for scroll save + slide transition
   useEffect(() => {
@@ -64,11 +89,21 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeThreadId]);
 
+  const handleSignInFromBubble = useCallback(() => {
+    clearBubble();
+    onSignInClick();
+  }, [clearBubble, onSignInClick]);
+
+  const handleNoopThreadAction = useCallback(() => {}, []);
+  const handleTryAnother = useCallback(() => {
+    onSignInClick();
+  }, [onSignInClick]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Scroll area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div ref={contentWrapperRef} className="relative px-4">
+        <div className="relative px-4">
           {/* Slide transition wrapper */}
           <div
             className={`transition-transform duration-200 ease-out ${
@@ -82,10 +117,10 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
                 threads={threads}
                 allMessages={messages}
                 onNavigate={setActiveThread}
-                onDeleteThread={() => {}}
-                onSummarize={() => {}}
-                onCompact={() => {}}
-                onTryAnother={() => onSignInClick()}
+                onDeleteThread={handleNoopThreadAction}
+                onSummarize={handleNoopThreadAction}
+                onCompact={handleNoopThreadAction}
+                onTryAnother={handleTryAnother}
                 pendingAnnotation={null}
                 errorAnnotation={null}
               />
@@ -99,6 +134,26 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
           </div>
         </div>
       </div>
+
+      {/* Selection action bubble (demo mode: all actions open sign-in modal) */}
+      {bubble && activeThread && createPortal(
+        <ActionBubble
+          bubble={{
+            anchorText: bubble.anchorText,
+            paragraphId: bubble.paragraphId,
+            messageId: bubble.messageId,
+            top: bubble.top,
+            left: bubble.left,
+          }}
+          isAtMaxDepth={isAtMaxDepth(activeThread)}
+          flipped={bubble.top < 80}
+          onGoDeeper={(_anchorText, _paragraphId) => handleSignInFromBubble()}
+          onFindSources={(_anchorText, _paragraphId, _messageId) => handleSignInFromBubble()}
+          onSimplify={(_anchorText, _paragraphId, _messageId, _mode) => handleSignInFromBubble()}
+          onDismiss={clearBubble}
+        />,
+        document.body
+      )}
 
       {/* Disabled CTA footer -- replaces ChatInput */}
       <footer className="border-t border-stone-200 dark:border-zinc-700 p-4 shrink-0 bg-white dark:bg-zinc-900">

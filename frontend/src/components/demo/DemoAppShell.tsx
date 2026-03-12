@@ -86,7 +86,6 @@ export function DemoAppShell({ onSignInClick }: DemoAppShellProps) {
               allMessages={messages}
               highlightMessageId={nextThread?.parentMessageId ?? undefined}
               childThreadId={nextThread?.id}
-              width={w}
               onClick={() => setActiveThread(thread.id)}
               onNavigate={setActiveThread}
               onDelete={() => {}}
