@@ -126,6 +126,57 @@ function DropdownMenu({
   );
 }
 
+// ---------- Delete modal ----------
+
+function DeleteModal({
+  open,
+  onConfirm,
+  onCancel,
+  message = 'This will delete the thread and all child branches.',
+}: {
+  open: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  message?: string;
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" data-testid="delete-modal">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50"
+        onClick={onCancel}
+        data-testid="delete-modal-backdrop"
+      />
+      {/* Dialog */}
+      <div className="relative bg-white dark:bg-zinc-800 rounded-lg shadow-xl p-6 max-w-sm mx-4">
+        <h3 className="text-sm font-semibold text-stone-900 dark:text-slate-100">
+          Delete this thread?
+        </h3>
+        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          {message}
+        </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1.5 text-xs rounded bg-stone-200 dark:bg-zinc-600 text-stone-700 dark:text-slate-200 hover:bg-stone-300 dark:hover:bg-zinc-500 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-3 py-1.5 text-xs rounded bg-red-500 text-white hover:bg-red-600 transition-colors"
+            data-testid="delete-confirm-btn"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---------- Inline edit ----------
 
 function InlineEdit({
@@ -185,6 +236,7 @@ function ThreadNode({
   menuState,
   setMenu,
   menuRef,
+  onRequestDelete,
 }: {
   thread: Thread;
   threads: Record<string, Thread>;
@@ -196,10 +248,10 @@ function ThreadNode({
   menuState: MenuState;
   setMenu: (m: MenuState) => void;
   menuRef: React.RefObject<HTMLDivElement | null>;
+  onRequestDelete: (threadId: string) => void;
 }) {
   const [expanded, setExpanded] = useState(true);
   const setThreadTitle = useSessionStore((s) => s.setThreadTitle);
-  const deleteThread = useSessionStore((s) => s.deleteThread);
 
   const children = thread.childThreadIds
     .map((id) => threads[id])
@@ -320,11 +372,11 @@ function ThreadNode({
               setEditingId(thread.id);
               setMenu({ type: 'closed' });
             }}
-            onDelete={() => setMenu({ type: 'confirm-delete', id: thread.id })}
-            onConfirmDelete={() => {
-              deleteThread(thread.id);
+            onDelete={() => {
+              onRequestDelete(thread.id);
               setMenu({ type: 'closed' });
             }}
+            onConfirmDelete={() => setMenu({ type: 'closed' })}
             onCancelDelete={() => setMenu({ type: 'closed' })}
           />
         )}
@@ -343,6 +395,7 @@ function ThreadNode({
             menuState={menuState}
             setMenu={setMenu}
             menuRef={menuRef}
+            onRequestDelete={onRequestDelete}
           />
         ))}
     </>
@@ -363,6 +416,8 @@ export function SessionHistory({
 }: SessionHistoryProps) {
   const { menu, setMenu, menuRef } = useMenu();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const deleteThread = useSessionStore((s) => s.deleteThread);
 
   const menuId = menu.type !== 'closed' ? menu.id : null;
 
@@ -501,6 +556,7 @@ export function SessionHistory({
                           menuState={menu}
                           setMenu={setMenu}
                           menuRef={menuRef}
+                          onRequestDelete={setDeleteTarget}
                         />
                       ))
                   )}
@@ -510,6 +566,18 @@ export function SessionHistory({
           );
         })}
       </ul>
+
+      {/* Modal delete confirmation for threads */}
+      <DeleteModal
+        open={deleteTarget !== null}
+        onConfirm={() => {
+          if (deleteTarget) {
+            deleteThread(deleteTarget);
+            setDeleteTarget(null);
+          }
+        }}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </nav>
   );
 }
