@@ -29,21 +29,29 @@ export function CitationBlock({ annotation }: CitationBlockProps) {
   const count = sources.length;
 
   return (
-    <div className="mt-2 max-w-[720px] mx-auto rounded-lg border border-zinc-700 bg-zinc-800 text-sm">
+    <div
+      className="mt-2 rounded-lg border border-stone-200 dark:border-zinc-700 bg-stone-50 dark:bg-zinc-800 text-sm"
+      data-no-selection
+    >
+      {/* Quoted target text */}
+      <p className="px-3 pt-2 text-xs italic text-slate-500 dark:text-slate-400 truncate">
+        &ldquo;{annotation.targetText.length > 50 ? annotation.targetText.slice(0, 50) + '...' : annotation.targetText}&rdquo;
+      </p>
+
       {/* Header row — always visible */}
       <button
-        className="w-full flex items-center justify-between px-3 py-2 text-slate-300 hover:text-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
         onClick={() => setExpanded(prev => !prev)}
         aria-expanded={expanded}
         aria-label={expanded ? 'Collapse sources' : 'Expand sources'}
       >
-        <span>🔎 {count} source{count !== 1 ? 's' : ''} found</span>
-        <span className="text-xs text-slate-400">{expanded ? '▲' : '▼'}</span>
+        <span>{'\uD83D\uDD0E'} {count} source{count !== 1 ? 's' : ''} found</span>
+        <span className="text-xs text-slate-400 dark:text-slate-400">{expanded ? '\u25B2' : '\u25BC'}</span>
       </button>
 
       {/* Expanded content */}
       {expanded && (
-        <div className="border-t border-zinc-700 px-3 py-2 space-y-2">
+        <div className="border-t border-stone-200 dark:border-zinc-700 px-3 py-2 space-y-2">
           {/* Source rows */}
           {sources.map((source, i) => (
             <div key={i} className="flex items-start gap-2">
@@ -51,12 +59,12 @@ export function CitationBlock({ annotation }: CitationBlockProps) {
                 href={source.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-400 hover:text-blue-300 underline flex-1 min-w-0 truncate"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 underline flex-1 min-w-0 truncate"
                 title={source.title}
               >
                 {source.title}
               </a>
-              <span className="shrink-0 text-xs text-slate-400 bg-zinc-700 px-1.5 py-0.5 rounded">
+              <span className="shrink-0 text-xs text-slate-500 dark:text-slate-400 bg-stone-200 dark:bg-zinc-700 px-1.5 py-0.5 rounded">
                 {source.domain}
               </span>
             </div>
@@ -65,9 +73,9 @@ export function CitationBlock({ annotation }: CitationBlockProps) {
           {/* Horizontal divider before Gemini note */}
           {citationNote && (
             <>
-              <hr className="border-zinc-700" />
-              <p className="text-slate-300 text-xs leading-relaxed">
-                💬 {citationNote}
+              <hr className="border-stone-200 dark:border-zinc-700" />
+              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                {'\uD83D\uDCAC'} {citationNote}
               </p>
             </>
           )}

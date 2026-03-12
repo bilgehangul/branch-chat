@@ -33,10 +33,18 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
   const [picking, setPicking] = useState(false);
 
   return (
-    <div className="mt-2 max-w-[720px] mx-auto rounded-lg border border-indigo-800 bg-indigo-950 border-l-4 border-l-indigo-500 text-sm">
+    <div
+      className="mt-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 border-l-4 border-l-indigo-500 text-sm"
+      data-no-selection
+    >
+      {/* Quoted target text */}
+      <p className="px-3 pt-2 text-xs italic text-slate-500 dark:text-slate-400 truncate">
+        &ldquo;{annotation.targetText.length > 50 ? annotation.targetText.slice(0, 50) + '...' : annotation.targetText}&rdquo;
+      </p>
+
       {/* Header row */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-indigo-800">
-        <span className="text-indigo-300 font-medium text-xs">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-indigo-200 dark:border-indigo-800">
+        <span className="text-indigo-600 dark:text-indigo-300 font-medium text-xs">
           ✎ Simplified &bull; {modeLabel}
         </span>
         {picking ? (
@@ -45,7 +53,7 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
             {MODES.map(({ key, label }) => (
               <button
                 key={key}
-                className="text-xs text-indigo-400 hover:text-indigo-200 px-2 py-0.5 rounded border border-indigo-700 hover:border-indigo-400 transition-colors"
+                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors"
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onSelectMode(key); setPicking(false); }}
               >
@@ -55,7 +63,7 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
           </div>
         ) : (
           <button
-            className="text-xs text-indigo-400 hover:text-indigo-200 underline transition-colors"
+            className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline transition-colors"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setPicking(true)}
           >
@@ -65,8 +73,8 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
       </div>
 
       {/* Simplified text content */}
-      <div className="px-3 py-2 text-slate-200 leading-relaxed">
-        {replacementText ?? <span className="text-slate-400 italic">No content available</span>}
+      <div className="px-3 py-2 text-slate-700 dark:text-slate-200 leading-relaxed">
+        {replacementText ?? <span className="text-slate-400 dark:text-slate-400 italic">No content available</span>}
       </div>
     </div>
   );
