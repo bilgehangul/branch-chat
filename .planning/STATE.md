@@ -5,7 +5,7 @@ milestone_name: BranchChat Redesign
 status: executing
 stopped_at: Completed quick-24 (5 UI bug fixes)
 last_updated: "2026-03-12T14:59:48.150Z"
-last_activity: 2026-03-12 — Completed 10-01 sidebar visual foundation
+last_activity: 2026-03-12 - Completed quick task 24: Fix 5 UI bugs
 progress:
   total_phases: 4
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 Phase: 10 of 11 (Visual Polish) -- IN PROGRESS
 Plan: 10-01, 10-02 complete (sidebar visual foundation + thread tree redesign)
 Status: Phase 10 in progress
-Last activity: 2026-03-12 — Completed 10-01 sidebar visual foundation
+Last activity: 2026-03-12 - Completed quick task 24: Fix 5 UI bugs
 
 Progress: [██████████] 96% (v2.0 scope)
 
@@ -89,6 +89,12 @@ None yet.
 
 - Branch pill JS measurement drift resolved in 09-01 (CSS Grid migration)
 - Annotation light-mode colors fixed in 08-02 (indigo-50/stone-50 backgrounds)
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 24 | Fix 5 UI bugs: text selection, action bubble, branch pill alignment, subbranch hover collapse, sidebar parent branch layout | 2026-03-12 | 8d809975 | [24-fix-5-ui-bugs-text-selection-action-bubb](./quick/24-fix-5-ui-bugs-text-selection-action-bubb/) |
 
 ## Session Continuity
 
