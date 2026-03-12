@@ -1,8 +1,13 @@
-# Roadmap: DeepDive Chat
+# Roadmap: ContextDive Chat
 
 ## Overview
 
-DeepDive Chat is built in six phases ordered by hard architectural dependencies. The backend proxy and provider abstraction must exist before any frontend work begins. The flat Zustand store shape must be locked before branching complexity is layered on. Gutter pill positioning and paragraph identity must be stable before inline annotations mutate paragraph DOM structure. Polish and deployment come last because they depend on all features being present and stable.
+ContextDive Chat is built incrementally from foundation through full feature set. v1.0 shipped core branching chat in 7 phases. v2.0 (BranchChat Redesign) delivers comprehensive UI/UX polish and multi-provider BYOK settings across 4 phases, starting with interaction fixes, then layout restructuring, visual polish, and finally the new provider settings feature.
+
+## Milestones
+
+- v1.0 MVP - Phases 1-7 (shipped 2026-03-10)
+- v2.0 BranchChat Redesign - Phases 8-11 (in progress)
 
 ## Phases
 
@@ -12,160 +17,112 @@ DeepDive Chat is built in six phases ordered by hard architectural dependencies.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+<details>
+<summary>v1.0 MVP (Phases 1-7) - SHIPPED 2026-03-10</summary>
+
 - [x] **Phase 1: Backend Proxy Shell** - Authenticated Express proxy with Gemini streaming, Tavily, and provider abstraction (completed 2026-03-09)
 - [x] **Phase 2: Frontend Foundation** - React scaffold, Google OAuth auth gate, flat Zustand store, SSE client (completed 2026-03-09)
 - [x] **Phase 3: Core Thread UI** - Working single-thread chat with streaming, navigation chrome, and Markdown rendering (completed 2026-03-09)
 - [x] **Phase 4: Branching** - Text selection, Go Deeper, gutter lead pills, animated navigation, depth limit (completed 2026-03-09)
 - [x] **Phase 5: Inline Annotations** - Find Sources (Tavily), Simplify (4 modes), toggle to original, re-selectable annotated text (completed 2026-03-09)
-- [x] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, AWS EC2 (Ubuntu, nginx + PM2) (completed 2026-03-10)
+- [x] **Phase 6: Polish and Deployment** - Dark/light theme, error states, breadcrumb overflow, rate limiting, E2E tests, AWS EC2 (Ubuntu, nginx + PM2) (completed 2026-03-10)
 - [x] **Phase 7: Auth Migration + Persistent Storage** - Replace Clerk with Google OAuth, MongoDB Atlas for sessions/threads/messages, chat history view (completed 2026-03-10)
+
+</details>
+
+### v2.0 BranchChat Redesign
+
+- [ ] **Phase 8: Foundation Fixes** - Text selection filtering, annotation light-mode support, model label fix, accessibility and test updates
+- [ ] **Phase 9: Layout & Positioning** - Branch pill CSS Grid migration, transition smoothing, ancestor panel rail redesign
+- [ ] **Phase 10: Visual Polish** - Sidebar redesign, message rendering enhancements, annotation card improvements
+- [ ] **Phase 11: Multi-Provider Settings** - Settings UI with two-tier model, backend provider factory refactor, Anthropic provider, BYOK security
 
 ## Phase Details
 
-### Phase 1: Backend Proxy Shell
-**Goal**: Developers can curl the backend and receive authenticated SSE streaming responses; the provider abstraction is locked before any frontend pressure exists
-**Depends on**: Nothing (first phase)
-**Requirements**: UI-04, AUTH-04, UI-03
+### Phase 8: Foundation Fixes
+**Goal**: Text selection works correctly on assistant messages only, annotations render properly in light mode, model label is dynamic, and accessibility/test foundations are updated for the redesign
+**Depends on**: Phase 7
+**Requirements**: TSEL-01, TSEL-02, TSEL-03, TSEL-04, TSEL-05, TSEL-06, ANNO-01, ANNO-02, ANNO-03, ANNO-04, ANNO-05, MSGE-01, XCUT-01, XCUT-02, XCUT-03, XCUT-04, XCUT-05
 **Success Criteria** (what must be TRUE):
-  1. A curl request with a valid Google ID token to the `/chat` endpoint returns SSE chunks from Gemini with tokens arriving progressively
-  2. A curl request without a token receives a 401 response on every API route
-  3. A curl request to `/simplify` and `/find-sources` returns non-streamed JSON responses
-  4. Switching the `AI_PROVIDER` environment variable is the only change required to point the server at a different provider
-**Plans**: 3 plans
+  1. Selecting text in a user message, context card, or UI button does NOT trigger the ActionBubble; selecting text in an assistant message does trigger it
+  2. ActionBubble stays anchored to the selected text as the user scrolls (moves with content, not fixed to viewport) and dismisses after ~100px of scrolling away
+  3. Annotation cards (SimplificationBlock, CitationBlock) render with correct colors in both light and dark mode
+  4. The model label next to AI responses reflects the currently active provider/model, not a hardcoded string
+  5. All new interactive elements have aria-labels, keyboard navigation, and focus-visible outlines; existing tests pass with updated DOM structure
+**Plans**: TBD
 
 Plans:
-- [x] 01-01-PLAN.md — Project scaffold, test infrastructure, Wave 0 stubs, shared/types.ts
-- [x] 01-02-PLAN.md — Provider abstraction: interfaces, GeminiProvider, TavilyProvider, OpenAI stubs, config factory
-- [x] 01-03-PLAN.md — Server wiring: auth middleware, rate limiter, 3 API routes, Express entry point
+- [ ] 08-01: Text selection filtering (TSEL-01 through TSEL-06)
+- [ ] 08-02: Annotation display fixes and light-mode variants (ANNO-01 through ANNO-05)
+- [ ] 08-03: Model label fix, accessibility, and test updates (MSGE-01, XCUT-01 through XCUT-05)
 
-### Phase 2: Frontend Foundation
-**Goal**: An authenticated user lands on the app, a guest user bypasses auth, and the Zustand store is fully typed and initialized with the flat normalized structure that all future phases depend on
-**Depends on**: Phase 1
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-05
+### Phase 9: Layout & Positioning
+**Goal**: Branch pills use CSS Grid layout instead of JS measurement, thread transitions are smooth crossfades, and ancestor panels are redesigned as collapsible hover-expand rails
+**Depends on**: Phase 8
+**Requirements**: PILL-01, PILL-02, PILL-03, PILL-04, PILL-05, PILL-06, PILL-07, PILL-08, ANCS-01, ANCS-02, ANCS-03, ANCS-04, ANCS-05, ANCS-06
 **Success Criteria** (what must be TRUE):
-  1. User can sign in with Google OAuth and be redirected to the chat interface
-  2. Unauthenticated user sees a read-only demo chat; must sign in to interact (AUTH-03 revised per 02-CONTEXT.md)
-  3. Logging out clears all in-memory state (thread tree, messages, annotations) and returns to the demo chat view
-  4. The Zustand store exposes a flat `Record<id, Thread>` and `Record<id, Message>` shape with all actions fully implemented (not stubs)
-**Plans**: 3 plans
+  1. Branch pills render at correct positions without JS measurement or ResizeObserver; resizing the browser window causes no pill drift or layout shift
+  2. Navigating between threads uses a gentle crossfade (opacity fade over 150ms) that can be interrupted by navigating again mid-transition
+  3. Ancestor panels appear as thin accent-colored spine rails (24-32px) that expand to ~220px on hover with card-like overlay appearance, shadow, and bottom fade gradient
+  4. The anchor message in expanded ancestor panels is visually highlighted with larger text, colored border, and branch badge
+**Plans**: TBD
 
 Plans:
-- [ ] 02-01-PLAN.md — Vite scaffold, Tailwind v4, Google OAuth auth (AuthContext + GoogleLogin button), DemoChat guest view, AppShell skeleton, Wave 0 test stubs
-- [ ] 02-02-PLAN.md — Zustand store (all 9 actions), frontend types, selectors (currentThread, threadAncestry, isAtMaxDepth)
-- [ ] 02-03-PLAN.md — SSE client (fetch+ReadableStream+remainder buffer), API client wrapper, simplify/search stubs, human-verify checkpoint
+- [ ] 09-01: Branch pill CSS Grid migration and layout stabilization (PILL-01 through PILL-03)
+- [ ] 09-02: Thread transition crossfade and hover preview improvements (PILL-04 through PILL-08)
+- [ ] 09-03: Ancestor panel rail redesign (ANCS-01 through ANCS-06)
 
-### Phase 3: Core Thread UI
-**Goal**: Users can have a complete multi-turn conversation in the root thread with streaming AI responses, and all navigation chrome is present (even if non-functional beyond root)
-**Depends on**: Phase 2
-**Requirements**: CHAT-01, CHAT-02, CHAT-03, CHAT-04, CHAT-05, CHAT-06, NAV-01, NAV-02, NAV-03, NAV-04, NAV-05, NAV-06, NAV-07
+### Phase 10: Visual Polish
+**Goal**: Sidebar is redesigned with IDE-grade session tree, message rendering is polished with proper typography and code copy, and annotation cards have enter animations and improved content display
+**Depends on**: Phase 9
+**Requirements**: SIDE-01, SIDE-02, SIDE-03, SIDE-04, SIDE-05, SIDE-06, SIDE-07, SIDE-08, SIDE-09, SIDE-10, SIDE-11, SIDE-12, MSGE-02, MSGE-03, MSGE-04, MSGE-05, MSGE-06, MSGE-07, MSGE-08, MSGE-09, ANNO-06, ANNO-07, ANNO-08, ANNO-09, ANNO-10, ANNO-11, ANNO-12
 **Success Criteria** (what must be TRUE):
-  1. User can type a message and watch Gemini's response appear token-by-token with full GFM Markdown rendering including syntax-highlighted code blocks
-  2. User can send follow-up messages in the root thread and maintain a coherent multi-turn conversation
-  3. Text selection is disabled on a message while it is streaming and automatically re-enabled when the stream completes
-  4. The breadcrumb bar is visible at the top of the screen showing the current thread path; clicking an ancestor navigates there with a slide-left transition
-  5. The left spine strip appears when thread depth is 1 or greater and clicking it navigates to the parent thread
-**Plans**: 6 plans
+  1. Sidebar has gradient background, styled header, prominent New Chat button, and session entries with relative dates, hover states with accent-colored left bars, and active session highlighting
+  2. Thread tree in sidebar shows chevron toggles with rotation animation, accent-color pips, connecting lines, and 3-dot hover menus with modal delete confirmation
+  3. Code blocks in AI messages have a copy-to-clipboard button that shows "Copied!" feedback; headings have proper visual weight; tables have row striping; blockquotes use accent-colored left borders
+  4. Annotation cards slide up and fade in on creation; SimplificationBlock shows mode badges and rendered markdown with always-visible mode pills; CitationBlock defaults expanded with favicons and domain badges
+  5. User messages use whitespace-pre-wrap with hover timestamps; streaming cursor has blinking animation
+**Plans**: TBD
 
 Plans:
-- [ ] 03-01-PLAN.md — Wave 0 test stubs for all 7 test files (CHAT + NAV requirements)
-- [ ] 03-02-PLAN.md — useStreamingChat hook, ChatInput, AbortSignal threading, setThreadTitle store action
-- [ ] 03-03-PLAN.md — MarkdownRenderer (react-markdown + Prism), StreamingCursor, MessageBlock, ContextCard
-- [ ] 03-04-PLAN.md — ThreadView (auto-scroll, slide transition, scroll restore), MessageList, App.tsx createSession fix
-- [ ] 03-05-PLAN.md — BreadcrumbBar (NAV-01/02/03 with overflow collapse), SpineStrip (NAV-04/05)
-- [ ] 03-06-PLAN.md — Human verification checkpoint (streaming, Markdown, Stop, navigation chrome)
+- [ ] 10-01: Sidebar visual redesign (SIDE-01 through SIDE-06)
+- [ ] 10-02: Sidebar thread tree and interactions (SIDE-07 through SIDE-12)
+- [ ] 10-03: Message rendering polish (MSGE-02 through MSGE-09)
+- [ ] 10-04: Annotation card enhancements (ANNO-06 through ANNO-12)
 
-### Phase 4: Branching
-**Goal**: Users can branch off any completed AI paragraph into a child thread, navigate the resulting thread tree, and see gutter lead pills showing where branches originated
-**Depends on**: Phase 3
-**Requirements**: BRANCH-01, BRANCH-02, BRANCH-03, BRANCH-04, BRANCH-05, BRANCH-06, BRANCH-07, BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11, BRANCH-12
+### Phase 11: Multi-Provider Settings
+**Goal**: Users can choose between free-tier models and bring their own API keys for Gemini, OpenAI, or Anthropic; backend supports per-request provider instantiation with full security
+**Depends on**: Phase 10
+**Requirements**: PROV-01, PROV-02, PROV-03, PROV-04, PROV-05, PROV-06, PROV-07, PROV-08, PROV-09, PROV-10, PROV-11, PROV-12, PROV-13, PROV-14, PROV-15, BKND-01, BKND-02, BKND-03, BKND-04, BKND-05, BKND-06, BKND-07, BKND-08, BKND-09, BKND-10, BKND-11, BKND-12
 **Success Criteria** (what must be TRUE):
-  1. User can click and drag to select a paragraph of AI response text and see the action bubble appear within 100ms of releasing the mouse
-  2. User can click "Go Deeper" and the child thread opens with a slide-right transition; a colored underline persists on the anchor paragraph in the parent thread
-  3. Child lead pills appear in the right gutter at the vertical position of the anchor paragraph, showing the thread title, message count, and accent color pip
-  4. Clicking a child lead pill navigates into that thread; clicking a breadcrumb or the spine navigates back, with scroll position restored to where the user left off
-  5. "Go Deeper" is disabled at depth 4 and shows an explanatory tooltip; branching is impossible beyond that level
-**Plans**: 8 plans
+  1. User can open Settings from a gear icon, toggle between Gemini Flash 2.0 and Gemini Flash 2.0 Lite as the free-tier default model, and see the active model badge in the chat input area
+  2. User can expand the BYOK section, select a provider (Gemini/OpenAI/Anthropic), enter an API key, verify it with a backend call, and select from provider-specific models after verification
+  3. User can clear their stored key and revert to free tier; the key is encrypted in localStorage with AES-GCM, never displayed in full after entry, and cleared on sign-out
+  4. Backend creates provider instances per-request from BYOK credentials; API keys are never logged, never persisted server-side, and error responses redact key substrings
+  5. Anthropic Claude provider is fully implemented (streamChat, simplify, generateCitationNote); BYOK requests are rate-limited to 30/min per user; CORS is restricted to app domain
+**Plans**: TBD
 
 Plans:
-- [ ] 04-01-PLAN.md — Wave 0: test stubs (useTextSelection, ActionBubble, GutterColumn) + dep verification
-- [ ] 04-02-PLAN.md — useTextSelection hook + MarkdownRenderer rehype paragraph ID plugin
-- [ ] 04-03-PLAN.md — System prompt injection for child threads (api/chat.ts + useStreamingChat.ts)
-- [ ] 04-04-PLAN.md — ActionBubble component (3 buttons, fixed positioning, depth limit disable)
-- [ ] 04-05-PLAN.md — Go Deeper wiring: ThreadView integration, accent palette, addChildLead, anchor underline
-- [ ] 04-06-PLAN.md — GutterColumn + lead pills (DOM positioning, ResizeObserver, hover preview)
-- [ ] 04-07-PLAN.md — ContextCard accentColor + MessageList renders it for child threads
-- [ ] 04-08-PLAN.md — Human verification checkpoint (all 12 BRANCH requirements)
-
-### Phase 5: Inline Annotations
-**Goal**: Users can find sources for any selected paragraph and simplify it in four modes; annotations persist in place, remain re-selectable, and do not break gutter pill positioning
-**Depends on**: Phase 4
-**Requirements**: INLINE-01, INLINE-02, INLINE-03, INLINE-04, INLINE-05, INLINE-06, INLINE-07, INLINE-08
-**Success Criteria** (what must be TRUE):
-  1. User can click "Find Sources" and see a citation block injected below the paragraph with top 3 Tavily results (title, domain, link) and a Gemini-generated note; the block is collapsible
-  2. User can click "Simplify", choose one of four modes, and see a simplification block appear below the paragraph (original remains visible simultaneously — per CONTEXT.md)
-  3. "Try another mode" updates the existing simplification block in-place (no duplicate blocks)
-  4. If Tavily returns no results or fails, an inline error message with a retry option appears below the paragraph
-  5. Text that has been annotated (simplified or sourced) is fully re-selectable and the action bubble offers all three actions (Go Deeper, Find Sources, Simplify)
-**Plans**: 7 plans
-
-Plans:
-- [ ] 05-01-PLAN.md — Wave 0: test scaffolds (6 files, test.todo stubs)
-- [ ] 05-02-PLAN.md — updateAnnotation store action + API shape fixes (simplify/search types) + backend find-sources citation note extension
-- [ ] 05-03-PLAN.md — ActionBubble expanded mode state (Simplify picker) + onFindSources/onSimplify props wired in ThreadView
-- [ ] 05-04-PLAN.md — CitationBlock + AnnotationShimmer components
-- [ ] 05-05-PLAN.md — SimplificationBlock component
-- [ ] 05-06-PLAN.md — MessageBlock annotation rendering + ThreadView async handlers (loading/error/retry/try-another)
-- [ ] 05-07-PLAN.md — Human verification checkpoint (all 8 INLINE requirements)
-
-### Phase 6: Polish and Deployment
-**Goal**: The app is production-deployed to AWS EC2 (Ubuntu, nginx + PM2), visually polished in both themes, protected by rate limiting, and covered by an E2E test suite
-**Depends on**: Phase 5
-**Requirements**: UI-01, UI-02, DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04
-**Success Criteria** (what must be TRUE):
-  1. The app renders in dark mode on first load; toggling to light theme persists across page refreshes via localStorage
-  2. The frontend and backend are live on a single AWS EC2 Ubuntu instance — nginx serves the built React static files and reverse-proxies /api to the Express backend on port 3001; PM2 keeps the Node.js process running; Let's Encrypt/Certbot provides SSL
-  3. The Playwright E2E suite passes for all 6 core flows: auth, root chat with streaming, Go Deeper branching, Find Sources, Simplify, and multi-level navigation
-  4. A `.env.example` file documents every required environment variable with a description
-**Plans**: 6 plans
-
-Plans:
-- [ ] 06-01-PLAN.md — Playwright scaffold: install, playwright.config.ts, fixtures, 6 spec stubs (Wave 0)
-- [ ] 06-02-PLAN.md — Theme system: FOUC script, ThemeContext, ThemeToggle, light theme CSS, accent palette adaptation
-- [ ] 06-03-PLAN.md — Error states: NetworkBanner, AuthExpiredBanner, RateLimitBanner, mid-stream failure + retry
-- [ ] 06-04-PLAN.md — Deployment config: .env.example, nginx site config template, PM2 ecosystem.config.js, .env.production template, VITE_API_BASE_URL set to empty string (nginx handles /api proxy)
-- [x] 06-05-PLAN.md — E2E spec implementation: all 6 flows passing (depends on 06-01, 06-02, 06-03)
-- [ ] 06-06-PLAN.md — Deployment checkpoint: AWS EC2 live — nginx + PM2 running, SSL via Certbot, CORS wired (depends on 06-04, 06-05)
-
-### Phase 7: Auth Migration + Persistent Storage
-**Goal**: Clerk is fully removed and replaced with Google OAuth; MongoDB Atlas stores sessions, chat threads, and message history so data persists across devices and page refreshes
-**Depends on**: Phase 6
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05
-**Success Criteria** (what must be TRUE):
-  1. User can sign in with Google OAuth and be redirected to the chat interface; Clerk SDK is completely removed from both frontend and backend
-  2. The backend verifies Google ID tokens using google-auth-library on every authenticated API request
-  3. Chat threads, messages, and branch relationships are stored in MongoDB Atlas and survive page refresh
-  4. User's previous chat sessions are listed and loadable from a session history view
-  5. Signing out clears the session token and in-memory state; signing back in restores chat history from MongoDB
-**Plans**: 5 plans
-
-Plans:
-- [x] 07-01-PLAN.md — Backend Clerk removal: google-auth-library auth middleware, rateLimiter IP-only, index.ts cleanup, auth.test.ts update
-- [x] 07-02-PLAN.md — Frontend Clerk removal: AuthContext + AuthProvider, SignInButton (GoogleLogin), App.tsx + AppShell rewire, main.tsx, setup.ts
-- [x] 07-03-PLAN.md — Mongoose connection + four schema models (User, Session, Thread, Message) + sessions test scaffold
-- [x] 07-04-PLAN.md — Session persistence routes (GET/POST /api/sessions, GET /api/sessions/:id), chat save-on-done, hydrateSession Zustand action, sessions API client
-- [x] 07-05-PLAN.md — SessionHistory component, App.tsx post-login hydration, chat body enrichment, authContext/app tests, human verification checkpoint
+- [ ] 11-01: Backend provider factory refactor and free-tier narrowing (BKND-01 through BKND-05)
+- [ ] 11-02: Anthropic Claude provider and BYOK security middleware (BKND-06 through BKND-12)
+- [ ] 11-03: Settings UI and SettingsContext (PROV-01 through PROV-12)
+- [ ] 11-04: BYOK key encryption, lifecycle, and model badge (PROV-13 through PROV-15, PROV-10, PROV-11)
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Phases execute in numeric order: 1 through 11 (decimal phases inserted between integers as needed)
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Backend Proxy Shell | 3/3 | Complete   | 2026-03-09 |
-| 2. Frontend Foundation | 3/3 | Complete    | 2026-03-09 |
-| 3. Core Thread UI | 6/6 | Complete    | 2026-03-09 |
-| 4. Branching | 8/8 | Complete   | 2026-03-09 |
-| 5. Inline Annotations | 7/7 | Complete   | 2026-03-09 |
-| 6. Polish and Deployment | 6/6 | Complete   | 2026-03-10 |
-| 7. Auth Migration + Persistent Storage | 5/5 | Pending Verify | 2026-03-10 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Backend Proxy Shell | v1.0 | 3/3 | Complete | 2026-03-09 |
+| 2. Frontend Foundation | v1.0 | 3/3 | Complete | 2026-03-09 |
+| 3. Core Thread UI | v1.0 | 6/6 | Complete | 2026-03-09 |
+| 4. Branching | v1.0 | 8/8 | Complete | 2026-03-09 |
+| 5. Inline Annotations | v1.0 | 7/7 | Complete | 2026-03-09 |
+| 6. Polish and Deployment | v1.0 | 6/6 | Complete | 2026-03-10 |
+| 7. Auth Migration + Persistent Storage | v1.0 | 5/5 | Complete | 2026-03-10 |
+| 8. Foundation Fixes | v2.0 | 0/3 | Not started | - |
+| 9. Layout & Positioning | v2.0 | 0/3 | Not started | - |
+| 10. Visual Polish | v2.0 | 0/4 | Not started | - |
+| 11. Multi-Provider Settings | v2.0 | 0/4 | Not started | - |

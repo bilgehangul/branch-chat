@@ -132,8 +132,8 @@ Deferred beyond v2.0.
 
 | Feature | Reason |
 |---------|--------|
-| Mobile support | Text selection and gutter layout require desktop viewport (≥1024px) |
-| Fine-grained inline annotation insertion | Moving annotations mid-paragraph is complex and fragile with markdown rendering — keep after block element |
+| Mobile support | Text selection and gutter layout require desktop viewport (>=1024px) |
+| Fine-grained inline annotation insertion | Moving annotations mid-paragraph is complex and fragile with markdown rendering -- keep after block element |
 | OAuth providers beyond Google | Google OAuth sufficient for v2.0, additional OAuth deferred |
 | Real-time collaborative editing | Single-user sessions only |
 
@@ -141,13 +141,97 @@ Deferred beyond v2.0.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated by roadmapper) | | |
+| TSEL-01 | Phase 8 | Pending |
+| TSEL-02 | Phase 8 | Pending |
+| TSEL-03 | Phase 8 | Pending |
+| TSEL-04 | Phase 8 | Pending |
+| TSEL-05 | Phase 8 | Pending |
+| TSEL-06 | Phase 8 | Pending |
+| ANNO-01 | Phase 8 | Pending |
+| ANNO-02 | Phase 8 | Pending |
+| ANNO-03 | Phase 8 | Pending |
+| ANNO-04 | Phase 8 | Pending |
+| ANNO-05 | Phase 8 | Pending |
+| MSGE-01 | Phase 8 | Pending |
+| XCUT-01 | Phase 8 | Pending |
+| XCUT-02 | Phase 8 | Pending |
+| XCUT-03 | Phase 8 | Pending |
+| XCUT-04 | Phase 8 | Pending |
+| XCUT-05 | Phase 8 | Pending |
+| PILL-01 | Phase 9 | Pending |
+| PILL-02 | Phase 9 | Pending |
+| PILL-03 | Phase 9 | Pending |
+| PILL-04 | Phase 9 | Pending |
+| PILL-05 | Phase 9 | Pending |
+| PILL-06 | Phase 9 | Pending |
+| PILL-07 | Phase 9 | Pending |
+| PILL-08 | Phase 9 | Pending |
+| ANCS-01 | Phase 9 | Pending |
+| ANCS-02 | Phase 9 | Pending |
+| ANCS-03 | Phase 9 | Pending |
+| ANCS-04 | Phase 9 | Pending |
+| ANCS-05 | Phase 9 | Pending |
+| ANCS-06 | Phase 9 | Pending |
+| SIDE-01 | Phase 10 | Pending |
+| SIDE-02 | Phase 10 | Pending |
+| SIDE-03 | Phase 10 | Pending |
+| SIDE-04 | Phase 10 | Pending |
+| SIDE-05 | Phase 10 | Pending |
+| SIDE-06 | Phase 10 | Pending |
+| SIDE-07 | Phase 10 | Pending |
+| SIDE-08 | Phase 10 | Pending |
+| SIDE-09 | Phase 10 | Pending |
+| SIDE-10 | Phase 10 | Pending |
+| SIDE-11 | Phase 10 | Pending |
+| SIDE-12 | Phase 10 | Pending |
+| MSGE-02 | Phase 10 | Pending |
+| MSGE-03 | Phase 10 | Pending |
+| MSGE-04 | Phase 10 | Pending |
+| MSGE-05 | Phase 10 | Pending |
+| MSGE-06 | Phase 10 | Pending |
+| MSGE-07 | Phase 10 | Pending |
+| MSGE-08 | Phase 10 | Pending |
+| MSGE-09 | Phase 10 | Pending |
+| ANNO-06 | Phase 10 | Pending |
+| ANNO-07 | Phase 10 | Pending |
+| ANNO-08 | Phase 10 | Pending |
+| ANNO-09 | Phase 10 | Pending |
+| ANNO-10 | Phase 10 | Pending |
+| ANNO-11 | Phase 10 | Pending |
+| ANNO-12 | Phase 10 | Pending |
+| PROV-01 | Phase 11 | Pending |
+| PROV-02 | Phase 11 | Pending |
+| PROV-03 | Phase 11 | Pending |
+| PROV-04 | Phase 11 | Pending |
+| PROV-05 | Phase 11 | Pending |
+| PROV-06 | Phase 11 | Pending |
+| PROV-07 | Phase 11 | Pending |
+| PROV-08 | Phase 11 | Pending |
+| PROV-09 | Phase 11 | Pending |
+| PROV-10 | Phase 11 | Pending |
+| PROV-11 | Phase 11 | Pending |
+| PROV-12 | Phase 11 | Pending |
+| PROV-13 | Phase 11 | Pending |
+| PROV-14 | Phase 11 | Pending |
+| PROV-15 | Phase 11 | Pending |
+| BKND-01 | Phase 11 | Pending |
+| BKND-02 | Phase 11 | Pending |
+| BKND-03 | Phase 11 | Pending |
+| BKND-04 | Phase 11 | Pending |
+| BKND-05 | Phase 11 | Pending |
+| BKND-06 | Phase 11 | Pending |
+| BKND-07 | Phase 11 | Pending |
+| BKND-08 | Phase 11 | Pending |
+| BKND-09 | Phase 11 | Pending |
+| BKND-10 | Phase 11 | Pending |
+| BKND-11 | Phase 11 | Pending |
+| BKND-12 | Phase 11 | Pending |
 
 **Coverage:**
-- v2.0 requirements: 66 total
-- Mapped to phases: 0
-- Unmapped: 66
+- v2.0 requirements: 85 total
+- Mapped to phases: 85
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after initial definition*
+*Last updated: 2026-03-11 after roadmap creation (all 85 requirements mapped to Phases 8-11)*
