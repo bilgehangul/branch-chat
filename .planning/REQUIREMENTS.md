@@ -54,7 +54,7 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 ### Annotations
 
 - [x] **ANNO-01**: Selected target text highlighted inline with subtle background color (bg-amber-100/30 dark:bg-amber-500/10)
-- [x] **ANNO-02**: Annotation card has small upward-pointing caret and quoted targetText at top in italics
+- [x] **ANNO-02**: Annotation card shows quoted targetText at top in italics, truncated to ~50 characters with ellipsis
 - [x] **ANNO-03**: SimplificationBlock has light-mode variant (bg-indigo-50 border-indigo-200)
 - [x] **ANNO-04**: CitationBlock has light-mode variant (bg-stone-50 border-stone-200)
 - [x] **ANNO-05**: Annotation cards respect message bubble width — no independent max-w-[720px]
@@ -114,7 +114,7 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 ### Cross-Cutting
 
 - [x] **XCUT-01**: All new interactive elements have aria-label, keyboard navigation, focus-visible outlines
-- [x] **XCUT-02**: Settings modal traps focus
+- [ ] **XCUT-02**: Settings modal traps focus (deferred to Phase 11 — no modals exist yet)
 - [x] **XCUT-03**: Color choices meet WCAG AA contrast ratios (4.5:1 normal text, 3:1 large text)
 - [x] **XCUT-04**: Existing tests updated to match new DOM structure and class names
 - [x] **XCUT-05**: New tests for text selection filtering, settings context, and light-mode annotations
@@ -154,7 +154,7 @@ Deferred beyond v2.0.
 | ANNO-05 | Phase 8 | Complete |
 | MSGE-01 | Phase 8 | Complete |
 | XCUT-01 | Phase 8 | Complete |
-| XCUT-02 | Phase 8 | Complete |
+| XCUT-02 | Phase 11 | Pending |
 | XCUT-03 | Phase 8 | Complete |
 | XCUT-04 | Phase 8 | Complete |
 | XCUT-05 | Phase 8 | Complete |
