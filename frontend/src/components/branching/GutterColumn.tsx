@@ -152,7 +152,11 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
   const firstAiLine = firstAiMsg ? firstAiMsg.content.split('\n')[0] : '';
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* The lead pill button */}
       <button
         ref={pillRef}
@@ -160,8 +164,6 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
         className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none bg-white dark:bg-zinc-800"
         onClick={() => onNavigate(lead.threadId)}
         onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <span className="text-slate-400 dark:text-zinc-500 flex-shrink-0">&rarr;</span>
         <span className="text-slate-800 dark:text-zinc-100 truncate flex-1 min-w-0">{thread.title.slice(0, 20)}</span>
@@ -173,9 +175,9 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
         />
       </button>
 
-      {/* Descendant threads — collapsed by default, expand on hover (PILL-08) */}
+      {/* Descendant threads — always visible (expanded by default, no hover collapse) */}
       {thread.childThreadIds.length > 0 && (
-        <div className={`mt-0.5 border-l border-slate-200 dark:border-zinc-700 ml-2 overflow-hidden transition-[max-height] duration-200 ${isHovered ? 'max-h-[200px]' : 'max-h-0'}`}>
+        <div className="mt-0.5 border-l border-slate-200 dark:border-zinc-700 ml-2">
           {thread.childThreadIds.map(childId => (
             <DescendantPill
               key={childId}

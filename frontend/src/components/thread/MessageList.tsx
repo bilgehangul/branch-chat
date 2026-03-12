@@ -64,7 +64,7 @@ export function MessageList({
             </div>
 
             {/* Column 2: branch pills (auto-collapses when empty) */}
-            <div className="flex flex-col gap-1 items-end self-start pt-2">
+            <div className="flex flex-col gap-1 items-end self-center">
               {leadsForMessage.length > 0 && (
                 <BranchPillCell
                   leads={leadsForMessage}
