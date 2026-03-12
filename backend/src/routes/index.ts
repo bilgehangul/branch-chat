@@ -4,6 +4,7 @@
 // Do NOT add routes directly to app in index.ts — that bypasses requireApiAuth.
 import { Router } from 'express';
 import { requireApiAuth } from '../middleware/auth.js';
+import { configRouter } from './config.js';
 import { chatRouter } from './chat.js';
 import { simplifyRouter } from './simplify.js';
 import { findSourcesRouter } from './find-sources.js';
@@ -11,7 +12,10 @@ import { sessionsRouter, threadsRouter, messagesRouter } from './sessions.js';
 
 export const apiRouter = Router();
 
-// Auth guard on every route in this router
+// Public routes (no auth required)
+apiRouter.use('/config', configRouter);
+
+// Auth guard on remaining routes
 apiRouter.use(requireApiAuth);
 
 apiRouter.use('/chat', chatRouter);

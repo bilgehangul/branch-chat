@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import type { Message } from '../../types/index';
 import { useSessionStore } from '../../store/sessionStore';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { StreamingCursor } from './StreamingCursor';
+import { getModelLabel } from '../../api/config';
 
 type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
 
@@ -30,6 +32,12 @@ export function MessageBlock({
   const isUser = message.role === 'user';
   const streamingClasses = message.isStreaming ? 'opacity-80 select-none pointer-events-none' : '';
 
+  // Dynamic model label from /api/config (cached after first fetch)
+  const [modelLabel, setModelLabel] = useState('AI');
+  useEffect(() => {
+    getModelLabel().then(setModelLabel);
+  }, []);
+
   // Build underline map from childLeads: paragraphIndex -> accentColor
   const threads = useSessionStore(s => s.threads);
   const underlineMap: Record<number, string> = {};
@@ -42,7 +50,7 @@ export function MessageBlock({
     <div className="mb-6 max-w-[720px] mx-auto" data-message-id={message.id} data-message-role={message.role}>
       {/* Label above bubble */}
       <p className={`text-xs mb-1 font-medium ${isUser ? 'text-slate-500 text-right' : 'text-slate-500 text-left'}`}>
-        {isUser ? 'You' : 'Gemini'}
+        {isUser ? 'You' : modelLabel}
       </p>
       {/* Bubble */}
       <div className={isUser ? 'flex justify-end' : 'flex justify-start'}>
