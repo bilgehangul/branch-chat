@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed quick-24 (5 UI bug fixes)
-last_updated: "2026-03-12T14:59:48.150Z"
-last_activity: 2026-03-12 - Completed quick task 24: Fix 5 UI bugs
+stopped_at: Completed quick-25 (text selection portal rewrite + sidebar collapse fix)
+last_updated: "2026-03-12T15:17:49Z"
+last_activity: 2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix
 progress:
   total_phases: 4
   completed_phases: 3
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 Phase: 10 of 11 (Visual Polish) -- IN PROGRESS
 Plan: 10-01, 10-02 complete (sidebar visual foundation + thread tree redesign)
 Status: Phase 10 in progress
-Last activity: 2026-03-12 - Completed quick task 24: Fix 5 UI bugs
+Last activity: 2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix
 
 Progress: [██████████] 96% (v2.0 scope)
 
@@ -66,7 +66,9 @@ Key decisions carried forward:
 - Highlight overlay per-type colors: amber 25%, indigo 20%, teal 20% (highlighter pen feel)
 - Inline annotation highlighting wraps first occurrence of targetText per paragraph with per-type tint
 - data-message-role attribute on MessageBlock for DOM-based role filtering of text selection
-- ActionBubble uses position:absolute inside contentWrapperRef (scrolls with text, not fixed)
+- ActionBubble uses position:fixed via createPortal to document.body — escapes CSS Grid entirely (quick-25)
+- HighlightOverlay converts scroll-container-relative rects to viewport coords via scrollRef (quick-25)
+- Sidebar ThreadNode collapsed by default — useState(false) in ThreadNode (quick-25)
 - [Phase 08]: ANNO-02 description corrected to remove caret reference per user locked decision
 - [Phase 09]: Ancestor rail width 28px, overlay 220px — no dynamic sizing
 - [Phase 09]: Branch badge is decorative span (not button) — entire expanded panel clickable to navigate
@@ -95,9 +97,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 24 | Fix 5 UI bugs: text selection, action bubble, branch pill alignment, subbranch hover collapse, sidebar parent branch layout | 2026-03-12 | 8d809975 | [24-fix-5-ui-bugs-text-selection-action-bubb](./quick/24-fix-5-ui-bugs-text-selection-action-bubb/) |
+| 25 | Rewrite text selection system with position:fixed portal; fix sidebar ThreadNode collapsed by default | 2026-03-12 | 5a581ff4 | [25-rewrite-text-selection-actionbubble-from](./quick/25-rewrite-text-selection-actionbubble-from/) |
 
 ## Session Continuity
 
-Last session: 2026-03-12T14:59:48.147Z
-Stopped at: Completed quick-24 (5 UI bug fixes)
+Last session: 2026-03-12T15:17:49Z
+Stopped at: Completed quick-25 (text selection portal rewrite + sidebar collapse fix)
 Resume file: None
