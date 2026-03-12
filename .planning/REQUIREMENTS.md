@@ -15,12 +15,12 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 - [ ] **SIDE-04**: Session list entries have vertical padding (py-3), hover states with left-colored bar
 - [ ] **SIDE-05**: Active session has 2px accent-colored left border + tinted background using root thread's accentColor
 - [ ] **SIDE-06**: Session dates show relative time ("2h ago", "Yesterday", "Mar 5") instead of raw locale strings
-- [ ] **SIDE-07**: Thread tree uses chevron icons with CSS rotation transition instead of plain ▶/▼
-- [ ] **SIDE-08**: Each thread node shows its accent-color pip inline
-- [ ] **SIDE-09**: Active thread row highlighted with left-border accent color + background tint
-- [ ] **SIDE-10**: Thread tree has thin vertical connecting lines showing hierarchy (like VS Code file tree)
-- [ ] **SIDE-11**: 3-dot menu trigger appears on hover only (opacity-0 group-hover:opacity-100)
-- [ ] **SIDE-12**: Delete confirmation uses modal-style dialog rather than inline Yes/No buttons
+- [x] **SIDE-07**: Thread tree uses chevron icons with CSS rotation transition instead of plain ▶/▼
+- [x] **SIDE-08**: Each thread node shows its accent-color pip inline
+- [x] **SIDE-09**: Active thread row highlighted with left-border accent color + background tint
+- [x] **SIDE-10**: Thread tree has thin vertical connecting lines showing hierarchy (like VS Code file tree)
+- [x] **SIDE-11**: 3-dot menu trigger appears on hover only (opacity-0 group-hover:opacity-100)
+- [x] **SIDE-12**: Delete confirmation uses modal-style dialog rather than inline Yes/No buttons
 
 ### Ancestor Panels
 
@@ -178,12 +178,12 @@ Deferred beyond v2.0.
 | SIDE-04 | Phase 10 | Pending |
 | SIDE-05 | Phase 10 | Pending |
 | SIDE-06 | Phase 10 | Pending |
-| SIDE-07 | Phase 10 | Pending |
-| SIDE-08 | Phase 10 | Pending |
-| SIDE-09 | Phase 10 | Pending |
-| SIDE-10 | Phase 10 | Pending |
-| SIDE-11 | Phase 10 | Pending |
-| SIDE-12 | Phase 10 | Pending |
+| SIDE-07 | Phase 10 | Complete |
+| SIDE-08 | Phase 10 | Complete |
+| SIDE-09 | Phase 10 | Complete |
+| SIDE-10 | Phase 10 | Complete |
+| SIDE-11 | Phase 10 | Complete |
+| SIDE-12 | Phase 10 | Complete |
 | MSGE-02 | Phase 10 | Pending |
 | MSGE-03 | Phase 10 | Pending |
 | MSGE-04 | Phase 10 | Pending |
