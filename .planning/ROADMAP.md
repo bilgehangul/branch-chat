@@ -49,7 +49,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Annotation cards (SimplificationBlock, CitationBlock) render with correct colors in both light and dark mode
   4. The model label next to AI responses reflects the currently active provider/model, not a hardcoded string
   5. All new interactive elements have aria-labels, keyboard navigation, and focus-visible outlines; existing tests pass with updated DOM structure
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 08-01: Text selection filtering (TSEL-01 through TSEL-06)
