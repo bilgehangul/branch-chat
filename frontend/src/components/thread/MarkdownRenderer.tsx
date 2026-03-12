@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { visit } from 'unist-util-visit';
@@ -104,6 +104,71 @@ function highlightAnnotatedText(
   });
 }
 
+/**
+ * CodeBlockWithCopy — extracted OUTSIDE MarkdownRenderer to avoid re-render
+ * explosion when useState updates (RESEARCH.md Pitfall 1).
+ */
+function CodeBlockWithCopy({
+  language,
+  children,
+  ...props
+}: {
+  language: string;
+  children: string;
+} & Record<string, unknown>) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    try {
+      navigator.clipboard.writeText(children).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    } catch {
+      // Clipboard API may not be available in all contexts
+    }
+  }, [children]);
+
+  return (
+    <div className="rounded-lg overflow-hidden my-2">
+      {/* Header bar — always visible */}
+      <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-700 dark:bg-zinc-800 text-xs text-zinc-400">
+        <span>{language}</span>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1 hover:text-zinc-200 transition-colors"
+          aria-label={copied ? 'Copied' : 'Copy code'}
+        >
+          {copied ? (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+      <SyntaxHighlighter
+        style={oneDark}
+        language={language}
+        PreTag="div"
+        customStyle={{ margin: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}
+        {...props}
+      >
+        {children}
+      </SyntaxHighlighter>
+    </div>
+  );
+}
+
 export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   content,
   underlineMap,
@@ -112,6 +177,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   errorAnnotation,
   messageId,
   onTryAnother,
+  accentColor,
 }: {
   content: string;
   underlineMap?: Record<number, string>;
@@ -120,6 +186,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   errorAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string; retryFn: () => void } | null;
   messageId?: string;
   onTryAnother?: (messageId: string, annotationId: string, anchorText: string, paragraphId: string, mode: SimplifyMode) => void;
+  accentColor?: string;
 }) {
   // Extract paragraph index from a component's props (data-paragraph-id attribute)
   function getPId(props: Record<string, unknown>): number {
@@ -206,15 +273,44 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
             </>
           );
         },
-        h1({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h1', props, children)}{annotationsAfter(n)}</>; },
-        h2({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h2', props, children)}{annotationsAfter(n)}</>; },
-        h3({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h3', props, children)}{annotationsAfter(n)}</>; },
+        h1({ children, ...props }) {
+          const n = getPId(props);
+          return <><h1 {...props} className="text-xl font-bold mt-6 mb-2">{children}</h1>{annotationsAfter(n)}</>;
+        },
+        h2({ children, ...props }) {
+          const n = getPId(props);
+          return <><h2 {...props} className="text-lg font-semibold mt-6 mb-2 border-b border-zinc-700 dark:border-zinc-700 pb-1">{children}</h2>{annotationsAfter(n)}</>;
+        },
+        h3({ children, ...props }) {
+          const n = getPId(props);
+          return <><h3 {...props} className="text-base font-semibold mt-4 mb-1">{children}</h3>{annotationsAfter(n)}</>;
+        },
         h4({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h4', props, children)}{annotationsAfter(n)}</>; },
         h5({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h5', props, children)}{annotationsAfter(n)}</>; },
         h6({ children, ...props }) { const n = getPId(props); return <>{React.createElement('h6', props, children)}{annotationsAfter(n)}</>; },
-        ul({ children, ...props }) { const n = getPId(props); return <>{React.createElement('ul', props, children)}{annotationsAfter(n)}</>; },
-        ol({ children, ...props }) { const n = getPId(props); return <>{React.createElement('ol', props, children)}{annotationsAfter(n)}</>; },
-        blockquote({ children, ...props }) { const n = getPId(props); return <>{React.createElement('blockquote', props, children)}{annotationsAfter(n)}</>; },
+        ul({ children, ...props }) {
+          const n = getPId(props);
+          return <><ul {...props} className="space-y-1.5 list-disc pl-6">{children}</ul>{annotationsAfter(n)}</>;
+        },
+        ol({ children, ...props }) {
+          const n = getPId(props);
+          return <><ol {...props} className="space-y-1.5 list-decimal pl-6">{children}</ol>{annotationsAfter(n)}</>;
+        },
+        blockquote({ children, ...props }) {
+          const n = getPId(props);
+          return (
+            <>
+              <blockquote
+                {...props}
+                className="pl-4 italic text-zinc-400 dark:text-stone-500"
+                style={{ borderLeft: `3px solid ${accentColor || '#6B609A'}` }}
+              >
+                {children}
+              </blockquote>
+              {annotationsAfter(n)}
+            </>
+          );
+        },
         table({ children, ...props }) {
           const n = getPId(props as Record<string, unknown>);
           return (
@@ -225,6 +321,9 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
               {annotationsAfter(n)}
             </>
           );
+        },
+        tr({ children, ...props }) {
+          return <tr {...(props as React.HTMLAttributes<HTMLTableRowElement>)} className="even:bg-stone-50 dark:even:bg-zinc-800/50">{children}</tr>;
         },
         pre({ children, ...props }) {
           const n = getPId(props as Record<string, unknown>);
@@ -239,14 +338,12 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
           const match = /language-(\w+)/.exec(className ?? '');
           const isBlock = !!match;
           return isBlock ? (
-            <SyntaxHighlighter
-              style={oneDark}
+            <CodeBlockWithCopy
               language={match[1]}
-              PreTag="div"
               {...(props as Record<string, unknown>)}
             >
               {String(children).replace(/\n$/, '')}
-            </SyntaxHighlighter>
+            </CodeBlockWithCopy>
           ) : (
             <code
               className="bg-slate-100 dark:bg-zinc-700 text-slate-800 dark:text-slate-200 rounded px-1 py-0.5 text-sm font-mono"

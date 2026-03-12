@@ -24,6 +24,20 @@ body {
   --text-muted: theme(colors.stone.400);
 }
 
+/* Slide-up-fade animation for annotation cards (Phase 10) */
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up-fade {
+  animation: slideUpFade 200ms ease-out both;
+}
+
+/* Blink animation for streaming cursor (Phase 10) */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
 /* Dark theme overrides */
 .dark {
   --bg-base: theme(colors.zinc.900);

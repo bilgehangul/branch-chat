@@ -101,4 +101,44 @@ describe('MarkdownRenderer', () => {
     expect(table).toBeInTheDocument();
     expect(table?.getAttribute('data-paragraph-id')).toBe('0');
   });
+
+  // MSGE-02: Heading typography
+  it('renders h2 with border-b class', () => {
+    const { container } = render(<MarkdownRenderer content="## Subheading" />);
+    const h2 = container.querySelector('h2');
+    expect(h2).toBeInTheDocument();
+    expect(h2?.className).toContain('border-b');
+  });
+
+  // MSGE-03: Code block header with language label
+  it('renders code block header with language label', () => {
+    const content = '```javascript\nconsole.log("hi");\n```';
+    const { container } = render(<MarkdownRenderer content={content} />);
+    // Header bar should display the language
+    const headerText = container.textContent;
+    expect(headerText).toContain('javascript');
+    // Copy button should exist
+    const copyBtn = container.querySelector('button[aria-label="Copy code"]');
+    expect(copyBtn).toBeInTheDocument();
+  });
+
+  // MSGE-05: Table row striping
+  it('renders table rows with striping class', () => {
+    const content = `| A | B |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |`;
+    const { container } = render(<MarkdownRenderer content={content} />);
+    const rows = container.querySelectorAll('tr');
+    expect(rows.length).toBeGreaterThanOrEqual(2);
+    // All tr elements should have the striping class
+    const bodyRow = rows[1]; // first data row
+    expect(bodyRow?.className).toContain('even:bg-stone-50');
+  });
+
+  // MSGE-06: Blockquote accent border
+  it('renders blockquote with inline borderLeft style', () => {
+    const { container } = render(<MarkdownRenderer content="> A wise quote" accentColor="#C9A0A0" />);
+    const blockquote = container.querySelector('blockquote');
+    expect(blockquote).toBeInTheDocument();
+    // jsdom normalizes hex to rgb, so check for presence of '3px solid'
+    expect(blockquote?.style.borderLeft).toContain('3px solid');
+  });
 });
