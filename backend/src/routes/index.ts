@@ -9,6 +9,7 @@ import { chatRouter } from './chat.js';
 import { simplifyRouter } from './simplify.js';
 import { findSourcesRouter } from './find-sources.js';
 import { sessionsRouter, threadsRouter, messagesRouter } from './sessions.js';
+import { verifyKeyRouter } from './verify-key.js';
 
 export const apiRouter = Router();
 
@@ -24,3 +25,4 @@ apiRouter.use('/find-sources', findSourcesRouter);
 apiRouter.use('/sessions', sessionsRouter);
 apiRouter.use('/threads', threadsRouter);
 apiRouter.use('/messages', messagesRouter);
+apiRouter.use('/verify-key', verifyKeyRouter);

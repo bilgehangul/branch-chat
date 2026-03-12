@@ -17,10 +17,17 @@ for (const key of REQUIRED_ENV) {
 if (!process.env.MONGODB_URI) {
   console.warn('[startup] WARNING: MONGODB_URI is not set — database operations will be unavailable');
 }
+// BKND-12: CORS must be domain-restricted in production.
+// CLIENT_ORIGIN should be set to the app domain (e.g. https://app.example.com) in .env.
+// Default of localhost:5173 is safe for development only.
+if (!process.env.CLIENT_ORIGIN) {
+  console.warn('[startup] WARNING: CLIENT_ORIGIN is not set — CORS defaulting to http://localhost:5173 (development only)');
+}
 
 export const app = express();
 
-// 1. CORS — before routes
+// 1. CORS — restricted to CLIENT_ORIGIN (NOT wildcard). See BKND-12.
+// Set CLIENT_ORIGIN env var in production to your app domain.
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
