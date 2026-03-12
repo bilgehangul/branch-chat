@@ -5,7 +5,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, beforeEach } from 'vitest';
-import React from 'react';
 import { SettingsProvider } from '../contexts/SettingsContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { SettingsModal } from '../components/settings/SettingsModal';

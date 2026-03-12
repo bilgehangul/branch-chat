@@ -10,7 +10,7 @@ function makeContainerRef(el: HTMLElement) {
   return { current: el } as React.RefObject<HTMLElement | null>;
 }
 
-function mockRange(anchorNode: Node) {
+function mockRange(_anchorNode: Node) {
   return {
     getBoundingClientRect: () => ({ top: 150, right: 300, bottom: 170, left: 50, width: 250, height: 20 }),
     getClientRects: () => [{ top: 150, left: 50, width: 250, height: 20 }],

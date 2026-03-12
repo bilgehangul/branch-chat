@@ -64,7 +64,7 @@ describe('ANCS-01: Collapsed rail', () => {
   });
 
   it('shows no text or icons when collapsed (not hovered)', () => {
-    const { container } = render(<AncestorPeekPanel {...defaultProps} />);
+    render(<AncestorPeekPanel {...defaultProps} />);
     // The root has 28px width; the overlay should have w-0 or be hidden
     // Check that no message text is visible
     expect(screen.queryByText('Hello from user')).toBeNull();

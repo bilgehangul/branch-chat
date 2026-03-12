@@ -5,7 +5,7 @@
  * Validates that thread navigation uses opacity fade (not slide) and handles
  * rapid navigation without intermediate flash.
  */
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 

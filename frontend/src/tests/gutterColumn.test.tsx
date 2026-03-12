@@ -10,8 +10,8 @@ import { vi, describe, it, expect } from 'vitest';
 // Mock sessionStore
 const fakeSessionState = {
   session: null,
-  threads: {} as Record<string, import('../../types/index').Thread>,
-  messages: {} as Record<string, import('../../types/index').Message>,
+  threads: {} as Record<string, import('../types/index').Thread>,
+  messages: {} as Record<string, import('../types/index').Message>,
   activeThreadId: null,
   createSession: vi.fn(),
   clearSession: vi.fn(),
@@ -78,12 +78,12 @@ describe('BranchPillCell rendering', () => {
       { threadId: 't2', paragraphIndex: 1, anchorText: 'Second branch', messageCount: 5 },
     ];
 
-    const threads: Record<string, import('../../types/index').Thread> = {
+    const threads: Record<string, import('../types/index').Thread> = {
       t1: { id: 't1', depth: 1, parentThreadId: 'root', anchorText: 'First branch', parentMessageId: 'm1', title: 'Branch One', accentColor: '#ff0000', messageIds: ['m10'], childThreadIds: [], scrollPosition: 0 },
       t2: { id: 't2', depth: 1, parentThreadId: 'root', anchorText: 'Second branch', parentMessageId: 'm1', title: 'Branch Two', accentColor: '#00ff00', messageIds: ['m20', 'm21'], childThreadIds: [], scrollPosition: 0 },
     };
 
-    const messages: Record<string, import('../../types/index').Message> = {};
+    const messages: Record<string, import('../types/index').Message> = {};
 
     const { container } = render(
       <BranchPillCell

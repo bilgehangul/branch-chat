@@ -55,8 +55,8 @@ function maskKey(key: string): string {
 
 export function SettingsModal() {
   const {
-    isModalOpen, closeModal, tier, byokProvider, byokModel, byokApiKey,
-    setByokModel, clearByokKey, savedKeys, removeKey, switchToKey, switchToFree,
+    isModalOpen, closeModal, tier, byokProvider, byokModel,
+    savedKeys, removeKey, switchToKey, switchToFree,
   } = useSettings();
   const { user } = useAuth();
   const containerRef = useFocusTrap(isModalOpen);

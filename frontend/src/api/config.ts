@@ -10,7 +10,7 @@ export async function getModelLabel(): Promise<string> {
     const res = await fetch('/api/config');
     const data = await res.json();
     cachedLabel = data.modelLabel ?? 'AI';
-    return cachedLabel;
+    return cachedLabel as string;
   } catch {
     return 'AI';
   }

@@ -4,7 +4,7 @@
  * Tests for PILL-06 (auto-flip), PILL-07 (triangle pointer),
  * PILL-08 (descendant pill collapse).
  */
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 

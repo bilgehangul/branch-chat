@@ -9,7 +9,7 @@ import { SettingsProvider, useSettings } from '../contexts/SettingsContext';
 
 // Wrapper for renderHook
 function wrapper({ children }: { children: React.ReactNode }) {
-  return React.createElement(SettingsProvider, { userId: null }, children);
+  return React.createElement(SettingsProvider, { userId: null, children });
 }
 
 beforeEach(() => {

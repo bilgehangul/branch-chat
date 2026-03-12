@@ -13,7 +13,13 @@
  */
 
 import type { RefObject } from 'react';
-import type { SelectionRect } from '../../hooks/useTextSelection';
+
+export interface SelectionRect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
 
 /** Per-annotation-type highlight colors — "highlighter pen" feel */
 const HIGHLIGHT_COLORS: Record<string, string> = {

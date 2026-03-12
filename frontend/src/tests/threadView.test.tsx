@@ -4,7 +4,7 @@
  * Tests for PILL-01 (CSS Grid 1fr auto), PILL-03 (no conditional padding),
  * and full-width spanning of non-message elements.
  */
-import { vi, describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 
