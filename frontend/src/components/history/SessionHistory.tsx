@@ -44,11 +44,20 @@ function useMenu() {
   return { menu, setMenu, menuRef };
 }
 
-function ThreeDotButton({ onClick }: { onClick: (e: React.MouseEvent) => void }) {
+function ThreeDotButton({
+  onClick,
+  hoverReveal = false,
+}: {
+  onClick: (e: React.MouseEvent) => void;
+  hoverReveal?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
-      className="absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-1 rounded text-stone-500 dark:text-slate-400 hover:bg-stone-200 dark:hover:bg-zinc-700 hover:text-stone-600 dark:hover:text-slate-300 transition-all text-sm leading-none"
+      className={[
+        'absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-1 rounded text-stone-500 dark:text-slate-400 hover:bg-stone-200 dark:hover:bg-zinc-700 hover:text-stone-600 dark:hover:text-slate-300 transition-all text-sm leading-none',
+        hoverReveal ? 'opacity-0 group-hover:opacity-100 transition-opacity' : '',
+      ].join(' ')}
       title="Actions"
     >
       &#x22EE;
@@ -201,33 +210,70 @@ function ThreadNode({
   const isEditing = editingId === thread.id;
   const isMenuTarget = menuId === thread.id;
 
+  // Connecting line position: left offset for vertical/horizontal lines
+  const lineLeft = thread.depth > 0 ? (thread.depth - 1) * 16 + 7 : 0;
+
   return (
     <>
       <li
         className="group relative"
         style={{ paddingLeft: thread.depth * 16 }}
       >
+        {/* VS Code-style connecting lines for nested threads */}
+        {thread.depth > 0 && (
+          <>
+            {/* Vertical line from parent */}
+            <span
+              className="absolute top-0 bottom-0 border-l border-zinc-700 dark:border-zinc-700 border-stone-300"
+              style={{ left: lineLeft }}
+              aria-hidden="true"
+            />
+            {/* Horizontal stub to node content */}
+            <span
+              className="absolute border-t border-zinc-700 dark:border-zinc-700 border-stone-300"
+              style={{ left: lineLeft, top: '50%', width: 8 }}
+              aria-hidden="true"
+            />
+          </>
+        )}
+
         <div
-          className={`flex items-center gap-0.5 pr-6 py-1 rounded text-xs transition-colors ${
+          className={[
+            'flex items-center gap-1 pr-6 py-1 rounded text-xs transition-colors',
             isActive
-              ? 'font-semibold bg-stone-200/50 dark:bg-zinc-700/50'
-              : 'text-stone-600 dark:text-slate-400 hover:bg-stone-100 dark:hover:bg-zinc-800'
-          }`}
+              ? 'font-semibold bg-stone-100 dark:bg-zinc-800/50 border-l-2'
+              : 'text-stone-600 dark:text-slate-400 hover:bg-stone-100 dark:hover:bg-zinc-800',
+          ].join(' ')}
+          style={isActive ? { borderLeftColor: thread.accentColor } : undefined}
+          data-testid={isActive ? 'active-thread-row' : undefined}
         >
-          {/* Expand/collapse toggle */}
+          {/* SVG Chevron expand/collapse toggle */}
           {hasChildren ? (
             <button
               onClick={() => setExpanded(!expanded)}
               className="flex-shrink-0 w-4 h-4 flex items-center justify-center text-stone-400 dark:text-slate-500 hover:text-stone-600 dark:hover:text-slate-300"
               title={expanded ? 'Collapse' : 'Expand'}
             >
-              {expanded ? '\u25BC' : '\u25B6'}
+              <svg
+                className={`w-3 h-3 transition-transform duration-150 ${expanded ? 'rotate-90' : ''}`}
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           ) : (
-            <span className="flex-shrink-0 w-4 h-4 flex items-center justify-center text-stone-300 dark:text-slate-600">
-              &#x2013;
-            </span>
+            <span className="flex-shrink-0 w-4 h-4" />
           )}
+
+          {/* Accent-color pip */}
+          <span
+            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+            style={{ backgroundColor: thread.accentColor }}
+            data-testid="accent-pip"
+            aria-hidden="true"
+          />
 
           {/* Title or inline edit */}
           {isEditing ? (
@@ -249,9 +295,10 @@ function ThreadNode({
             </button>
           )}
 
-          {/* 3-dot menu trigger */}
+          {/* 3-dot menu trigger with hover reveal */}
           {!isEditing && (
             <ThreeDotButton
+              hoverReveal
               onClick={(e) => {
                 e.stopPropagation();
                 setMenu(
