@@ -11,17 +11,25 @@ import type { ByokProvider } from '../../contexts/SettingsContext';
 
 const MODEL_LISTS: Record<ByokProvider, { id: string; label: string }[]> = {
   gemini: [
-    { id: 'gemini-2.0-flash', label: 'Flash 2.0' },
-    { id: 'gemini-2.0-flash-lite', label: 'Flash 2.0 Lite' },
-    { id: 'gemini-2.5-pro', label: 'Pro 2.5' },
+    { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
+    { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
+    { id: 'gemini-2.0-flash', label: 'Gemini 2.0 Flash' },
+    { id: 'gemini-2.0-flash-lite', label: 'Gemini 2.0 Flash Lite' },
   ],
   openai: [
+    { id: 'o3', label: 'o3' },
+    { id: 'o3-mini', label: 'o3 Mini' },
+    { id: 'o4-mini', label: 'o4 Mini' },
+    { id: 'gpt-4.1', label: 'GPT-4.1' },
+    { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini' },
+    { id: 'gpt-4.1-nano', label: 'GPT-4.1 Nano' },
     { id: 'gpt-4o', label: 'GPT-4o' },
     { id: 'gpt-4o-mini', label: 'GPT-4o Mini' },
   ],
   anthropic: [
+    { id: 'claude-opus-4-6', label: 'Claude Opus 4' },
     { id: 'claude-sonnet-4-6', label: 'Claude Sonnet 4' },
-    { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku' },
+    { id: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5' },
   ],
 };
 

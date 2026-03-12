@@ -5,13 +5,21 @@ import { useSettings } from '../../contexts/SettingsContext';
 
 /** Human-readable display names for BYOK models */
 const MODEL_DISPLAY_NAMES: Record<string, string> = {
-  'gemini-2.0-flash': 'Flash 2.0',
-  'gemini-2.0-flash-lite': 'Flash 2.0 Lite',
-  'gemini-2.5-pro': 'Pro 2.5',
+  'gemini-2.5-pro': 'Gemini 2.5 Pro',
+  'gemini-2.5-flash': 'Gemini 2.5 Flash',
+  'gemini-2.0-flash': 'Gemini 2.0 Flash',
+  'gemini-2.0-flash-lite': 'Gemini 2.0 Flash Lite',
+  'o3': 'o3',
+  'o3-mini': 'o3 Mini',
+  'o4-mini': 'o4 Mini',
+  'gpt-4.1': 'GPT-4.1',
+  'gpt-4.1-mini': 'GPT-4.1 Mini',
+  'gpt-4.1-nano': 'GPT-4.1 Nano',
   'gpt-4o': 'GPT-4o',
   'gpt-4o-mini': 'GPT-4o Mini',
+  'claude-opus-4-6': 'Claude Opus 4',
   'claude-sonnet-4-6': 'Claude Sonnet 4',
-  'claude-haiku-4-5-20251001': 'Claude Haiku',
+  'claude-haiku-4-5-20251001': 'Claude Haiku 4.5',
 };
 
 // Inline SVG provider icons
