@@ -95,9 +95,9 @@ function DescendantPill({
         aria-label={`Navigate to branch: ${threads[threadId]?.title ?? 'Untitled'}`}
         onClick={e => { e.stopPropagation(); onNavigate(threadId); }}
       >
-        <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-[10px]">&#8627;</span>
+        <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-xs">&#8627;</span>
         <span className="truncate flex-1 min-w-0">{thread.title.slice(0, 28)}</span>
-        <span className="text-[10px] text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
+        <span className="text-xs text-slate-400 dark:text-zinc-500 flex-shrink-0">{thread.messageIds.length}</span>
         <span
           className="w-1.5 h-1.5 rounded-full flex-shrink-0"
           style={{ backgroundColor: thread.accentColor }}
