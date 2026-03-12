@@ -83,6 +83,19 @@ export function useTextSelection(
           return;
         }
 
+        // Only trigger ActionBubble for assistant messages (TSEL-01, TSEL-02)
+        const role = anchorMessage.getAttribute('data-message-role');
+        if (role !== 'assistant') {
+          return;
+        }
+
+        // Skip selection within no-selection zones (e.g. ContextCard) (TSEL-03)
+        const anchorNoSel = (anchorEl as HTMLElement)?.closest?.('[data-no-selection]');
+        const focusNoSel = (focusEl as HTMLElement)?.closest?.('[data-no-selection]');
+        if (anchorNoSel || focusNoSel) {
+          return;
+        }
+
         const messageId = anchorMessage.getAttribute('data-message-id') ?? '';
 
         // For cross-paragraph selections, use the first (lowest-index) paragraph as the anchor.

@@ -5,6 +5,7 @@ export function ContextCard({ thread }: { thread: Thread }) {
 
   return (
     <div
+      data-no-selection
       className="max-w-[720px] mx-auto mb-6 rounded-xl overflow-hidden border"
       style={{ borderColor: thread.accentColor }}
     >

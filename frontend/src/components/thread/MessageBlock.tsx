@@ -39,7 +39,7 @@ export function MessageBlock({
   }
 
   return (
-    <div className="mb-6 max-w-[720px] mx-auto" data-message-id={message.id}>
+    <div className="mb-6 max-w-[720px] mx-auto" data-message-id={message.id} data-message-role={message.role}>
       {/* Label above bubble */}
       <p className={`text-xs mb-1 font-medium ${isUser ? 'text-slate-500 text-right' : 'text-slate-500 text-left'}`}>
         {isUser ? 'You' : 'Gemini'}
