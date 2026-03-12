@@ -9,6 +9,7 @@ APP_DIR="/home/ubuntu/deepdive-chat"
 
 echo "==> Pulling latest code"
 cd "$APP_DIR"
+git reset --hard HEAD
 git pull origin main
 
 echo "==> Checking required env files"
