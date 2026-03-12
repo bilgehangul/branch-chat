@@ -498,40 +498,50 @@ export function ThreadView() {
           {/* Bottom anchor for auto-scroll */}
           <div ref={bottomAnchorRef} className="col-span-full" />
 
-          {/* Highlight overlay: absolutely positioned rects over selected text, scrolls with content */}
-          {/* Persists after bubble dismiss (scroll-dismiss); clears on click elsewhere */}
-          {(bubble || lastSelectionRectsRef.current.length > 0) && (
-            <div className="col-span-full" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
-              <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
-            </div>
-          )}
-
-          {/* ActionBubble: absolutely positioned inside contentWrapperRef, scrolls with content */}
-          {bubble && activeThread && (
-            <div className="col-span-full" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none' }}>
-              <div style={{ pointerEvents: 'auto' }}>
-                <ActionBubble
-                  bubble={{
-                    anchorText: bubble.anchorText,
-                    paragraphId: bubble.paragraphId,
-                    messageId: bubble.messageId,
-                    top: bubble.absoluteTop,
-                    left: bubble.absoluteLeft,
-                  }}
-                  isAtMaxDepth={isAtMaxDepth(activeThread)}
-                  flipped={bubble.absoluteTop < 60}
-                  onGoDeeper={handleGoDeeper}
-                  onFindSources={(anchorText, paragraphId, messageId) =>
-                    void handleFindSources(anchorText, paragraphId, messageId)
-                  }
-                  onSimplify={(anchorText, paragraphId, messageId, mode) =>
-                    void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
-                  }
-                  onDismiss={clearBubble}
-                />
+          {/*
+            Overlay layer: single col-span-full grid row with height:0 and overflow:visible.
+            This means it does NOT add height to the grid but children can position absolutely
+            relative to contentWrapperRef (which has `relative`), allowing overlays to cover
+            content without blocking text selection in the grid cells above.
+          */}
+          <div
+            className="col-span-full"
+            style={{ position: 'relative', height: 0, overflow: 'visible', pointerEvents: 'none' }}
+          >
+            {/* Highlight overlay: rects relative to contentWrapperRef */}
+            {(bubble || lastSelectionRectsRef.current.length > 0) && (
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 10 }}>
+                <HighlightOverlay rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current} annotationType={undefined} />
               </div>
-            </div>
-          )}
+            )}
+
+            {/* ActionBubble: positioned inside contentWrapperRef, scrolls with content */}
+            {bubble && activeThread && (
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 20 }}>
+                <div style={{ pointerEvents: 'auto' }}>
+                  <ActionBubble
+                    bubble={{
+                      anchorText: bubble.anchorText,
+                      paragraphId: bubble.paragraphId,
+                      messageId: bubble.messageId,
+                      top: bubble.absoluteTop,
+                      left: bubble.absoluteLeft,
+                    }}
+                    isAtMaxDepth={isAtMaxDepth(activeThread)}
+                    flipped={bubble.absoluteTop < 60}
+                    onGoDeeper={handleGoDeeper}
+                    onFindSources={(anchorText, paragraphId, messageId) =>
+                      void handleFindSources(anchorText, paragraphId, messageId)
+                    }
+                    onSimplify={(anchorText, paragraphId, messageId, mode) =>
+                      void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
+                    }
+                    onDismiss={clearBubble}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
