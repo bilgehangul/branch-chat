@@ -318,14 +318,17 @@ describe('AnthropicProvider — full implementation', () => {
 });
 
 // ──────────────────────────────────────────────
-// OpenAISearchProvider: still a stub
+// OpenAISearchProvider: real implementation
 // ──────────────────────────────────────────────
-describe('OpenAISearchProvider stub — throws NotImplementedError', () => {
-  const searchProvider = new OpenAISearchProvider();
+describe('OpenAISearchProvider — real implementation', () => {
+  it('OpenAISearchProvider() without apiKey throws when findSources is called', async () => {
+    const searchProvider = new OpenAISearchProvider();
+    await expect(searchProvider.findSources('query')).rejects.toThrow(/requires an apiKey/i);
+  });
 
-  it('OpenAISearchProvider.findSources() throws with "not yet implemented"', () => {
-    expect(() => searchProvider.findSources('query'))
-      .toThrow(/not yet implemented/i);
+  it('OpenAISearchProvider(apiKey) creates an instance', () => {
+    const provider = new OpenAISearchProvider('sk-test');
+    expect(provider).toBeInstanceOf(OpenAISearchProvider);
   });
 });
 
