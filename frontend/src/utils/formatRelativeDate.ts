@@ -19,8 +19,8 @@ const SHORT_MONTHS = [
   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ] as const;
 
-export function formatRelativeDate(date: Date | string): string {
-  const d = typeof date === 'string' ? new Date(date) : date;
+export function formatRelativeDate(date: Date | string | number): string {
+  const d = date instanceof Date ? date : new Date(date);
   const now = new Date();
   const diffMs = now.getTime() - d.getTime();
   const diffMin = Math.floor(diffMs / 60_000);

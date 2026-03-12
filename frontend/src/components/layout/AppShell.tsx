@@ -66,18 +66,31 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
 
       {/* Session history sidebar — always visible on sm+ screens */}
       <aside
-        className="hidden sm:flex flex-col flex-shrink-0 relative border-r border-stone-200 dark:border-zinc-700 bg-white dark:bg-zinc-950 overflow-y-auto"
-        style={{ width: sidebarWidth }}
+        className="hidden sm:flex flex-col flex-shrink-0 relative border-r border-stone-200 dark:border-zinc-700 overflow-y-auto"
+        style={{
+          width: sidebarWidth,
+          background: 'var(--sidebar-gradient)',
+        }}
       >
-        <div className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-slate-500 uppercase tracking-wide border-b border-stone-100 dark:border-zinc-800">
+        {/* Inject sidebar gradient CSS custom property */}
+        <style>{`
+          :root { --sidebar-gradient: linear-gradient(to bottom, #fafaf9, #ffffff); }
+          .dark { --sidebar-gradient: linear-gradient(to bottom, #09090b, rgba(24, 24, 27, 0.8)); }
+        `}</style>
+        <div className="px-3 py-3 text-lg font-semibold text-stone-700 dark:text-slate-200 border-b border-stone-200 dark:border-zinc-800">
           Chats
         </div>
-        <button
-          onClick={onNewChat}
-          className="w-full text-left px-3 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors font-medium"
-        >
-          + New Chat
-        </button>
+        <div className="px-3 py-2">
+          <button
+            onClick={onNewChat}
+            className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-slate-200 hover:bg-stone-200 dark:hover:bg-zinc-700 hover:shadow-sm transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New Chat
+          </button>
+        </div>
         <SessionHistory
           sessions={sessions}
           onLoadSession={onLoadSession}

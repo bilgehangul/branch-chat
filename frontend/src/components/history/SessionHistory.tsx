@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { SessionListItem } from '../../api/sessions';
 import type { Thread } from '../../types/index';
 import { useSessionStore } from '../../store/sessionStore';
+import { formatRelativeDate } from '../../utils/formatRelativeDate';
 
 interface SessionHistoryProps {
   sessions: SessionListItem[];
@@ -458,16 +459,19 @@ export function SessionHistory({
       ? liveRootThread.title
       : null;
 
+  // Get root thread accent color for active session indicator
+  const rootAccentColor = liveRootThread?.accentColor;
+
   // Check if child threads exist for the active session
   const childThreadsExist =
     threads && Object.values(threads).some((t) => t.depth > 0);
 
   return (
     <nav aria-label="Session history">
-      <ul className="space-y-1 px-2">
+      <ul className="space-y-0.5 px-2 py-1">
         {sessions.map((session) => {
           const isActive = session.id === currentSessionId;
-          const date = new Date(session.lastActivityAt).toLocaleDateString();
+          const relativeDate = formatRelativeDate(session.lastActivityAt);
           const displayTitle =
             isActive && liveTitle ? liveTitle : session.title;
           const isEditingSession = editingId === session.id;
@@ -476,7 +480,7 @@ export function SessionHistory({
           return (
             <li key={session.id} className="group relative">
               {isEditingSession ? (
-                <div className="px-3 py-2">
+                <div className="px-3 py-3">
                   <InlineEdit
                     initialTitle={displayTitle}
                     onSave={(title) => {
@@ -490,16 +494,31 @@ export function SessionHistory({
                 <button
                   onClick={() => onLoadSession(session.id)}
                   className={[
-                    'w-full text-left px-3 py-2 pr-6 rounded text-sm truncate transition-colors',
+                    'w-full text-left px-3 py-3 pr-6 rounded-md text-sm transition-all',
                     isActive
-                      ? 'bg-stone-200 dark:bg-zinc-700 font-medium'
-                      : 'hover:bg-stone-100 dark:hover:bg-zinc-800',
+                      ? 'bg-stone-100/80 dark:bg-zinc-800/60 font-medium border-l-2'
+                      : 'hover:bg-stone-100/50 dark:hover:bg-zinc-800/40 hover:border-l-2 border-l-2 border-l-transparent',
                   ].join(' ')}
+                  style={
+                    isActive && rootAccentColor
+                      ? { borderLeftColor: rootAccentColor }
+                      : undefined
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive && rootAccentColor) {
+                      (e.currentTarget as HTMLElement).style.borderLeftColor = rootAccentColor;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLElement).style.borderLeftColor = 'transparent';
+                    }
+                  }}
                   title={displayTitle}
                 >
                   <div className="truncate">{displayTitle}</div>
-                  <div className="text-xs text-stone-400 dark:text-slate-500">
-                    {date}
+                  <div className="text-xs text-stone-400 dark:text-slate-500 mt-0.5">
+                    {relativeDate}
                   </div>
                 </button>
               )}
