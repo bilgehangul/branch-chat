@@ -95,6 +95,7 @@ export function SettingsProvider({ children, userId }: SettingsProviderProps) {
       ...s,
       byokProvider: provider,
       byokModel: null,
+      byokApiKey: null,       // clear any key from a previous provider
       byokKeyVerified: false,
     }));
   }, []);
