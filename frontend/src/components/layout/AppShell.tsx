@@ -96,20 +96,17 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
         />
       </aside>
 
-      {/* Ancestor peek panels — oldest to newest, left to right */}
+      {/* Ancestor rails — oldest to newest, left to right (28px each, overlay expands on hover) */}
       {ancestors.map((thread, idx) => {
-        const distFromParent = ancestors.length - 1 - idx;
-        const w = distFromParent === 0 ? 180 : distFromParent === 1 ? 110 : 68;
         // The next thread in the ancestry chain tells us which message was selected in this ancestor
         const nextThread = ancestry[idx + 1];
         return (
-          <div key={thread.id} className="hidden sm:block flex-shrink-0" style={{ width: w }}>
+          <div key={thread.id} className="hidden sm:block flex-shrink-0" style={{ width: 28 }}>
             <AncestorPeekPanel
               thread={thread}
               allMessages={messages}
               highlightMessageId={nextThread?.parentMessageId ?? undefined}
               childThreadId={nextThread?.id}
-              width={w}
               onClick={() => setActiveThread(thread.id)}
               onNavigate={setActiveThread}
               onDelete={deleteThread}
