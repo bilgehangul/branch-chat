@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: completed
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-12T04:37:29Z"
-last_activity: 2026-03-12 — Completed 09-01 CSS Grid pill layout migration (PILL-01, PILL-02, PILL-03)
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-12T04:46:43.788Z"
+last_activity: 2026-03-12 — Completed 09-02 crossfade + pill enhancements (PILL-04 through PILL-08)
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 6
-  percent: 43
+  completed_plans: 7
+  percent: 50
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 9 of 11 (Layout & Positioning) -- IN PROGRESS
-Plan: 2 of 3 complete in current phase (09-01 grid + 09-03 rails done)
-Status: 09-01 and 09-03 complete; 09-02 (crossfade) still pending
-Last activity: 2026-03-12 — Completed 09-01 CSS Grid pill layout migration (PILL-01, PILL-02, PILL-03)
+Plan: 3 of 3 complete in current phase (09-01, 09-02, 09-03 all done)
+Status: Phase 9 complete — all 3 plans executed
+Last activity: 2026-03-12 — Completed 09-02 crossfade + pill enhancements (PILL-04 through PILL-08)
 
-Progress: [██████░░░░] 43% (v2.0 scope: 6/14 plans)
+Progress: [█████░░░░░] 50% (v2.0 scope: 7/14 plans)
 
 ## v1.0 Summary
 
@@ -44,8 +44,8 @@ Shipped: Auth, streaming chat, branching, annotations, dark/light theme, E2E tes
 - Phases: 7
 
 **v2.0:**
-- Plans: 6/14 completed
-- Phases: 1/4 completed (Phase 9 in progress)
+- Plans: 7/14 completed
+- Phases: 1/4 completed (Phase 9 complete)
 
 ## Accumulated Context
 
@@ -72,6 +72,10 @@ Key decisions carried forward:
 - [Phase 09]: Branch badge is decorative span (not button) — entire expanded panel clickable to navigate
 - [Phase 09]: CSS Grid (1fr auto) replaces JS measurement for pill alignment — measurePillTop/ResizeObserver removed
 - [Phase 09]: BranchPillCell exported from GutterColumn.tsx — file preserved for import compatibility
+- [Phase 09]: fadeState state machine (idle/fading-out/fading-in) with 75ms per phase for crossfade
+- [Phase 09]: Scroll restored during opacity-0 (fade-out) to prevent visible jump
+- [Phase 09]: Preview card flip threshold: pill bottom > innerHeight - 220px
+- [Phase 09]: Descendant pills collapsed by default (max-h-0), expand on parent hover
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T04:37:29Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-03-12T04:46:35.885Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None

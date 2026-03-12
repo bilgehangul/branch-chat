@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### v2.0 BranchChat Redesign
 
 - [x] **Phase 8: Foundation Fixes** - Text selection filtering, annotation light-mode support, model label fix, accessibility and test updates (completed 2026-03-12)
-- [ ] **Phase 9: Layout & Positioning** - Branch pill CSS Grid migration, transition smoothing, ancestor panel rail redesign
+- [x] **Phase 9: Layout & Positioning** - Branch pill CSS Grid migration, transition smoothing, ancestor panel rail redesign (completed 2026-03-12)
 - [ ] **Phase 10: Visual Polish** - Sidebar redesign, message rendering enhancements, annotation card improvements
 - [ ] **Phase 11: Multi-Provider Settings** - Settings UI with two-tier model, backend provider factory refactor, Anthropic provider, BYOK security
 
@@ -124,6 +124,6 @@ Phases execute in numeric order: 1 through 11 (decimal phases inserted between i
 | 6. Polish and Deployment | v1.0 | 6/6 | Complete | 2026-03-10 |
 | 7. Auth Migration + Persistent Storage | v1.0 | 5/5 | Complete | 2026-03-10 |
 | 8. Foundation Fixes | 4/4 | Complete   | 2026-03-12 | - |
-| 9. Layout & Positioning | 2/3 | In Progress|  | - |
+| 9. Layout & Positioning | 3/3 | Complete   | 2026-03-12 | - |
 | 10. Visual Polish | v2.0 | 0/4 | Not started | - |
 | 11. Multi-Provider Settings | v2.0 | 0/4 | Not started | - |
