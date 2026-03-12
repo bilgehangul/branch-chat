@@ -85,16 +85,16 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 - [x] **PROV-03**: Settings Section B — "Use Your Own API Key" collapsible section (default collapsed)
 - [x] **PROV-04**: BYOK provider selector: Gemini | OpenAI | Anthropic
 - [x] **PROV-05**: API key input with show/hide toggle, provider-specific placeholder
-- [ ] **PROV-06**: "Verify Key" button makes lightweight backend call, shows green check or red error
-- [ ] **PROV-07**: Model selector populates only after key verification with provider-specific model list
-- [ ] **PROV-08**: Search provider selector: Tavily (default) or OpenAI web search (if OpenAI key provided)
-- [ ] **PROV-09**: "Clear Key & Reset to Free" button removes stored key and reverts to Tier 1
-- [ ] **PROV-10**: Active model shown as small badge in ChatInput area, clickable to open Settings
-- [ ] **PROV-11**: BYOK mode shows key icon next to model name
+- [x] **PROV-06**: "Verify Key" button makes lightweight backend call, shows green check or red error
+- [x] **PROV-07**: Model selector populates only after key verification with provider-specific model list
+- [x] **PROV-08**: Search provider selector: Tavily (default) or OpenAI web search (if OpenAI key provided)
+- [x] **PROV-09**: "Clear Key & Reset to Free" button removes stored key and reverts to Tier 1
+- [x] **PROV-10**: Active model shown as small badge in ChatInput area, clickable to open Settings
+- [x] **PROV-11**: BYOK mode shows key icon next to model name
 - [x] **PROV-12**: SettingsContext manages tier, freeModel, byokProvider, byokModel, byokApiKey, byokKeyVerified, searchProvider
 - [x] **PROV-13**: API key encrypted in localStorage using Web Crypto AES-GCM (keyed to userId + app salt)
-- [ ] **PROV-14**: Key cleared from localStorage on sign-out
-- [ ] **PROV-15**: Full key never displayed after entry — show only last 4 characters
+- [x] **PROV-14**: Key cleared from localStorage on sign-out
+- [x] **PROV-15**: Full key never displayed after entry — show only last 4 characters
 
 ### Backend Provider
 
@@ -204,16 +204,16 @@ Deferred beyond v2.0.
 | PROV-03 | Phase 11 | Complete |
 | PROV-04 | Phase 11 | Complete |
 | PROV-05 | Phase 11 | Complete |
-| PROV-06 | Phase 11 | Pending |
-| PROV-07 | Phase 11 | Pending |
-| PROV-08 | Phase 11 | Pending |
-| PROV-09 | Phase 11 | Pending |
-| PROV-10 | Phase 11 | Pending |
-| PROV-11 | Phase 11 | Pending |
+| PROV-06 | Phase 11 | Complete |
+| PROV-07 | Phase 11 | Complete |
+| PROV-08 | Phase 11 | Complete |
+| PROV-09 | Phase 11 | Complete |
+| PROV-10 | Phase 11 | Complete |
+| PROV-11 | Phase 11 | Complete |
 | PROV-12 | Phase 11 | Complete |
 | PROV-13 | Phase 11 | Complete |
-| PROV-14 | Phase 11 | Pending |
-| PROV-15 | Phase 11 | Pending |
+| PROV-14 | Phase 11 | Complete |
+| PROV-15 | Phase 11 | Complete |
 | BKND-01 | Phase 11 | Complete |
 | BKND-02 | Phase 11 | Complete |
 | BKND-03 | Phase 11 | Complete |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed 11-02-PLAN.md
-last_updated: "2026-03-12T17:02:15.213Z"
+stopped_at: "Checkpoint reached: Task 3 human-verify in 11-04-PLAN.md"
+last_updated: "2026-03-12T17:11:34.725Z"
 last_activity: "2026-03-12 - Completed quick task 25: Text selection portal rewrite, sidebar collapse fix"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
   percent: 96
 ---
 
@@ -89,6 +89,10 @@ Key decisions carried forward:
 - [Phase 11-03]: SettingsModal self-renders via portal (isModalOpen gate) so no prop drilling needed across app tree
 - [Phase 11-multi-provider-settings]: Anthropic systemPrompt passed as top-level 'system' param — Anthropic API does not accept system role in messages array
 - [Phase 11-multi-provider-settings]: byokRateLimiter uses ipKeyGenerator for IPv6-safe IP fallback (prevents ERR_ERL_KEY_GEN_IPV6)
+- [Phase 11-04]: ByokSection calls useAuth() directly for getToken/user — AuthProvider added to test harness
+- [Phase 11-04]: Key masked to ****...last4 after save; clears on focus for re-entry
+- [Phase 11-04]: ByokCredentials injected via spread in streamChat body — zero-cost when tier=free
+- [Phase 11-04]: AuthContext signOut removes byok_key and byok_settings localStorage entries on sign-out
 
 ### Pending Todos
 
@@ -107,9 +111,10 @@ None yet.
 | 25 | Rewrite text selection system with position:fixed portal; fix sidebar ThreadNode collapsed by default | 2026-03-12 | 5a581ff4 | [25-rewrite-text-selection-actionbubble-from](./quick/25-rewrite-text-selection-actionbubble-from/) |
 | Phase 11-multi-provider-settings P03 | 6 | 3 tasks | 11 files |
 | Phase 11-multi-provider-settings P02 | 8 | 3 tasks | 11 files |
+| Phase 11-multi-provider-settings P04 | 6 | 2 tasks | 7 files |
 
 ## Session Continuity
 
-Last session: 2026-03-12T17:02:15.209Z
-Stopped at: Completed 11-02-PLAN.md
+Last session: 2026-03-12T17:11:34.722Z
+Stopped at: Checkpoint reached: Task 3 human-verify in 11-04-PLAN.md
 Resume file: None
