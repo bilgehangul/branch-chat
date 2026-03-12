@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: completed
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-03-12T05:32:27.248Z"
-last_activity: 2026-03-12 — Completed 09-04 ANCS-06 text size fix in DescendantPill
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-12T05:33:56Z"
+last_activity: 2026-03-12 — Completed 10-01 sidebar visual foundation
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 12
-  completed_plans: 9
-  percent: 100
+  completed_plans: 10
+  percent: 83
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 10 of 11 (Visual Polish) -- IN PROGRESS
-Plan: 10-02 complete (thread tree redesign with chevrons, pips, lines, modal delete)
+Plan: 10-01, 10-02 complete (sidebar visual foundation + thread tree redesign)
 Status: Phase 10 in progress
-Last activity: 2026-03-12 — Completed 10-02 thread tree visual redesign
+Last activity: 2026-03-12 — Completed 10-01 sidebar visual foundation
 
 Progress: [██████████] 96% (v2.0 scope)
 
@@ -77,6 +77,9 @@ Key decisions carried forward:
 - [Phase 09]: Preview card flip threshold: pill bottom > innerHeight - 220px
 - [Phase 09]: Descendant pills collapsed by default (max-h-0), expand on parent hover
 - [Phase 10-visual-polish]: DeleteModal uses position:fixed to escape sidebar overflow context
+- [Phase 10-01]: Sidebar gradient via CSS custom property (--sidebar-gradient) to avoid Tailwind v4 gradient syntax issues
+- [Phase 10-01]: formatRelativeDate accepts Date | string | number for maximum compatibility
+- [Phase 10-01]: Session entry hover border uses inline event handlers for dynamic accent color
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T05:32:27.246Z
-Stopped at: Completed 10-02-PLAN.md
-Resume file: None
+Last session: 2026-03-12T05:33:56Z
+Stopped at: Completed 10-01-PLAN.md
+Resume file: .planning/phases/10-visual-polish/10-01-SUMMARY.md

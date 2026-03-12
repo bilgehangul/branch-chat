@@ -9,12 +9,12 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Sidebar
 
-- [ ] **SIDE-01**: Sidebar has distinct visual zone with gradient background (zinc-950→zinc-900/80 dark, stone-50→white light)
-- [ ] **SIDE-02**: "Chats" header is a prominent section header with app name and bottom border
-- [ ] **SIDE-03**: "+ New Chat" button is a styled button with icon, rounded corners, and hover elevation
-- [ ] **SIDE-04**: Session list entries have vertical padding (py-3), hover states with left-colored bar
-- [ ] **SIDE-05**: Active session has 2px accent-colored left border + tinted background using root thread's accentColor
-- [ ] **SIDE-06**: Session dates show relative time ("2h ago", "Yesterday", "Mar 5") instead of raw locale strings
+- [x] **SIDE-01**: Sidebar has distinct visual zone with gradient background (zinc-950→zinc-900/80 dark, stone-50→white light)
+- [x] **SIDE-02**: "Chats" header is a prominent section header with app name and bottom border
+- [x] **SIDE-03**: "+ New Chat" button is a styled button with icon, rounded corners, and hover elevation
+- [x] **SIDE-04**: Session list entries have vertical padding (py-3), hover states with left-colored bar
+- [x] **SIDE-05**: Active session has 2px accent-colored left border + tinted background using root thread's accentColor
+- [x] **SIDE-06**: Session dates show relative time ("2h ago", "Yesterday", "Mar 5") instead of raw locale strings
 - [x] **SIDE-07**: Thread tree uses chevron icons with CSS rotation transition instead of plain ▶/▼
 - [x] **SIDE-08**: Each thread node shows its accent-color pip inline
 - [x] **SIDE-09**: Active thread row highlighted with left-border accent color + background tint
@@ -172,12 +172,12 @@ Deferred beyond v2.0.
 | ANCS-04 | Phase 9 | Complete |
 | ANCS-05 | Phase 9 | Complete |
 | ANCS-06 | Phase 9 | Complete |
-| SIDE-01 | Phase 10 | Pending |
-| SIDE-02 | Phase 10 | Pending |
-| SIDE-03 | Phase 10 | Pending |
-| SIDE-04 | Phase 10 | Pending |
-| SIDE-05 | Phase 10 | Pending |
-| SIDE-06 | Phase 10 | Pending |
+| SIDE-01 | Phase 10 | Complete |
+| SIDE-02 | Phase 10 | Complete |
+| SIDE-03 | Phase 10 | Complete |
+| SIDE-04 | Phase 10 | Complete |
+| SIDE-05 | Phase 10 | Complete |
+| SIDE-06 | Phase 10 | Complete |
 | SIDE-07 | Phase 10 | Complete |
 | SIDE-08 | Phase 10 | Complete |
 | SIDE-09 | Phase 10 | Complete |
