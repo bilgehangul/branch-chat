@@ -1,179 +1,153 @@
-# Requirements: DeepDive Chat
+# Requirements: ContextDive Chat — v2.0 BranchChat Redesign
 
-**Defined:** 2026-03-08
+**Defined:** 2026-03-11
 **Core Value:** A user must be able to branch off any paragraph into a focused child conversation and return to the exact spot in the parent — with a visible lead marker showing where they went and what they found.
 
-## v1 Requirements
+## v2.0 Requirements
 
-Requirements for initial release. Each maps to roadmap phases.
+Requirements for the BranchChat Redesign milestone. Derived from branch-chat-redesign-plan.md.
 
-### Authentication
+### Sidebar
 
-- [x] **AUTH-01**: User can sign in with Google OAuth (no email/password option)
-- [x] **AUTH-02**: User can sign in with Google OAuth (google-auth-library on backend, GoogleLogin button on frontend)
-- [x] **AUTH-03**: Login is optional — unauthenticated users can access and use the full chat interface
-- [x] **AUTH-04**: If authenticated, every backend API call validates the Google ID token using google-auth-library
-- [x] **AUTH-05**: Logout clears all in-memory session state (thread tree, messages, annotations)
+- [ ] **SIDE-01**: Sidebar has distinct visual zone with gradient background (zinc-950→zinc-900/80 dark, stone-50→white light)
+- [ ] **SIDE-02**: "Chats" header is a prominent section header with app name and bottom border
+- [ ] **SIDE-03**: "+ New Chat" button is a styled button with icon, rounded corners, and hover elevation
+- [ ] **SIDE-04**: Session list entries have vertical padding (py-3), hover states with left-colored bar
+- [ ] **SIDE-05**: Active session has 2px accent-colored left border + tinted background using root thread's accentColor
+- [ ] **SIDE-06**: Session dates show relative time ("2h ago", "Yesterday", "Mar 5") instead of raw locale strings
+- [ ] **SIDE-07**: Thread tree uses chevron icons with CSS rotation transition instead of plain ▶/▼
+- [ ] **SIDE-08**: Each thread node shows its accent-color pip inline
+- [ ] **SIDE-09**: Active thread row highlighted with left-border accent color + background tint
+- [ ] **SIDE-10**: Thread tree has thin vertical connecting lines showing hierarchy (like VS Code file tree)
+- [ ] **SIDE-11**: 3-dot menu trigger appears on hover only (opacity-0 group-hover:opacity-100)
+- [ ] **SIDE-12**: Delete confirmation uses modal-style dialog rather than inline Yes/No buttons
 
-### Core Chat
+### Ancestor Panels
 
-- [x] **CHAT-01**: User can type a message in the root thread and receive a streaming Gemini response (token-by-token via SSE)
-- [x] **CHAT-02**: AI responses render as Markdown with full GFM support (headers, bold, lists, code blocks with syntax highlighting)
-- [x] **CHAT-03**: User can send follow-up messages in the root thread, continuing a multi-turn conversation
-- [x] **CHAT-04**: User can send multiple follow-up messages in any child thread (child threads support multi-turn conversations)
-- [x] **CHAT-05**: Child threads display a context card at the top showing the anchor text and which parent message it came from
-- [x] **CHAT-06**: Text selection is disabled on a message while it is actively streaming; re-enabled when streaming completes
+- [ ] **ANCS-01**: Ancestor panels replaced with thin spine rail (24-32px wide) showing only accent-color stripe
+- [ ] **ANCS-02**: Rail expands to ~220px on hover with smooth CSS transition (200ms ease-out)
+- [ ] **ANCS-03**: Expanded panel looks like a card overlay (shadow-lg, rounded right edge) floating over main content
+- [ ] **ANCS-04**: Bottom fade gradient matches panel background color
+- [ ] **ANCS-05**: Highlighted anchor message has larger text, colored left-border stripe, and pill-shaped "↗ branch" badge
+- [ ] **ANCS-06**: Minimum readable text size is text-xs (12px) — no text-[10px]
 
-### Branching
+### Branch Pills
 
-- [x] **BRANCH-01**: User can click and drag to select up to one paragraph of text in any AI response; selection is capped to the paragraph where the drag began
-- [x] **BRANCH-02**: A floating action bubble appears within 100ms of releasing the mouse after a valid selection, positioned 8px above the top-right corner of the selection
-- [x] **BRANCH-03**: The action bubble contains three actions: Go Deeper, Find Sources, Simplify
-- [x] **BRANCH-04**: User can click "Go Deeper" to create a child thread anchored to the selected paragraph; the new thread opens with a slide-right transition
-- [x] **BRANCH-05**: Each new child thread is auto-assigned an accent color from the 8-color palette (cycling in creation order)
-- [x] **BRANCH-06**: Each new child thread is auto-titled using a client-side heuristic (first 6 words of anchor text)
-- [x] **BRANCH-07**: The anchor paragraph receives a persistent colored underline in the thread's accent color
-- [x] **BRANCH-08**: A child lead pill tag appears in the right gutter at the vertical position of the anchor paragraph
-- [x] **BRANCH-09**: Child lead shows: directional arrow, thread title (max 32 chars), live message count, accent color pip
-- [x] **BRANCH-10**: Child lead hover shows a preview card (anchor text + first user message + first line of AI response)
-- [x] **BRANCH-11**: Clicking a child lead navigates into that child thread (slide-right transition)
-- [x] **BRANCH-12**: Thread depth is limited to 5 levels (depth 0–4); "Go Deeper" is disabled and shows a tooltip at depth 4
+- [ ] **PILL-01**: Branch pills use layout-based positioning (CSS Grid: grid-template-columns 1fr auto) instead of JS absolute positioning
+- [ ] **PILL-02**: Pills are rendered inline within message flow, eliminating JS measurement and ResizeObserver drift
+- [ ] **PILL-03**: Padding pr-[80px]/pr-[140px] always applied regardless of hasChildThreads to prevent layout shift
+- [ ] **PILL-04**: Thread transition uses gentle crossfade (opacity fade over 150ms) instead of jarring -100% slide
+- [ ] **PILL-05**: Transition is interruptible — navigating mid-transition cancels current animation
+- [ ] **PILL-06**: Hover preview card uses auto-positioning (Popover/Tooltip) to prevent off-screen overflow
+- [ ] **PILL-07**: Preview card has small pointer/arrow indicating which pill it belongs to
+- [ ] **PILL-08**: Descendant pills collapsed by default, shown on expand/hover
 
-### Navigation
+### Text Selection
 
-- [x] **NAV-01**: A persistent breadcrumb bar (48px, top of screen) shows the full thread path from root to current thread
-- [x] **NAV-02**: Each breadcrumb ancestor is clickable and navigates to that thread with a slide-left transition
-- [x] **NAV-03**: When the full path overflows one line, middle crumbs collapse to `...`; clicking `...` shows a dropdown of the full path
-- [x] **NAV-04**: A left spine strip (28px wide) is visible when current thread depth ≥ 1, showing parent thread title and accent color
-- [x] **NAV-05**: Clicking the left spine navigates back to the immediate parent thread (slide-left transition)
-- [x] **NAV-06**: All thread navigation uses 200ms ease-out directional slide transitions; going deeper slides right, going back slides left
-- [x] **NAV-07**: When returning to a parent thread, the scroll position is restored to where the user was when they left
+- [ ] **TSEL-01**: Text selection only triggers ActionBubble on assistant message content (not user messages, context cards, annotations, or UI elements)
+- [ ] **TSEL-02**: MessageBlock wrapper has data-message-role="assistant" attribute for selection filtering
+- [ ] **TSEL-03**: Annotation blocks, context cards, and UI buttons have data-no-selection attribute
+- [ ] **TSEL-04**: ActionBubble uses position:absolute inside scroll container (not position:fixed) so it scrolls with text
+- [ ] **TSEL-05**: ActionBubble dismisses if user scrolls more than ~100px from selection
+- [ ] **TSEL-06**: Bubble position computed relative to content wrapper (rect.top - wrapperRect.top + scrollTop)
 
-### Inline Actions
+### Annotations
 
-- [x] **INLINE-01**: User can click "Find Sources" in the action bubble; a Tavily search runs against the selected text and returns top 3 results
-- [x] **INLINE-02**: A citation note (1–2 sentences, generated by Gemini) is injected below the paragraph, with a superscript badge on the selected text
-- [x] **INLINE-03**: The citation block shows source links with title and domain; it is collapsible (default expanded)
-- [x] **INLINE-04**: If Tavily returns no results or fails, an appropriate inline error message with retry option is shown
-- [x] **INLINE-05**: User can click "Simplify" in the action bubble and choose one of 4 modes: Simpler, Give an Example, Use an Analogy, More Technical
-- [x] **INLINE-06**: On Simplify selection, the selected paragraph text is replaced inline with the rewritten version (generated by Gemini)
-- [x] **INLINE-07**: A toggle ("↩ Original" / "↩ Rewrite") persists beside the replaced text, allowing the user to switch between versions
-- [x] **INLINE-08**: Text that has been annotated (simplified or sourced) remains fully re-selectable for any action (Go Deeper, Find Sources, Simplify)
+- [ ] **ANNO-01**: Selected target text highlighted inline with subtle background color (bg-amber-100/30 dark:bg-amber-500/10)
+- [ ] **ANNO-02**: Annotation card has small upward-pointing caret and quoted targetText at top in italics
+- [ ] **ANNO-03**: SimplificationBlock has light-mode variant (bg-indigo-50 border-indigo-200)
+- [ ] **ANNO-04**: CitationBlock has light-mode variant (bg-stone-50 border-stone-200)
+- [ ] **ANNO-05**: Annotation cards respect message bubble width — no independent max-w-[720px]
+- [ ] **ANNO-06**: Annotation cards have enter animation (slide up 8px + fade in over 200ms)
+- [ ] **ANNO-07**: Simplification mode shown as small colored badge/tag
+- [ ] **ANNO-08**: Simplified text rendered with MarkdownRenderer (with flag to skip annotation injection)
+- [ ] **ANNO-09**: "Try another mode" shows row of pill buttons always visible (not behind toggle)
+- [ ] **ANNO-10**: CitationBlock defaults to expanded (not collapsed)
+- [ ] **ANNO-11**: Each citation source shows favicon, title as link, snippet preview, and domain badge
+- [ ] **ANNO-12**: Citation note styled as soft callout at bottom
 
-### User Interface
+### Message Rendering
 
-- [x] **UI-01**: Default theme is dark; the app renders in dark mode on first load
-- [x] **UI-02**: User can toggle to light theme; preference is stored in localStorage and restored on next visit
-- [x] **UI-03**: Backend enforces per-user (or per-IP for unauthenticated) rate limiting on all API routes
-- [x] **UI-04**: AI provider is abstracted behind a service interface (`chat()`, `findSources()`, `simplify()`); switching between Gemini+Tavily and OpenAI+Responses API requires only an environment variable change
+- [ ] **MSGE-01**: Model label is dynamic from current provider/model setting (not hardcoded "Gemini")
+- [ ] **MSGE-02**: Headings within AI messages have proper visual weight — larger font, thin bottom border, top margin
+- [ ] **MSGE-03**: Code blocks have copy-to-clipboard button (hover-visible, "Copied!" toast on click)
+- [ ] **MSGE-04**: List items have more spacing (space-y-1.5), nested lists have clear indentation
+- [ ] **MSGE-05**: Tables have min-w-full and subtle row striping (even:bg-stone-50 dark:even:bg-zinc-800/50)
+- [ ] **MSGE-06**: Blockquotes styled with colored left border (thread accent color) and italic text
+- [ ] **MSGE-07**: User message uses whitespace-pre-wrap break-words for long strings
+- [ ] **MSGE-08**: User message shows timestamp on hover
+- [ ] **MSGE-09**: Streaming cursor has proper blinking animation
 
-### Deployment
+### Provider Settings
 
-- [x] **DEPLOY-01**: Frontend is deployed to AWS EC2 Ubuntu — nginx serves the built React static files (dist/)
-- [x] **DEPLOY-02**: Backend is deployed to AWS EC2 Ubuntu — PM2 manages the Node.js process (port 3001); nginx reverse-proxies /api to port 3001
-- [x] **DEPLOY-03**: A `.env.example` file in the repository root documents every required environment variable with a description
-- [x] **DEPLOY-04**: An E2E test suite (Playwright) covers the 6 core user flows: auth, root chat, Go Deeper, Find Sources, Simplify, and multi-level navigation
+- [ ] **PROV-01**: Gear icon button in header opens Settings panel (slide-over or modal)
+- [ ] **PROV-02**: Settings Section A — "Default Model" toggle between Gemini Flash 2.0 and Gemini Flash 2.0 Lite (labeled "Free")
+- [ ] **PROV-03**: Settings Section B — "Use Your Own API Key" collapsible section (default collapsed)
+- [ ] **PROV-04**: BYOK provider selector: Gemini | OpenAI | Anthropic
+- [ ] **PROV-05**: API key input with show/hide toggle, provider-specific placeholder
+- [ ] **PROV-06**: "Verify Key" button makes lightweight backend call, shows green check or red error
+- [ ] **PROV-07**: Model selector populates only after key verification with provider-specific model list
+- [ ] **PROV-08**: Search provider selector: Tavily (default) or OpenAI web search (if OpenAI key provided)
+- [ ] **PROV-09**: "Clear Key & Reset to Free" button removes stored key and reverts to Tier 1
+- [ ] **PROV-10**: Active model shown as small badge in ChatInput area, clickable to open Settings
+- [ ] **PROV-11**: BYOK mode shows key icon next to model name
+- [ ] **PROV-12**: SettingsContext manages tier, freeModel, byokProvider, byokModel, byokApiKey, byokKeyVerified, searchProvider
+- [ ] **PROV-13**: API key encrypted in localStorage using Web Crypto AES-GCM (keyed to userId + app salt)
+- [ ] **PROV-14**: Key cleared from localStorage on sign-out
+- [ ] **PROV-15**: Full key never displayed after entry — show only last 4 characters
 
-### Persistence
+### Backend Provider
 
-- [x] **PERSIST-01**: User sessions are saved to MongoDB Atlas and restored on page refresh
-- [x] **PERSIST-02**: User can view a history of past sessions in the SessionHistory sidebar
+- [ ] **BKND-01**: config.ts refactored from singleton to factory: getDefaultProvider(model?) + createByokProvider(provider, model, apiKey)
+- [ ] **BKND-02**: All API routes accept optional byok field in request body with provider, model, apiKey
+- [ ] **BKND-03**: Free-tier fallback chain narrowed to gemini-2.0-flash → gemini-2.0-flash-lite only
+- [ ] **BKND-04**: GeminiProvider constructor accepts apiKey + model parameters (not process.env at module level)
+- [ ] **BKND-05**: OpenAIProvider constructor accepts dynamic apiKey + model
+- [ ] **BKND-06**: Anthropic Claude provider implementing AIProvider interface (streamChat, simplify, generateCitationNote)
+- [ ] **BKND-07**: API keys never logged — sanitization middleware redacts byok.apiKey in all logging
+- [ ] **BKND-08**: API keys never persisted — exists only in request handler scope
+- [ ] **BKND-09**: Error responses redact any API key substrings
+- [ ] **BKND-10**: Key format validation rejects malformed keys before hitting third-party APIs
+- [ ] **BKND-11**: Per-user rate limiting for BYOK requests (30 req/min)
+- [ ] **BKND-12**: CORS restricted to app domain only
 
-## v2 Requirements
+### Cross-Cutting
 
-Deferred to future release. Tracked but not in current roadmap.
+- [ ] **XCUT-01**: All new interactive elements have aria-label, keyboard navigation, focus-visible outlines
+- [ ] **XCUT-02**: Settings modal traps focus
+- [ ] **XCUT-03**: Color choices meet WCAG AA contrast ratios (4.5:1 normal text, 3:1 large text)
+- [ ] **XCUT-04**: Existing tests updated to match new DOM structure and class names
+- [ ] **XCUT-05**: New tests for text selection filtering, settings context, and light-mode annotations
 
-### Persistence
+## Future Requirements
 
-- **PERSIST-03**: User can export a session (thread tree) to markdown
+Deferred beyond v2.0.
 
-### Sharing
-
-- **SHARE-01**: User can generate a shareable link that opens the app to a specific active thread
-- **SHARE-02**: Shared links allow recipients to navigate the full thread tree (requires persistence)
-
-### Collaboration
-
-- **COLLAB-01**: Multiple users can join a session and see each other's selections in real-time
-
-### Mobile
-
-- **MOBILE-01**: The app is usable on mobile (viewport < 768px) with adapted selection and navigation UX
+- **RESP-01**: Sidebar collapses to hamburger menu below sm breakpoint (640px)
+- **RESP-02**: Branch pills on mobile collapse to icon-only state
+- **RESP-03**: Settings panel is full-screen slide-over on mobile
+- **PERF-01**: "Thinking..." skeleton above message while streaming content is empty
 
 ## Out of Scope
 
-Explicitly excluded. Documented to prevent scope creep.
-
 | Feature | Reason |
 |---------|--------|
-| Full thread tree sharing | Depends on persistence; v2 |
-| Collaborative sessions | High complexity; one user per session in v1 |
-| Voice input/output | Not core to research reading flow |
-| File/image uploads | Scope creep for v1 |
-| PDF or document ingestion | Separate feature set; defer |
-| Custom AI personas / user-editable system prompts | Adds configuration surface without core value |
-| Export to markdown or PDF | Depends on persistence in a meaningful way |
+| Mobile support | Text selection and gutter layout require desktop viewport (≥1024px) |
+| Fine-grained inline annotation insertion | Moving annotations mid-paragraph is complex and fragile with markdown rendering — keep after block element |
+| OAuth providers beyond Google | Google OAuth sufficient for v2.0, additional OAuth deferred |
+| Real-time collaborative editing | Single-user sessions only |
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Complete |
-| AUTH-03 | Phase 2 | Complete |
-| AUTH-04 | Phase 1 | Complete |
-| AUTH-05 | Phase 2 | Complete |
-| CHAT-01 | Phase 3 | Complete |
-| CHAT-02 | Phase 3 | Complete |
-| CHAT-03 | Phase 3 | Complete |
-| CHAT-04 | Phase 3 | Complete |
-| CHAT-05 | Phase 3 | Complete |
-| CHAT-06 | Phase 3 | Complete |
-| BRANCH-01 | Phase 4 | Complete |
-| BRANCH-02 | Phase 4 | Complete |
-| BRANCH-03 | Phase 4 | Complete |
-| BRANCH-04 | Phase 4 | Complete |
-| BRANCH-05 | Phase 4 | Complete |
-| BRANCH-06 | Phase 4 | Complete |
-| BRANCH-07 | Phase 4 | Complete |
-| BRANCH-08 | Phase 4 | Complete |
-| BRANCH-09 | Phase 4 | Complete |
-| BRANCH-10 | Phase 4 | Complete |
-| BRANCH-11 | Phase 4 | Complete |
-| BRANCH-12 | Phase 4 | Complete |
-| NAV-01 | Phase 3 | Complete |
-| NAV-02 | Phase 3 | Complete |
-| NAV-03 | Phase 3 | Complete |
-| NAV-04 | Phase 3 | Complete |
-| NAV-05 | Phase 3 | Complete |
-| NAV-06 | Phase 3 | Complete |
-| NAV-07 | Phase 3 | Complete |
-| INLINE-01 | Phase 5 | Complete |
-| INLINE-02 | Phase 5 | Complete |
-| INLINE-03 | Phase 5 | Complete |
-| INLINE-04 | Phase 5 | Complete |
-| INLINE-05 | Phase 5 | Complete |
-| INLINE-06 | Phase 5 | Complete |
-| INLINE-07 | Phase 5 | Complete |
-| INLINE-08 | Phase 5 | Complete |
-| UI-01 | Phase 6 | Complete |
-| UI-02 | Phase 6 | Complete |
-| UI-03 | Phase 1 | Complete |
-| UI-04 | Phase 1 | Complete |
-| DEPLOY-01 | Phase 6 | Complete |
-| DEPLOY-02 | Phase 6 | Complete |
-| DEPLOY-03 | Phase 6 | Complete |
-| DEPLOY-04 | Phase 6 | Complete |
-| PERSIST-01 | Phase 7 | Complete |
-| PERSIST-02 | Phase 7 | Complete |
+| (Populated by roadmapper) | | |
 
 **Coverage:**
-- v1 requirements: 48 total
-- Mapped to phases: 48
-- Unmapped: 0 ✓
+- v2.0 requirements: 66 total
+- Mapped to phases: 0
+- Unmapped: 66
 
 ---
-*Requirements defined: 2026-03-08*
-*Last updated: 2026-03-10 — AUTH-01/02/04 updated to Google OAuth (removed Clerk); DEPLOY-01/02 updated to AWS EC2 + nginx + PM2 (removed Vercel/Render); PERSIST-01/02 moved from v2 to v1 (complete, shipped in Phase 7); "Session persistence in v1" removed from Out of Scope*
+*Requirements defined: 2026-03-11*
+*Last updated: 2026-03-11 after initial definition*
