@@ -12,7 +12,7 @@
  * Requirements: PILL-01, PILL-02, BRANCH-08, BRANCH-09, BRANCH-10, BRANCH-11
  */
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Thread, Message, ChildLead } from '../../types/index';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 
@@ -132,6 +132,16 @@ interface LeadPillProps {
 function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThread, onSummarize, onCompact }: LeadPillProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
+  const [flipAbove, setFlipAbove] = useState(false);
+  const pillRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-flip: compute whether preview card should render above the pill (PILL-06)
+  useEffect(() => {
+    if (isHovered && pillRef.current) {
+      const rect = pillRef.current.getBoundingClientRect();
+      setFlipAbove(rect.bottom > window.innerHeight - 220);
+    }
+  }, [isHovered]);
 
   const childMessages = thread.messageIds
     .map(id => messages[id])
@@ -145,6 +155,7 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
     <div className="relative">
       {/* The lead pill button */}
       <button
+        ref={pillRef}
         aria-label={`Go to branch: ${thread.title.slice(0, 32)}`}
         className="flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none bg-white dark:bg-zinc-800"
         onClick={() => onNavigate(lead.threadId)}
@@ -162,9 +173,9 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
         />
       </button>
 
-      {/* Descendant threads nested below the pill */}
+      {/* Descendant threads — collapsed by default, expand on hover (PILL-08) */}
       {thread.childThreadIds.length > 0 && (
-        <div className="mt-0.5 border-l border-slate-200 dark:border-zinc-700 ml-2">
+        <div className={`mt-0.5 border-l border-slate-200 dark:border-zinc-700 ml-2 overflow-hidden transition-[max-height] duration-200 ${isHovered ? 'max-h-[200px]' : 'max-h-0'}`}>
           {thread.childThreadIds.map(childId => (
             <DescendantPill
               key={childId}
@@ -177,12 +188,18 @@ function LeadPill({ lead, thread, allThreads, messages, onNavigate, onDeleteThre
         </div>
       )}
 
-      {/* Preview card on hover */}
+      {/* Preview card on hover with auto-flip and triangle pointer (PILL-06, PILL-07) */}
       {isHovered && (
         <div
-          className="absolute right-0 top-full mt-1 z-50 w-64 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 text-xs text-slate-700 dark:text-zinc-200 space-y-2"
+          className={`absolute right-0 z-50 w-64 bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg shadow-lg p-3 text-xs text-slate-700 dark:text-zinc-200 space-y-2 ${flipAbove ? 'bottom-full mb-1' : 'top-full mt-1'}`}
           data-testid="preview-card"
         >
+          {/* CSS triangle pointer */}
+          {flipAbove ? (
+            <div className="absolute -bottom-[6px] right-4 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white dark:border-t-zinc-800" />
+          ) : (
+            <div className="absolute -top-[6px] right-4 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white dark:border-b-zinc-800" />
+          )}
           <div className="text-slate-500 dark:text-zinc-400 italic truncate">{lead.anchorText}</div>
           {firstUserMsg && (
             <div className="text-slate-700 dark:text-zinc-200 truncate">
