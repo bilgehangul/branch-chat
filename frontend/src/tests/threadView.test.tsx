@@ -21,7 +21,8 @@ describe('ThreadView - CSS Grid layout (PILL-01)', () => {
   });
 
   it('has grid class on content wrapper', () => {
-    expect(threadViewSource).toContain('className="grid');
+    // After crossfade migration, className uses template literal with dynamic opacity
+    expect(threadViewSource).toMatch(/className.*grid/);
   });
 });
 

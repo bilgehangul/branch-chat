@@ -69,7 +69,10 @@ export function ThreadView() {
   const bottomAnchorRef = useRef<HTMLDivElement>(null);
   const isAtBottomRef = useRef(true);
 
-  // Thread transition state (slide removed — crossfade will be added in Plan 09-02)
+  // Thread crossfade transition state (PILL-04, PILL-05)
+  const [fadeState, setFadeState] = useState<'idle' | 'fading-out' | 'fading-in'>('idle');
+  const targetThreadIdRef = useRef(activeThreadId);
+  const fadeTimerRef = useRef<number>();
   const prevActiveThreadIdRef = useRef(activeThreadId);
 
   // Text selection bubble state
@@ -309,33 +312,51 @@ export function ThreadView() {
     }
   }
 
-  // Track activeThreadId changes for scroll save
+  // Crossfade transition: fade-out (75ms) -> swap content + restore scroll -> fade-in (75ms)
   useEffect(() => {
     const prevId = prevActiveThreadIdRef.current;
-    if (prevId !== activeThreadId) {
-      // Save scroll position of the thread we're leaving
-      if (prevId && scrollRef.current) {
-        setScrollPosition(prevId, scrollRef.current.scrollTop);
-        void updateThreadOnBackend(prevId, { scrollPosition: scrollRef.current.scrollTop }, getToken);
+    if (prevId === activeThreadId) return;
+
+    // Save scroll position of the thread we're leaving
+    if (prevId && scrollRef.current) {
+      setScrollPosition(prevId, scrollRef.current.scrollTop);
+      void updateThreadOnBackend(prevId, { scrollPosition: scrollRef.current.scrollTop }, getToken);
+    }
+
+    // Cancel any in-progress fade (interruptibility — PILL-05)
+    clearTimeout(fadeTimerRef.current);
+
+    // Update target — used to detect interruption mid-fade
+    targetThreadIdRef.current = activeThreadId;
+
+    // Start fade-out
+    setFadeState('fading-out');
+
+    fadeTimerRef.current = window.setTimeout(() => {
+      // Check if we were interrupted (rapid A->B->C navigation)
+      if (targetThreadIdRef.current !== activeThreadId) return;
+
+      // Swap to new thread content
+      prevActiveThreadIdRef.current = activeThreadId;
+
+      // Restore scroll position while content is invisible (opacity 0)
+      if (scrollRef.current) {
+        const incomingThread = activeThreadId ? threads[activeThreadId] : null;
+        const savedPosition = incomingThread?.scrollPosition ?? 0;
+        scrollRef.current.scrollTop = savedPosition;
+        const el = scrollRef.current;
+        isAtBottomRef.current = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
       }
 
-      prevActiveThreadIdRef.current = activeThreadId;
-    }
-  }, [activeThreadId, setScrollPosition]);
+      // Start fade-in
+      setFadeState('fading-in');
 
-  // Restore scroll position when active thread changes
-  useEffect(() => {
-    if (activeThread && scrollRef.current) {
-      const savedPosition = activeThread.scrollPosition ?? 0;
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollTop = savedPosition;
-          // After restoring position, determine if user is at bottom
-          const el = scrollRef.current;
-          isAtBottomRef.current = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
-        }
-      });
-    }
+      fadeTimerRef.current = window.setTimeout(() => {
+        setFadeState('idle');
+      }, 75);
+    }, 75);
+
+    return () => clearTimeout(fadeTimerRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeThreadId]);
 
@@ -433,7 +454,7 @@ export function ThreadView() {
           Pills align to their anchor message's grid row with zero JS measurement.
           The auto column collapses to 0px when no pills exist.
         */}
-        <div ref={contentWrapperRef} className="grid relative px-4" style={{ gridTemplateColumns: '1fr auto' }}>
+        <div ref={contentWrapperRef} className={`grid relative px-4 ${fadeState === 'fading-out' ? 'opacity-0 transition-opacity duration-[75ms]' : fadeState === 'fading-in' ? 'opacity-100 transition-opacity duration-[75ms]' : 'opacity-100'}`} style={{ gridTemplateColumns: '1fr auto' }}>
           {operationLoading && (
             <div className="col-span-full flex items-center gap-2 px-4 py-2 text-sm text-stone-500 dark:text-slate-400 bg-stone-100 dark:bg-slate-800 rounded-lg mx-4 mt-2">
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
