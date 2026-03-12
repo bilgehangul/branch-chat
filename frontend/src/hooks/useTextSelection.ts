@@ -17,20 +17,12 @@
 
 import { type RefObject, useState, useEffect } from 'react';
 
-export interface SelectionRect {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
-
 export interface SelectionState {
   anchorText: string;
   paragraphId: string;
   messageId: string;   // id of the Message that contains the selected paragraph
   top: number;         // viewport-relative Y (for fixed positioning)
   left: number;        // viewport-relative X, centered and clamped
-  selectionRects: SelectionRect[]; // rects relative to scroll container for CSS overlay highlight
 }
 
 export function useTextSelection(
@@ -49,6 +41,7 @@ export function useTextSelection(
 
         // Validate: must have a non-collapsed, non-whitespace selection
         if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+          setBubble(null);
           return;
         }
 
@@ -86,6 +79,7 @@ export function useTextSelection(
         // Only trigger ActionBubble for assistant messages (TSEL-01, TSEL-02)
         const role = anchorMessage.getAttribute('data-message-role');
         if (role !== 'assistant') {
+          setBubble(null);
           return;
         }
 
@@ -93,6 +87,7 @@ export function useTextSelection(
         const anchorNoSel = (anchorEl as HTMLElement)?.closest?.('[data-no-selection]');
         const focusNoSel = (focusEl as HTMLElement)?.closest?.('[data-no-selection]');
         if (anchorNoSel || focusNoSel) {
+          setBubble(null);
           return;
         }
 
@@ -113,29 +108,12 @@ export function useTextSelection(
         const rawLeft = rect.left + rect.width / 2;
         const clampedLeft = Math.max(8, Math.min(rawLeft, window.innerWidth - 200));
 
-        // Capture selection rects relative to scroll container for CSS overlay highlight
-        const container = containerRef.current;
-        let selectionRects: SelectionRect[] = [];
-        if (container) {
-          const containerRect = container.getBoundingClientRect();
-          const scrollTop = container.scrollTop;
-          const scrollLeft = container.scrollLeft;
-          const clientRects = range.getClientRects();
-          selectionRects = Array.from(clientRects).map((r) => ({
-            top: r.top - containerRect.top + scrollTop,
-            left: r.left - containerRect.left + scrollLeft,
-            width: r.width,
-            height: r.height,
-          }));
-        }
-
         setBubble({
           anchorText,
           paragraphId,
           messageId,
           top: rect.top,
           left: clampedLeft,
-          selectionRects,
         });
       }, 0);
     }
@@ -145,6 +123,42 @@ export function useTextSelection(
       el.removeEventListener('mouseup', handleMouseUp);
     };
   }, [containerRef]);
+
+  // Keep bubble aligned to selected text while user performs small scroll/resize.
+  useEffect(() => {
+    if (!bubble) return;
+    const container = containerRef.current;
+    if (!container) return;
+
+    function updateBubblePositionFromSelection() {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+        setBubble(null);
+        return;
+      }
+      if (sel.rangeCount === 0) return;
+
+      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      const rawLeft = rect.left + rect.width / 2;
+      const clampedLeft = Math.max(8, Math.min(rawLeft, window.innerWidth - 200));
+
+      setBubble((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          top: rect.top,
+          left: clampedLeft,
+        };
+      });
+    }
+
+    container.addEventListener('scroll', updateBubblePositionFromSelection, { passive: true });
+    window.addEventListener('resize', updateBubblePositionFromSelection);
+    return () => {
+      container.removeEventListener('scroll', updateBubblePositionFromSelection);
+      window.removeEventListener('resize', updateBubblePositionFromSelection);
+    };
+  }, [bubble, containerRef]);
 
   return {
     bubble,

@@ -24,9 +24,10 @@ interface MessageListProps {
   ) => void;
   pendingAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string } | null;
   errorAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string; retryFn: () => void } | null;
+  onCancelAnnotation?: () => void;
 }
 
-export function MessageList({
+export const MessageList = React.memo(function MessageList({
   messages,
   thread,
   threads,
@@ -38,6 +39,7 @@ export function MessageList({
   onTryAnother,
   pendingAnnotation,
   errorAnnotation,
+  onCancelAnnotation,
 }: MessageListProps) {
   return (
     <>
@@ -60,6 +62,7 @@ export function MessageList({
                 onTryAnother={onTryAnother}
                 pendingAnnotation={pendingAnnotation}
                 errorAnnotation={errorAnnotation}
+                onCancelAnnotation={onCancelAnnotation}
               />
             </div>
 
@@ -82,4 +85,4 @@ export function MessageList({
       })}
     </>
   );
-}
+});

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSessionStore } from '../../store/sessionStore';
 import { MessageList } from '../thread/MessageList';
-import { GutterColumn } from '../branching/GutterColumn';
 import type { Message } from '../../types/index';
 
 /**
@@ -65,24 +64,27 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeThreadId]);
 
-  const hasChildThreads = activeThread && activeThread.childThreadIds.length > 0;
-
   return (
     <div className="flex flex-col h-full">
       {/* Scroll area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        {/* position:relative wrapper for GutterColumn pill alignment */}
         <div ref={contentWrapperRef} className="relative px-4">
           {/* Slide transition wrapper */}
           <div
             className={`transition-transform duration-200 ease-out ${
               isTransitioning ? 'translate-x-[-100%]' : 'translate-x-0'
-            } ${hasChildThreads ? 'pr-[80px] sm:pr-[140px]' : ''}`}
+            }`}
           >
             {activeThread && orderedMessages.length > 0 ? (
               <MessageList
                 messages={orderedMessages}
                 thread={activeThread}
+                threads={threads}
+                allMessages={messages}
+                onNavigate={setActiveThread}
+                onDeleteThread={() => {}}
+                onSummarize={() => {}}
+                onCompact={() => {}}
                 onTryAnother={() => onSignInClick()}
                 pendingAnnotation={null}
                 errorAnnotation={null}
@@ -95,20 +97,6 @@ export function DemoThreadView({ onSignInClick }: { onSignInClick: () => void })
             {/* Bottom anchor */}
             <div ref={bottomAnchorRef} />
           </div>
-
-          {/* Branch pills in the gutter */}
-          {activeThread && (
-            <GutterColumn
-              wrapperRef={contentWrapperRef}
-              activeThread={activeThread}
-              threads={threads}
-              messages={messages}
-              onNavigate={setActiveThread}
-              onDeleteThread={() => {}}
-              onSummarize={async () => {}}
-              onCompact={async () => {}}
-            />
-          )}
         </div>
       </div>
 

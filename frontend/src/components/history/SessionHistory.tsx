@@ -465,7 +465,8 @@ export function SessionHistory({
           const isMenuSession = menuId === session.id;
 
           return (
-            <li key={session.id} className="group relative">
+            <li key={session.id}>
+              <div className="group relative">
               {isEditingSession ? (
                 <div className="px-3 py-3">
                   <InlineEdit
@@ -541,6 +542,7 @@ export function SessionHistory({
                   onCancelDelete={() => setMenu({ type: 'closed' })}
                 />
               )}
+              </div>
 
               {/* Show child threads hierarchically for active session */}
               {isActive && childThreadsExist && threads && (

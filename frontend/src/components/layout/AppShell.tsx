@@ -114,7 +114,7 @@ export function AppShell({ onSignOut, user, sessions, currentSessionId, onLoadSe
         // The next thread in the ancestry chain tells us which message was selected in this ancestor
         const nextThread = ancestry[idx + 1];
         return (
-          <div key={thread.id} className="hidden sm:block flex-shrink-0" style={{ width: 28 }}>
+          <div key={thread.id} className="hidden sm:block flex-shrink-0">
             <AncestorPeekPanel
               thread={thread}
               allMessages={messages}

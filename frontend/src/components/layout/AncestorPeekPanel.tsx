@@ -16,7 +16,7 @@ interface AncestorPeekPanelProps {
   onCompact?: (threadId: string) => void;
 }
 
-/* ── Context menu (unchanged) ─────────────────────────────── */
+/* ── Context menu ─────────────────────────────── */
 
 function ContextMenu({
   x, y, threadId, onDelete, onClose, onSummarize, onCompact,
@@ -180,7 +180,7 @@ export function AncestorPeekPanel({
   onSummarize,
   onCompact,
 }: AncestorPeekPanelProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
 
   const threadMessages = thread.messageIds
@@ -189,34 +189,41 @@ export function AncestorPeekPanel({
 
   return (
     <div
-      className="relative flex-shrink-0 h-full cursor-pointer"
-      style={{ width: '28px' }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative flex-shrink-0 h-full border-r border-slate-200 dark:border-zinc-700"
+      style={{ width: expanded ? 220 : 28 }}
       onContextMenu={e => {
         if (!onDelete) return;
         e.preventDefault();
         setMenu({ x: e.clientX, y: e.clientY });
       }}
-      title={`\u2190 Back to: ${thread.title}`}
+      title={expanded ? undefined : `\u2190 Back to: ${thread.title}`}
     >
-      {/* Subtle background */}
+      {/* Background */}
       <div className="absolute inset-0 bg-slate-50 dark:bg-zinc-900" />
 
-      {/* Collapsed: accent stripe on right edge */}
-      <div
-        className="absolute right-0 top-0 bottom-0 w-[2px]"
-        style={{ backgroundColor: thread.accentColor }}
-        data-testid="accent-stripe"
-      />
+      {/* Accent stripe on right edge (visible when collapsed) */}
+      {!expanded && (
+        <div
+          className="absolute right-0 top-0 bottom-0 w-[2px]"
+          style={{ backgroundColor: thread.accentColor }}
+          data-testid="accent-stripe"
+        />
+      )}
 
-      {/* Expanded overlay — only when hovered */}
-      <div
-        className={`absolute top-0 left-0 bottom-0 bg-slate-50 dark:bg-zinc-900 shadow-lg rounded-r-lg overflow-hidden transition-[width] duration-200 ease-out z-10 ${
-          isHovered ? 'w-[220px]' : 'w-0 pointer-events-none'
-        }`}
+      {/* Toggle button — centered arrow in the rail */}
+      <button
+        onClick={() => setExpanded(prev => !prev)}
+        className="absolute z-20 top-1/2 -translate-y-1/2 right-0 translate-x-1/2 w-5 h-5 rounded-full bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-slate-400 dark:text-zinc-500 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+        title={expanded ? 'Collapse' : 'Expand'}
       >
-        {isHovered && (
+        <svg className={`w-3 h-3 transition-transform duration-150 ${expanded ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 4l4 4-4 4" />
+        </svg>
+      </button>
+
+      {/* Expanded content — in-flow, not overlapping */}
+      {expanded && (
+        <div className="relative h-full overflow-hidden">
           <RailPanelContent
             thread={thread}
             messages={threadMessages}
@@ -225,8 +232,8 @@ export function AncestorPeekPanel({
             onNavigate={onNavigate}
             onClick={onClick}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Context menu */}
       {menu && onDelete && (

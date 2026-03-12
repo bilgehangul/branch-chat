@@ -13,6 +13,12 @@ body {
   color: inherit;
 }
 
+/* User messages have blue background — use white/transparent selection instead */
+[data-message-role="user"] ::selection {
+  background: rgba(255, 255, 255, 0.3);
+  color: inherit;
+}
+
 /* Light theme base — applied when .dark is NOT on <html> */
 :root {
   --bg-base: theme(colors.stone.50);

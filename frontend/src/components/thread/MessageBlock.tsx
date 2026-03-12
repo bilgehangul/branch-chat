@@ -22,6 +22,8 @@ interface MessageBlockProps {
   pendingAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string } | null;
   /** Error annotation state — paragraphId scopes error block to the correct paragraph */
   errorAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string; retryFn: () => void } | null;
+  /** Cancel a pending annotation operation */
+  onCancelAnnotation?: () => void;
 }
 
 export function MessageBlock({
@@ -29,6 +31,7 @@ export function MessageBlock({
   onTryAnother,
   pendingAnnotation,
   errorAnnotation,
+  onCancelAnnotation,
 }: MessageBlockProps) {
   const isUser = message.role === 'user';
   const streamingClasses = message.isStreaming ? 'opacity-80 select-none pointer-events-none' : '';
@@ -80,6 +83,7 @@ export function MessageBlock({
                 annotations={message.annotations}
                 pendingAnnotation={pendingAnnotation}
                 errorAnnotation={errorAnnotation}
+                onCancelAnnotation={onCancelAnnotation}
                 messageId={message.id}
                 onTryAnother={onTryAnother}
                 accentColor={activeAccentColor}

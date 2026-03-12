@@ -175,6 +175,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   annotations,
   pendingAnnotation,
   errorAnnotation,
+  onCancelAnnotation,
   messageId,
   onTryAnother,
   accentColor,
@@ -184,6 +185,7 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   annotations?: Annotation[];
   pendingAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string } | null;
   errorAnnotation?: { type: 'source' | 'simplification'; paragraphId?: string; messageId: string; retryFn: () => void } | null;
+  onCancelAnnotation?: () => void;
   messageId?: string;
   onTryAnother?: (messageId: string, annotationId: string, anchorText: string, paragraphId: string, mode: SimplifyMode) => void;
   accentColor?: string;
@@ -229,13 +231,32 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
           return null;
         })}
         {isPending && pendingAnnotation && (
-          <div className="not-prose mb-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 p-3 animate-pulse">
-            <div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-1/3 mb-3" />
-            {pendingAnnotation.type === 'source' ? (
-              <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-full mb-2" /><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-4/5 mb-2" /><hr className="border-slate-200 dark:border-zinc-700 my-2" /><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-2/3" /></>
-            ) : (
-              <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-3/4 mb-2" /><div className="h-10 bg-slate-300 dark:bg-zinc-600 rounded w-full" /></>
-            )}
+          <div className="not-prose mb-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-800 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-slate-500 dark:text-zinc-400 flex items-center gap-1.5">
+                <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                {pendingAnnotation.type === 'source' ? 'Finding sources…' : 'Simplifying…'}
+              </span>
+              {onCancelAnnotation && (
+                <button
+                  onClick={onCancelAnnotation}
+                  className="text-xs text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors"
+                  title="Cancel"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <div className="animate-pulse">
+              {pendingAnnotation.type === 'source' ? (
+                <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-full mb-2" /><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-4/5" /></>
+              ) : (
+                <><div className="h-3 bg-slate-300 dark:bg-zinc-600 rounded w-3/4 mb-2" /><div className="h-10 bg-slate-300 dark:bg-zinc-600 rounded w-full" /></>
+              )}
+            </div>
           </div>
         )}
         {isError && errorAnnotation && (

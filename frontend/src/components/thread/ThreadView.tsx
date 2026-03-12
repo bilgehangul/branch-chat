@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSessionStore } from '../../store/sessionStore';
@@ -10,7 +10,6 @@ import { ContextCard } from './ContextCard';
 import { ActionBubble } from '../branching/ActionBubble';
 import { isAtMaxDepth } from '../../store/selectors';
 import { getNextAccentColor } from '../../constants/theme';
-import { HighlightOverlay } from '../branching/HighlightOverlay';
 import { searchSources, toSourceResult } from '../../api/search';
 import { simplifyText } from '../../api/simplify';
 import { createThreadOnBackend, updateThreadOnBackend, deleteThreadFromDB, updateMessageOnBackend } from '../../api/sessions';
@@ -59,9 +58,14 @@ export function ThreadView() {
 
   // Derive current thread and ordered messages
   const activeThread = activeThreadId ? threads[activeThreadId] : null;
-  const orderedMessages = activeThread
-    ? activeThread.messageIds.map((id) => messages[id]).filter(Boolean) as import('../../types/index').Message[]
-    : [];
+  const orderedMessages = useMemo(
+    () => (
+      activeThread
+        ? activeThread.messageIds.map((id) => messages[id]).filter(Boolean) as import('../../types/index').Message[]
+        : []
+    ),
+    [activeThread, messages]
+  );
 
   // Refs for scroll management
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -71,38 +75,12 @@ export function ThreadView() {
   // Thread crossfade transition state (PILL-04, PILL-05)
   const [fadeState, setFadeState] = useState<'idle' | 'fading-out' | 'fading-in'>('idle');
   const targetThreadIdRef = useRef(activeThreadId);
-  const fadeTimerRef = useRef<number>();
+  const fadeTimerRef = useRef<number | undefined>(undefined);
   const prevActiveThreadIdRef = useRef(activeThreadId);
 
   // Text selection bubble state
   const { bubble, clearBubble } = useTextSelection(scrollRef);
 
-  // Persist highlight rects after bubble dismiss (cleared on click elsewhere)
-  const lastSelectionRectsRef = useRef<import('../../hooks/useTextSelection').SelectionRect[]>([]);
-
-  // Update persisted rects when bubble changes
-  useEffect(() => {
-    if (bubble) {
-      lastSelectionRectsRef.current = bubble.selectionRects;
-    }
-  }, [bubble]);
-
-  // Clear persisted highlight rects when clicking outside the bubble
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      // Don't clear if clicking within a message (user might be re-selecting)
-      const target = e.target as HTMLElement;
-      const inBubble = target.closest?.('[data-action-bubble]');
-      if (inBubble) return;
-
-      // If bubble is already null (dismissed by scroll), clear the overlay
-      if (!bubble) {
-        lastSelectionRectsRef.current = [];
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [bubble]);
 
   // Scroll-dismiss: dismiss ActionBubble after 100px of scrolling (TSEL-05)
   const initialScrollTopRef = useRef<number>(0);
@@ -128,9 +106,17 @@ export function ThreadView() {
   // Ephemeral annotation UI state (NOT in Zustand — doesn't survive thread nav, that's correct)
   const [pendingAnnotation, setPendingAnnotation] = useState<PendingAnnotation | null>(null);
   const [errorAnnotation, setErrorAnnotation] = useState<ErrorAnnotation | null>(null);
+  const annotationAbortRef = useRef<AbortController | null>(null);
+
+  const cancelAnnotation = useCallback(() => {
+    annotationAbortRef.current?.abort();
+    annotationAbortRef.current = null;
+    setPendingAnnotation(null);
+    setErrorAnnotation(null);
+  }, []);
 
   // Real handleFindSources — calls searchSources API, manages loading/error/retry state
-  async function handleFindSources(anchorText: string, paragraphId: string, messageId: string) {
+  const handleFindSources = useCallback(async (anchorText: string, paragraphId: string, messageId: string) => {
     setErrorAnnotation(null);
     setPendingAnnotation({ type: 'source', paragraphId, messageId });
 
@@ -184,15 +170,15 @@ export function ThreadView() {
     };
 
     await doFetch();
-  }
+  }, [addAnnotation, getToken, updateAnnotation]);
 
   // Real handleSimplify — calls simplifyText API, handles addAnnotation vs updateAnnotation
-  async function handleSimplify(
+  const handleSimplify = useCallback(async (
     anchorText: string,
     paragraphId: string,
     messageId: string,
     mode: SimplifyMode
-  ) {
+  ) => {
     setErrorAnnotation(null);
     setPendingAnnotation({ type: 'simplification', paragraphId, messageId });
 
@@ -251,22 +237,22 @@ export function ThreadView() {
     };
 
     await doFetch();
-  }
+  }, [addAnnotation, getToken, updateAnnotation]);
 
   // handleTryAnother — re-calls handleSimplify with new mode (SimplificationBlock "Try another mode" flow)
-  function handleTryAnother(
+  const handleTryAnother = useCallback((
     messageId: string,
     _annotationId: string,
     anchorText: string,
     paragraphId: string,
     mode: SimplifyMode
-  ) {
+  ) => {
     void handleSimplify(anchorText, paragraphId, messageId, mode);
-  }
+  }, [handleSimplify]);
 
   // Handle Go Deeper click: create child thread using bubble.messageId directly
   // IMPORTANT: bubble.messageId is used directly — NOT the last-AI-message heuristic.
-  function handleGoDeeper() {
+  const handleGoDeeper = useCallback(() => {
     if (!bubble || !activeThread || !activeThreadId) return;
     const { anchorText, paragraphId, messageId } = bubble;
     const accentColor = getNextAccentColor(activeThread);
@@ -309,7 +295,7 @@ export function ThreadView() {
         void updateMessageOnBackend(messageId, { childLeads: updatedChildLeads }, getToken);
       }
     }
-  }
+  }, [activeThread, activeThreadId, addChildLead, bubble, clearBubble, createThread, getToken, setActiveThread]);
 
   // Crossfade transition: fade-out (75ms) -> swap content + restore scroll -> fade-in (75ms)
   useEffect(() => {
@@ -393,12 +379,12 @@ export function ThreadView() {
   }, []);
 
   // Handler wrappers for pill actions (same logic as previously passed to GutterColumn)
-  const handleDeleteThread = (threadId: string) => {
+  const handleDeleteThread = useCallback((threadId: string) => {
     deleteThread(threadId);
     void deleteThreadFromDB(threadId, getToken);
-  };
+  }, [deleteThread, getToken]);
 
-  const handleSummarize = async (threadId: string) => {
+  const handleSummarize = useCallback(async (threadId: string) => {
     setOperationLoading(threadId);
     try {
       const beforeChildIds = new Set(
@@ -429,9 +415,9 @@ export function ThreadView() {
     } finally {
       setOperationLoading(null);
     }
-  };
+  }, [getToken, summarizeThread]);
 
-  const handleCompact = async (threadId: string) => {
+  const handleCompact = useCallback(async (threadId: string) => {
     setOperationLoading(threadId);
     try {
       const childIds = useSessionStore.getState().threads[threadId]?.childThreadIds ?? [];
@@ -442,7 +428,7 @@ export function ThreadView() {
     } finally {
       setOperationLoading(null);
     }
-  };
+  }, [compactThread, getToken]);
 
   return (
     <div className="flex flex-col h-full">
@@ -477,6 +463,7 @@ export function ThreadView() {
                 onTryAnother={handleTryAnother}
                 pendingAnnotation={pendingAnnotation}
                 errorAnnotation={errorAnnotation}
+                onCancelAnnotation={cancelAnnotation}
               />
             ) : (
               <>
@@ -519,14 +506,6 @@ export function ThreadView() {
             void handleSimplify(anchorText, paragraphId, messageId, mode as SimplifyMode)
           }
           onDismiss={clearBubble}
-        />,
-        document.body
-      )}
-      {(bubble || lastSelectionRectsRef.current.length > 0) && createPortal(
-        <HighlightOverlay
-          rects={bubble ? bubble.selectionRects : lastSelectionRectsRef.current}
-          annotationType={undefined}
-          scrollRef={scrollRef}
         />,
         document.body
       )}
