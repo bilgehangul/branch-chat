@@ -10,8 +10,8 @@
  * CRITICAL: Must be rendered OUTSIDE the MarkdownRenderer div in MessageBlock
  * so it does not interfere with data-paragraph-id elements.
  */
-import { useState } from 'react';
 import type { Annotation } from '../../types/index';
+import { MarkdownRenderer } from '../thread/MarkdownRenderer';
 
 type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
 
@@ -30,11 +30,11 @@ const MODES: Array<{ key: SimplifyMode; label: string }> = [
 
 export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: SimplificationBlockProps) {
   const { replacementText } = annotation;
-  const [picking, setPicking] = useState(false);
+  const activeMode = MODES.find(m => m.label === modeLabel)?.key ?? 'simpler';
 
   return (
     <div
-      className="mt-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 border-l-4 border-l-indigo-500 text-sm"
+      className="mt-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-950 border-l-4 border-l-indigo-500 text-sm animate-slide-up-fade"
       data-no-selection
     >
       {/* Quoted target text */}
@@ -42,41 +42,42 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
         &ldquo;{annotation.targetText.length > 50 ? annotation.targetText.slice(0, 50) + '...' : annotation.targetText}&rdquo;
       </p>
 
-      {/* Header row */}
+      {/* Header row with mode badge */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-indigo-200 dark:border-indigo-800">
-        <span className="text-indigo-600 dark:text-indigo-300 font-medium text-xs">
-          ✎ Simplified &bull; {modeLabel}
+        <span className="text-indigo-600 dark:text-indigo-300 font-medium text-xs flex items-center gap-1.5">
+          ✎ Simplified
+          <span className="text-xs px-1.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300" data-testid="mode-badge">
+            {modeLabel}
+          </span>
         </span>
-        {picking ? (
-          /* Mode picker row */
-          <div className="flex gap-1">
-            {MODES.map(({ key, label }) => (
-              <button
-                key={key}
-                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
-                aria-label={`Simplify using ${label} mode`}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => { onSelectMode(key); setPicking(false); }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+      </div>
+
+      {/* Simplified text content — rendered as markdown */}
+      <div className="px-3 py-2 text-slate-700 dark:text-slate-200 leading-relaxed">
+        {replacementText ? (
+          <MarkdownRenderer content={replacementText} annotations={[]} />
         ) : (
-          <button
-            className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
-            aria-label="Choose a different simplification mode"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => setPicking(true)}
-          >
-            Try another mode
-          </button>
+          <span className="text-slate-400 dark:text-slate-400 italic">No content available</span>
         )}
       </div>
 
-      {/* Simplified text content */}
-      <div className="px-3 py-2 text-slate-700 dark:text-slate-200 leading-relaxed">
-        {replacementText ?? <span className="text-slate-400 dark:text-slate-400 italic">No content available</span>}
+      {/* Always-visible mode pills */}
+      <div className="px-3 pb-2 flex gap-1.5" data-testid="mode-pills">
+        {MODES.map(({ key, label }) => (
+          <button
+            key={key}
+            className={`text-xs px-2.5 py-1 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 outline-none ${
+              key === activeMode
+                ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300'
+                : 'border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+            }`}
+            aria-label={`Simplify using ${label} mode`}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => onSelectMode(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
     </div>
   );
