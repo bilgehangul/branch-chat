@@ -2,6 +2,7 @@
 // Google OAuth authentication via @react-oauth/google.
 // Stores Google ID token in localStorage; provides getToken for API authorization.
 import { createContext, useContext, useState, useCallback } from 'react';
+import { clearApiKey } from '../utils/cryptoStorage';
 
 const TOKEN_KEY = 'google_id_token';
 
@@ -70,10 +71,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(() => {
+    // Clear encrypted BYOK key from localStorage before removing auth state (PROV-14)
+    const currentUser = user;
+    if (currentUser?.sub) {
+      clearApiKey(currentUser.sub);
+      localStorage.removeItem(`byok_settings_${currentUser.sub}`);
+    }
     localStorage.removeItem(TOKEN_KEY);
     setToken(null);
     setUser(null);
-  }, []);
+  }, [user]);
 
   // Async getToken for API authorization header — auto-clears expired tokens
   const getToken = useCallback(async () => {

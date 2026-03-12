@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { RateLimitBanner } from '../ui/RateLimitBanner';
+import { ModelBadge } from './ModelBadge';
 
 interface StreamError {
   messageId: string;
@@ -71,6 +72,10 @@ export function ChatInput({ onSend, onStop, isStreaming, rateLimitMinutes, strea
       )}
       {/* Rate limit banner — shown above textarea */}
       {isRateLimited && <RateLimitBanner minutesRemaining={rateLimitMinutes!} />}
+      {/* Model badge row — always visible above the input */}
+      <div className="px-3 pt-2 pb-0">
+        <ModelBadge />
+      </div>
       {/* Input row */}
       <div className="flex items-end gap-2 p-3">
         <textarea

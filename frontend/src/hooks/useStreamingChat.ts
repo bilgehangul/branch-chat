@@ -3,6 +3,7 @@ import { useSessionStore } from '../store/sessionStore';
 import { streamChat } from '../api/chat';
 import { updateThreadOnBackend } from '../api/sessions';
 import type { Message } from '../types/index';
+import { useSettings } from '../contexts/SettingsContext';
 
 /**
  * Builds the system prompt for child thread conversations.
@@ -26,6 +27,7 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
   const abortRef = useRef<(() => void) | null>(null);
   const [rateLimitReset, setRateLimitReset] = useState<number | null>(null); // epoch ms
   const [streamError, setStreamError] = useState<{ messageId: string; retry: () => void } | null>(null);
+  const { tier, byokProvider, byokModel, byokApiKey } = useSettings();
 
   const { threads, messages, activeThreadId } = store;
   const activeThread = activeThreadId ? threads[activeThreadId] : null;
@@ -110,6 +112,12 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
     // Read session from store at send time for persistence fields
     const currentSession = sessionRef.get();
 
+    // Build BYOK credentials if in BYOK mode
+    const byokCredentials =
+      tier === 'byok' && byokProvider && byokModel && byokApiKey
+        ? { provider: byokProvider, model: byokModel, apiKey: byokApiKey }
+        : undefined;
+
     try {
       await streamChat(
         {
@@ -122,6 +130,8 @@ export function useStreamingChat(getToken: () => Promise<string | null>) {
           userMsgId: userMsg.id,
           aiMsgId,
           userText: text,
+          // BYOK credentials — injected when tier=byok
+          ...(byokCredentials ? { byok: byokCredentials } : {}),
         },
         getToken,
         (chunk: string) => {

@@ -2,6 +2,12 @@ import type { SseEvent } from '../../../shared/types';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
+export interface ByokCredentials {
+  provider: string;
+  model: string;
+  apiKey: string;
+}
+
 export async function streamChat(
   body: {
     messages: Array<{ role: string; content: string }>;
@@ -13,6 +19,8 @@ export async function streamChat(
     userMsgId?: string;
     aiMsgId?: string;
     userText?: string;
+    // BYOK credentials — injected when tier=byok
+    byok?: ByokCredentials;
   },
   getToken: () => Promise<string | null>,
   onChunk: (text: string) => void,
@@ -37,6 +45,8 @@ export async function streamChat(
       ...(body.userMsgId ? { userMsgId: body.userMsgId } : {}),
       ...(body.aiMsgId ? { aiMsgId: body.aiMsgId } : {}),
       ...(body.userText ? { userText: body.userText } : {}),
+      // BYOK credentials — included only when tier=byok
+      ...(body.byok ? { byok: body.byok } : {}),
     }),
     signal: body.signal,
   });
