@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: completed
-stopped_at: Phase 9 context gathered
-last_updated: "2026-03-12T04:13:33.659Z"
-last_activity: 2026-03-12 — Completed 08-04 requirements gap closure (ANNO-02 and XCUT-02 corrections)
+stopped_at: Completed 09-03-PLAN.md
+last_updated: "2026-03-12T04:36:02.586Z"
+last_activity: 2026-03-12 — Completed 09-03 ancestor rail redesign (ANCS-01 through ANCS-06)
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
-  percent: 29
+  total_plans: 7
+  completed_plans: 5
+  percent: 36
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-11)
 
 **Core value:** A user must be able to branch off any paragraph into a focused child conversation and return to the exact spot in the parent — with a visible lead marker showing where they went and what they found.
-**Current focus:** Phase 8 - Foundation Fixes (v2.0 BranchChat Redesign)
+**Current focus:** Phase 9 - Layout & Positioning (v2.0 BranchChat Redesign)
 
 ## Current Position
 
-Phase: 8 of 11 (Foundation Fixes) -- COMPLETE
-Plan: 4 of 4 in current phase (all complete)
-Status: Phase 8 complete, ready for Phase 9
-Last activity: 2026-03-12 — Completed 08-04 requirements gap closure (ANNO-02 and XCUT-02 corrections)
+Phase: 9 of 11 (Layout & Positioning) -- IN PROGRESS
+Plan: 3 of 3 complete (09-03 ancestor rails done)
+Status: 09-03 complete; 09-01 (grid migration) and 09-02 (crossfade) still pending
+Last activity: 2026-03-12 — Completed 09-03 ancestor rail redesign (ANCS-01 through ANCS-06)
 
-Progress: [██▓░░░░░░░] 29% (v2.0 scope: 4/14 plans)
+Progress: [█████░░░░░] 36% (v2.0 scope: 5/14 plans)
 
 ## v1.0 Summary
 
@@ -44,8 +44,8 @@ Shipped: Auth, streaming chat, branching, annotations, dark/light theme, E2E tes
 - Phases: 7
 
 **v2.0:**
-- Plans: 4/14 completed
-- Phases: 1/4 completed
+- Plans: 5/14 completed
+- Phases: 1/4 completed (Phase 9 in progress)
 
 ## Accumulated Context
 
@@ -68,6 +68,8 @@ Key decisions carried forward:
 - data-message-role attribute on MessageBlock for DOM-based role filtering of text selection
 - ActionBubble uses position:absolute inside contentWrapperRef (scrolls with text, not fixed)
 - [Phase 08]: ANNO-02 description corrected to remove caret reference per user locked decision
+- [Phase 09]: Ancestor rail width 28px, overlay 220px — no dynamic sizing
+- [Phase 09]: Branch badge is decorative span (not button) — entire expanded panel clickable to navigate
 
 ### Pending Todos
 
@@ -80,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T04:13:33.656Z
-Stopped at: Phase 9 context gathered
-Resume file: .planning/phases/09-layout-positioning/09-CONTEXT.md
+Last session: 2026-03-12T04:36:02.583Z
+Stopped at: Completed 09-03-PLAN.md
+Resume file: None

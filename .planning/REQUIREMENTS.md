@@ -24,12 +24,12 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Ancestor Panels
 
-- [ ] **ANCS-01**: Ancestor panels replaced with thin spine rail (24-32px wide) showing only accent-color stripe
-- [ ] **ANCS-02**: Rail expands to ~220px on hover with smooth CSS transition (200ms ease-out)
-- [ ] **ANCS-03**: Expanded panel looks like a card overlay (shadow-lg, rounded right edge) floating over main content
-- [ ] **ANCS-04**: Bottom fade gradient matches panel background color
-- [ ] **ANCS-05**: Highlighted anchor message has larger text, colored left-border stripe, and pill-shaped "↗ branch" badge
-- [ ] **ANCS-06**: Minimum readable text size is text-xs (12px) — no text-[10px]
+- [x] **ANCS-01**: Ancestor panels replaced with thin spine rail (24-32px wide) showing only accent-color stripe
+- [x] **ANCS-02**: Rail expands to ~220px on hover with smooth CSS transition (200ms ease-out)
+- [x] **ANCS-03**: Expanded panel looks like a card overlay (shadow-lg, rounded right edge) floating over main content
+- [x] **ANCS-04**: Bottom fade gradient matches panel background color
+- [x] **ANCS-05**: Highlighted anchor message has larger text, colored left-border stripe, and pill-shaped "↗ branch" badge
+- [x] **ANCS-06**: Minimum readable text size is text-xs (12px) — no text-[10px]
 
 ### Branch Pills
 
@@ -166,12 +166,12 @@ Deferred beyond v2.0.
 | PILL-06 | Phase 9 | Pending |
 | PILL-07 | Phase 9 | Pending |
 | PILL-08 | Phase 9 | Pending |
-| ANCS-01 | Phase 9 | Pending |
-| ANCS-02 | Phase 9 | Pending |
-| ANCS-03 | Phase 9 | Pending |
-| ANCS-04 | Phase 9 | Pending |
-| ANCS-05 | Phase 9 | Pending |
-| ANCS-06 | Phase 9 | Pending |
+| ANCS-01 | Phase 9 | Complete |
+| ANCS-02 | Phase 9 | Complete |
+| ANCS-03 | Phase 9 | Complete |
+| ANCS-04 | Phase 9 | Complete |
+| ANCS-05 | Phase 9 | Complete |
+| ANCS-06 | Phase 9 | Complete |
 | SIDE-01 | Phase 10 | Pending |
 | SIDE-02 | Phase 10 | Pending |
 | SIDE-03 | Phase 10 | Pending |
