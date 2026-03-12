@@ -5,21 +5,33 @@ import { useSettings } from '../../contexts/SettingsContext';
 
 /** Human-readable display names for BYOK models */
 const MODEL_DISPLAY_NAMES: Record<string, string> = {
+  // Gemini
+  'gemini-3.1-pro-preview': 'Gemini 3.1 Pro',
+  'gemini-3-flash-preview': 'Gemini 3 Flash',
+  'gemini-3.1-flash-lite-preview': 'Gemini 3.1 Flash Lite',
   'gemini-2.5-pro': 'Gemini 2.5 Pro',
   'gemini-2.5-flash': 'Gemini 2.5 Flash',
+  'gemini-2.5-flash-lite': 'Gemini 2.5 Flash Lite',
   'gemini-2.0-flash': 'Gemini 2.0 Flash',
-  'gemini-2.0-flash-lite': 'Gemini 2.0 Flash Lite',
-  'o3': 'o3',
-  'o3-mini': 'o3 Mini',
-  'o4-mini': 'o4 Mini',
+  // OpenAI
+  'gpt-5.4': 'GPT-5.4',
+  'gpt-5.4-pro': 'GPT-5.4 Pro',
+  'gpt-5-mini': 'GPT-5 Mini',
+  'gpt-5-nano': 'GPT-5 Nano',
+  'gpt-5': 'GPT-5',
+  'gpt-5.1': 'GPT-5.1',
+  'gpt-5.2': 'GPT-5.2',
   'gpt-4.1': 'GPT-4.1',
   'gpt-4.1-mini': 'GPT-4.1 Mini',
-  'gpt-4.1-nano': 'GPT-4.1 Nano',
   'gpt-4o': 'GPT-4o',
-  'gpt-4o-mini': 'GPT-4o Mini',
-  'claude-opus-4-6': 'Claude Opus 4',
-  'claude-sonnet-4-6': 'Claude Sonnet 4',
+  // Anthropic
+  'claude-opus-4-6': 'Claude Opus 4.6',
+  'claude-sonnet-4-6': 'Claude Sonnet 4.6',
+  'claude-sonnet-4-5-20250929': 'Claude Sonnet 4.5',
+  'claude-opus-4-1-20250414': 'Claude Opus 4.1',
+  'claude-sonnet-4-20250514': 'Claude Sonnet 4',
   'claude-haiku-4-5-20251001': 'Claude Haiku 4.5',
+  'claude-3-5-haiku-20241022': 'Claude Haiku 3.5',
 };
 
 // Inline SVG provider icons
