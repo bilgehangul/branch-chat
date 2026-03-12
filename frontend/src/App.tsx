@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from './contexts/AuthContext';
+import { SettingsProvider } from './contexts/SettingsContext';
+import { SettingsModal } from './components/settings/SettingsModal';
 import { AppShell } from './components/layout/AppShell';
 import { DemoAppShell } from './components/demo/DemoAppShell';
 import { useSessionStore } from './store/sessionStore';
@@ -27,8 +29,8 @@ function SignInModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 }
 
-export function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+function AppInner() {
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [sessionsList, setSessionsList] = useState<SessionListItem[]>([]);
   const { isSignedIn, user, signOut, getToken } = useAuth();
   const session = useSessionStore((s) => s.session);
@@ -104,9 +106,9 @@ export function App() {
     }
   }, [isSignedIn, clearSession]);
 
-  // Close modal when user signs in
+  // Close sign-in modal when user signs in
   useEffect(() => {
-    if (isSignedIn) setIsModalOpen(false);
+    if (isSignedIn) setIsSignInModalOpen(false);
   }, [isSignedIn]);
 
   // Hydrate Zustand store with demo data when not signed in
@@ -205,9 +207,19 @@ export function App() {
 
   return (
     <>
-      <DemoAppShell onSignInClick={() => setIsModalOpen(true)} />
-      <SignInModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <DemoAppShell onSignInClick={() => setIsSignInModalOpen(true)} />
+      <SignInModal isOpen={isSignInModalOpen} onClose={() => setIsSignInModalOpen(false)} />
     </>
+  );
+}
+
+export function App() {
+  const { user } = useAuth();
+  return (
+    <SettingsProvider userId={user?.sub ?? null}>
+      <SettingsModal />
+      <AppInner />
+    </SettingsProvider>
   );
 }
 
