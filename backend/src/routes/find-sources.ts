@@ -2,12 +2,15 @@
 // POST /api/find-sources — Tavily web search via searchProvider.findSources().
 // Returns standard JSON envelope: { data: { results }, error: null }.
 import { Router } from 'express';
-import { searchProvider, aiProvider } from '../config.js';
+import { getDefaultSearchProvider, getDefaultProvider, createByokProvider } from '../config.js';
 
 export const findSourcesRouter = Router();
 
 findSourcesRouter.post('/', async (req, res) => {
-  const { query } = req.body as { query?: string };
+  const { query, byok } = req.body as {
+    query?: string;
+    byok?: { provider?: string; model?: string; apiKey?: string };
+  };
 
   if (!query || typeof query !== 'string' || query.trim().length === 0) {
     res.status(400).json({
@@ -17,10 +20,20 @@ findSourcesRouter.post('/', async (req, res) => {
     return;
   }
 
+  // Resolve AI provider for citation note — BYOK or default
+  // Search provider always uses default (BYOK search handled in plan 11-04)
+  const rawApiKey = byok?.apiKey;
+  if (byok) delete (byok as Record<string, unknown>).apiKey; // scrub key before any logging
+  const aiProvider = (rawApiKey && byok?.provider && byok?.model)
+    ? createByokProvider(byok.provider as 'gemini' | 'openai', byok.model, rawApiKey)
+    : getDefaultProvider();
+
+  const searchProvider = getDefaultSearchProvider();
+
   try {
     const results = await searchProvider.findSources(query.trim(), 3);
 
-    // Generate Gemini synthesis note — sequential since note needs results
+    // Generate AI synthesis note — sequential since note needs results
     let citationNote = '';
     if (results.length > 0) {
       try {

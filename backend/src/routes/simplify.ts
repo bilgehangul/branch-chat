@@ -2,12 +2,16 @@
 // POST /api/simplify — single-shot text rewrite via aiProvider.simplify().
 // Returns standard JSON envelope: { data: { rewritten }, error: null }.
 import { Router } from 'express';
-import { aiProvider } from '../config.js';
+import { getDefaultProvider, createByokProvider } from '../config.js';
 
 export const simplifyRouter = Router();
 
 simplifyRouter.post('/', async (req, res) => {
-  const { text, mode } = req.body as { text?: string; mode?: string };
+  const { text, mode, byok } = req.body as {
+    text?: string;
+    mode?: string;
+    byok?: { provider?: string; model?: string; apiKey?: string };
+  };
 
   if (!text || typeof text !== 'string' || text.trim().length === 0) {
     res.status(400).json({
@@ -25,6 +29,13 @@ simplifyRouter.post('/', async (req, res) => {
     });
     return;
   }
+
+  // Resolve provider — BYOK or default
+  const rawApiKey = byok?.apiKey;
+  if (byok) delete (byok as Record<string, unknown>).apiKey; // scrub key before any logging
+  const aiProvider = (rawApiKey && byok?.provider && byok?.model)
+    ? createByokProvider(byok.provider as 'gemini' | 'openai', byok.model, rawApiKey)
+    : getDefaultProvider();
 
   try {
     const rewritten = await aiProvider.simplify(text, mode);

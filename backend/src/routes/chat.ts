@@ -4,14 +4,14 @@
 // Aborts on client disconnect via req.on('close') + AbortController.
 // After stream completes, saves user + AI messages to MongoDB (fire-and-forget).
 import { Router } from 'express';
-import { aiProvider } from '../config.js';
+import { getDefaultProvider, createByokProvider } from '../config.js';
 import { Message } from '../db/models/Message.js';
 import { Session } from '../db/models/Session.js';
 
 export const chatRouter = Router();
 
 chatRouter.post('/', async (req, res) => {
-  const { messages, systemPrompt, sessionId, threadId, userMsgId, aiMsgId, userText } = req.body as {
+  const { messages, systemPrompt, sessionId, threadId, userMsgId, aiMsgId, userText, byok } = req.body as {
     messages?: Array<{ role: string; content: string }>;
     systemPrompt?: string;
     sessionId?: string;
@@ -19,6 +19,7 @@ chatRouter.post('/', async (req, res) => {
     userMsgId?: string;
     aiMsgId?: string;
     userText?: string;
+    byok?: { provider?: string; model?: string; apiKey?: string };
   };
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -41,6 +42,13 @@ chatRouter.post('/', async (req, res) => {
     return;
   }
 
+  // Resolve provider — BYOK or default
+  const rawApiKey = byok?.apiKey;
+  if (byok) delete (byok as Record<string, unknown>).apiKey; // scrub key before any logging
+  const aiProvider = (rawApiKey && byok?.provider && byok?.model)
+    ? createByokProvider(byok.provider as 'gemini' | 'openai', byok.model, rawApiKey)
+    : getDefaultProvider();
+
   // Open SSE connection
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -59,7 +67,7 @@ chatRouter.post('/', async (req, res) => {
   await aiProvider.streamChat(
     messages as Array<{ role: 'user' | 'model'; content: string }>,
     systemPrompt ?? '',
-    (chunk) => {
+    (chunk: string) => {
       fullContent += chunk;
       writeEvent({ type: 'chunk', text: chunk });
     },
@@ -93,7 +101,7 @@ chatRouter.post('/', async (req, res) => {
       };
       void saveMessages();
     },
-    (err) => { writeEvent({ type: 'error', message: err.message }); res.end(); },
+    (err: Error) => { writeEvent({ type: 'error', message: err.message }); res.end(); },
     controller.signal
   );
 });
