@@ -68,7 +68,7 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Message Rendering
 
-- [ ] **MSGE-01**: Model label is dynamic from current provider/model setting (not hardcoded "Gemini")
+- [x] **MSGE-01**: Model label is dynamic from current provider/model setting (not hardcoded "Gemini")
 - [ ] **MSGE-02**: Headings within AI messages have proper visual weight — larger font, thin bottom border, top margin
 - [ ] **MSGE-03**: Code blocks have copy-to-clipboard button (hover-visible, "Copied!" toast on click)
 - [ ] **MSGE-04**: List items have more spacing (space-y-1.5), nested lists have clear indentation
@@ -113,11 +113,11 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Cross-Cutting
 
-- [ ] **XCUT-01**: All new interactive elements have aria-label, keyboard navigation, focus-visible outlines
-- [ ] **XCUT-02**: Settings modal traps focus
-- [ ] **XCUT-03**: Color choices meet WCAG AA contrast ratios (4.5:1 normal text, 3:1 large text)
-- [ ] **XCUT-04**: Existing tests updated to match new DOM structure and class names
-- [ ] **XCUT-05**: New tests for text selection filtering, settings context, and light-mode annotations
+- [x] **XCUT-01**: All new interactive elements have aria-label, keyboard navigation, focus-visible outlines
+- [x] **XCUT-02**: Settings modal traps focus
+- [x] **XCUT-03**: Color choices meet WCAG AA contrast ratios (4.5:1 normal text, 3:1 large text)
+- [x] **XCUT-04**: Existing tests updated to match new DOM structure and class names
+- [x] **XCUT-05**: New tests for text selection filtering, settings context, and light-mode annotations
 
 ## Future Requirements
 
@@ -152,12 +152,12 @@ Deferred beyond v2.0.
 | ANNO-03 | Phase 8 | Complete |
 | ANNO-04 | Phase 8 | Complete |
 | ANNO-05 | Phase 8 | Complete |
-| MSGE-01 | Phase 8 | Pending |
-| XCUT-01 | Phase 8 | Pending |
-| XCUT-02 | Phase 8 | Pending |
-| XCUT-03 | Phase 8 | Pending |
-| XCUT-04 | Phase 8 | Pending |
-| XCUT-05 | Phase 8 | Pending |
+| MSGE-01 | Phase 8 | Complete |
+| XCUT-01 | Phase 8 | Complete |
+| XCUT-02 | Phase 8 | Complete |
+| XCUT-03 | Phase 8 | Complete |
+| XCUT-04 | Phase 8 | Complete |
+| XCUT-05 | Phase 8 | Complete |
 | PILL-01 | Phase 9 | Pending |
 | PILL-02 | Phase 9 | Pending |
 | PILL-03 | Phase 9 | Pending |

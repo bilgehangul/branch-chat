@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
 status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-12T03:34:00.000Z"
-last_activity: 2026-03-12 — Completed 08-01 text selection filtering and ActionBubble repositioning
+stopped_at: Completed 08-03-PLAN.md
+last_updated: "2026-03-12T03:43:11.000Z"
+last_activity: 2026-03-12 — Completed 08-03 dynamic model label, accessibility, and test updates
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 14
-  completed_plans: 2
-  percent: 14
+  completed_plans: 3
+  percent: 21
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 
 ## Current Position
 
-Phase: 8 of 11 (Foundation Fixes)
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-03-12 — Completed 08-02 annotation rendering fixes
+Phase: 8 of 11 (Foundation Fixes) -- COMPLETE
+Plan: 3 of 3 in current phase (all complete)
+Status: Phase 8 complete, ready for Phase 9
+Last activity: 2026-03-12 — Completed 08-03 dynamic model label, accessibility, and test updates
 
-Progress: [█░░░░░░░░░] 14% (v2.0 scope: 2/14 plans)
+Progress: [██░░░░░░░░] 21% (v2.0 scope: 3/14 plans)
 
 ## v1.0 Summary
 
@@ -44,8 +44,8 @@ Shipped: Auth, streaming chat, branching, annotations, dark/light theme, E2E tes
 - Phases: 7
 
 **v2.0:**
-- Plans: 0/14 completed
-- Phases: 0/4 completed
+- Plans: 3/14 completed
+- Phases: 1/4 completed
 
 ## Accumulated Context
 
@@ -59,6 +59,9 @@ Key decisions carried forward:
 - DOM pill positions stored in useRef (never Zustand)
 - Dark is default: inline FOUC script adds .dark unless localStorage explicitly holds 'light'
 - config.ts is the ONLY file reading AI_PROVIDER — will change in v2.0 Phase 11 with factory pattern
+- Config endpoint (/api/config) mounted before auth middleware -- public non-sensitive config
+- Focus-visible ring pattern: ring-2 ring-blue-500 ring-offset-2 ring-offset-white/zinc-900 on all interactive elements
+- XCUT-02 (focus trapping) deferred to Phase 11 -- no modals in current UI
 - Light-mode annotation colors: indigo-50 for simplification, stone-50 for citation
 - Highlight overlay per-type colors: amber 25%, indigo 20%, teal 20% (highlighter pen feel)
 - Inline annotation highlighting wraps first occurrence of targetText per paragraph with per-type tint
@@ -72,10 +75,10 @@ None yet.
 ### Blockers/Concerns
 
 - Branch pill JS measurement drift is the primary motivation for Phase 9 layout redesign
-- Annotation light-mode colors need fixing (dark-on-dark in light mode) — Phase 8
+- Annotation light-mode colors fixed in 08-02 (indigo-50/stone-50 backgrounds)
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:34:00Z
-Stopped at: Completed 08-01-PLAN.md
-Resume file: .planning/phases/08-foundation-fixes/08-03-PLAN.md
+Last session: 2026-03-12T03:43:11Z
+Stopped at: Completed 08-03-PLAN.md (Phase 8 complete)
+Resume file: .planning/phases/09-layout-redesign/09-01-PLAN.md
