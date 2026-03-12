@@ -53,11 +53,11 @@ Requirements for the BranchChat Redesign milestone. Derived from branch-chat-red
 
 ### Annotations
 
-- [ ] **ANNO-01**: Selected target text highlighted inline with subtle background color (bg-amber-100/30 dark:bg-amber-500/10)
-- [ ] **ANNO-02**: Annotation card has small upward-pointing caret and quoted targetText at top in italics
-- [ ] **ANNO-03**: SimplificationBlock has light-mode variant (bg-indigo-50 border-indigo-200)
-- [ ] **ANNO-04**: CitationBlock has light-mode variant (bg-stone-50 border-stone-200)
-- [ ] **ANNO-05**: Annotation cards respect message bubble width — no independent max-w-[720px]
+- [x] **ANNO-01**: Selected target text highlighted inline with subtle background color (bg-amber-100/30 dark:bg-amber-500/10)
+- [x] **ANNO-02**: Annotation card has small upward-pointing caret and quoted targetText at top in italics
+- [x] **ANNO-03**: SimplificationBlock has light-mode variant (bg-indigo-50 border-indigo-200)
+- [x] **ANNO-04**: CitationBlock has light-mode variant (bg-stone-50 border-stone-200)
+- [x] **ANNO-05**: Annotation cards respect message bubble width — no independent max-w-[720px]
 - [ ] **ANNO-06**: Annotation cards have enter animation (slide up 8px + fade in over 200ms)
 - [ ] **ANNO-07**: Simplification mode shown as small colored badge/tag
 - [ ] **ANNO-08**: Simplified text rendered with MarkdownRenderer (with flag to skip annotation injection)
@@ -147,11 +147,11 @@ Deferred beyond v2.0.
 | TSEL-04 | Phase 8 | Pending |
 | TSEL-05 | Phase 8 | Pending |
 | TSEL-06 | Phase 8 | Pending |
-| ANNO-01 | Phase 8 | Pending |
-| ANNO-02 | Phase 8 | Pending |
-| ANNO-03 | Phase 8 | Pending |
-| ANNO-04 | Phase 8 | Pending |
-| ANNO-05 | Phase 8 | Pending |
+| ANNO-01 | Phase 8 | Complete |
+| ANNO-02 | Phase 8 | Complete |
+| ANNO-03 | Phase 8 | Complete |
+| ANNO-04 | Phase 8 | Complete |
+| ANNO-05 | Phase 8 | Complete |
 | MSGE-01 | Phase 8 | Pending |
 | XCUT-01 | Phase 8 | Pending |
 | XCUT-02 | Phase 8 | Pending |

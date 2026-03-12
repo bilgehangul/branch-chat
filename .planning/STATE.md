@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: BranchChat Redesign
-status: planning
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-12T03:02:09.337Z"
-last_activity: 2026-03-11 — v2.0 roadmap created
+status: executing
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-03-12T03:37:00.000Z"
+last_activity: 2026-03-12 — Completed 08-02 annotation rendering fixes
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 14
+  completed_plans: 2
+  percent: 14
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 8 of 11 (Foundation Fixes)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-11 — v2.0 roadmap created
+Plan: 2 of 3 in current phase
+Status: Executing
+Last activity: 2026-03-12 — Completed 08-02 annotation rendering fixes
 
-Progress: [░░░░░░░░░░] 0% (v2.0 scope)
+Progress: [█░░░░░░░░░] 14% (v2.0 scope: 2/14 plans)
 
 ## v1.0 Summary
 
@@ -59,6 +59,9 @@ Key decisions carried forward:
 - DOM pill positions stored in useRef (never Zustand)
 - Dark is default: inline FOUC script adds .dark unless localStorage explicitly holds 'light'
 - config.ts is the ONLY file reading AI_PROVIDER — will change in v2.0 Phase 11 with factory pattern
+- Light-mode annotation colors: indigo-50 for simplification, stone-50 for citation
+- Highlight overlay per-type colors: amber 25%, indigo 20%, teal 20% (highlighter pen feel)
+- Inline annotation highlighting wraps first occurrence of targetText per paragraph with per-type tint
 
 ### Pending Todos
 
@@ -71,6 +74,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T03:02:09.335Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-foundation-fixes/08-CONTEXT.md
+Last session: 2026-03-12T03:37:00Z
+Stopped at: Completed 08-02-PLAN.md
+Resume file: .planning/phases/08-foundation-fixes/08-03-PLAN.md
