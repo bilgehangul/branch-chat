@@ -84,7 +84,7 @@ Plans:
   3. Code blocks in AI messages have a copy-to-clipboard button that shows "Copied!" feedback; headings have proper visual weight; tables have row striping; blockquotes use accent-colored left borders
   4. Annotation cards slide up and fade in on creation; SimplificationBlock shows mode badges and rendered markdown with always-visible mode pills; CitationBlock defaults expanded with favicons and domain badges
   5. User messages use whitespace-pre-wrap with hover timestamps; streaming cursor has blinking animation
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 - [ ] 10-01: Sidebar visual redesign (SIDE-01 through SIDE-06)
@@ -102,13 +102,13 @@ Plans:
   3. User can clear their stored key and revert to free tier; the key is encrypted in localStorage with AES-GCM, never displayed in full after entry, and cleared on sign-out
   4. Backend creates provider instances per-request from BYOK credentials; API keys are never logged, never persisted server-side, and error responses redact key substrings
   5. Anthropic Claude provider is fully implemented (streamChat, simplify, generateCitationNote); BYOK requests are rate-limited to 30/min per user; CORS is restricted to app domain
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 - [ ] 11-01: Backend provider factory refactor and free-tier narrowing (BKND-01 through BKND-05)
 - [ ] 11-02: Anthropic Claude provider and BYOK security middleware (BKND-06 through BKND-12)
-- [ ] 11-03: Settings UI and SettingsContext (PROV-01 through PROV-12)
-- [ ] 11-04: BYOK key encryption, lifecycle, and model badge (PROV-13 through PROV-15, PROV-10, PROV-11)
+- [ ] 11-03: SettingsContext, crypto storage, and Settings modal UI (PROV-01 through PROV-05, PROV-12, PROV-13, XCUT-02)
+- [ ] 11-04: BYOK verify flow, model badge, API injection, sign-out cleanup (PROV-06 through PROV-11, PROV-14, PROV-15)
 
 ## Progress
 
