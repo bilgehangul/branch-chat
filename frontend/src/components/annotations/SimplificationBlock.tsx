@@ -53,7 +53,8 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
             {MODES.map(({ key, label }) => (
               <button
                 key={key}
-                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors"
+                className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 px-2 py-0.5 rounded border border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+                aria-label={`Simplify using ${label} mode`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => { onSelectMode(key); setPicking(false); }}
               >
@@ -63,7 +64,8 @@ export function SimplificationBlock({ annotation, modeLabel, onSelectMode }: Sim
           </div>
         ) : (
           <button
-            className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline transition-colors"
+            className="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 underline transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+            aria-label="Choose a different simplification mode"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setPicking(true)}
           >

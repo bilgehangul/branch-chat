@@ -4,13 +4,18 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MessageBlock } from '../../src/components/thread/MessageBlock';
 import type { Message, Thread } from '../../src/types/index';
 
 // Mock sessionStore for underline tests
 vi.mock('../../src/store/sessionStore', () => ({
   useSessionStore: vi.fn(),
+}));
+
+// Mock getModelLabel to return a test label
+vi.mock('../../src/api/config', () => ({
+  getModelLabel: vi.fn(() => Promise.resolve('Test Model')),
 }));
 
 function makeMessage(overrides: Partial<Message> = {}): Message {
@@ -79,13 +84,15 @@ describe('MessageBlock', () => {
     expect(screen.getByText('You')).toBeInTheDocument();
   });
 
-  it('renders role label "Gemini" for assistant messages', () => {
+  it('renders dynamic model label for assistant messages', async () => {
     render(
       <MessageBlock
         message={makeMessage({ role: 'assistant', content: 'I can help.' })}
       />
     );
-    expect(screen.getByText('Gemini')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Test Model')).toBeInTheDocument();
+    });
   });
 
   // Content rendering

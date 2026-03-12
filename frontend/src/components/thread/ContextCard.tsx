@@ -22,7 +22,7 @@ export function ContextCard({ thread }: { thread: Thread }) {
 
       {/* Selected text quote */}
       <div className="px-4 py-3 bg-white dark:bg-zinc-800">
-        <p className="text-xs text-slate-400 dark:text-zinc-500 mb-1">You selected:</p>
+        <p className="text-xs text-slate-500 dark:text-zinc-400 mb-1">You selected:</p>
         <p
           className="text-sm font-medium leading-relaxed"
           style={{ color: thread.accentColor }}

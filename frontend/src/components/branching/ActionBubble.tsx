@@ -82,16 +82,17 @@ export function ActionBubble({
     };
   }, [onDismiss]);
 
+  const focusRing = 'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none';
   const goDeeperBaseClass =
-    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors';
+    `flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors ${focusRing}`;
   const goDeeperDisabledClass =
-    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium opacity-50 cursor-not-allowed';
+    `flex items-center gap-2 px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm font-medium opacity-50 cursor-not-allowed ${focusRing}`;
   const secondaryClass =
-    'flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors';
+    `flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors ${focusRing}`;
   const modeButtonClass =
-    'px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors';
+    `px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-sm transition-colors ${focusRing}`;
   const backButtonClass =
-    'px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-xs transition-colors';
+    `px-3 py-1.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-white text-xs transition-colors ${focusRing}`;
 
   return (
     <div
@@ -114,6 +115,7 @@ export function ActionBubble({
             className={isAtMaxDepth ? goDeeperDisabledClass : goDeeperBaseClass}
             disabled={isAtMaxDepth}
             title={isAtMaxDepth ? 'Maximum depth reached' : undefined}
+            aria-label="Go deeper into selected text"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onGoDeeper(bubble.anchorText, bubble.paragraphId)}
           >
@@ -123,6 +125,7 @@ export function ActionBubble({
           {/* Find Sources — enabled in Phase 5 */}
           <button
             className={secondaryClass}
+            aria-label="Find sources for selected text"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => { onFindSources(bubble.anchorText, bubble.paragraphId, bubble.messageId); onDismiss(); }}
           >
@@ -132,6 +135,7 @@ export function ActionBubble({
           {/* Simplify — enters expand mode */}
           <button
             className={secondaryClass}
+            aria-label="Simplify selected text"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setMode('simplify')}
           >
@@ -143,6 +147,7 @@ export function ActionBubble({
           {/* Back arrow: returns to default mode */}
           <button
             className={backButtonClass}
+            aria-label="Back to main actions"
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setMode('default')}
           >
@@ -156,6 +161,7 @@ export function ActionBubble({
                 key={key}
                 className={modeButtonClass}
                 title={tooltip}
+                aria-label={tooltip}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   onSimplify(bubble.anchorText, bubble.paragraphId, bubble.messageId, key);

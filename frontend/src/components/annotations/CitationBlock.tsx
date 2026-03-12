@@ -40,7 +40,7 @@ export function CitationBlock({ annotation }: CitationBlockProps) {
 
       {/* Header row — always visible */}
       <button
-        className="w-full flex items-center justify-between px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2 text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
         onClick={() => setExpanded(prev => !prev)}
         aria-expanded={expanded}
         aria-label={expanded ? 'Collapse sources' : 'Expand sources'}
@@ -59,12 +59,13 @@ export function CitationBlock({ annotation }: CitationBlockProps) {
                 href={source.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 underline flex-1 min-w-0 truncate"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 underline flex-1 min-w-0 truncate focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
                 title={source.title}
+                aria-label={`Source: ${source.title}`}
               >
                 {source.title}
               </a>
-              <span className="shrink-0 text-xs text-slate-500 dark:text-slate-400 bg-stone-200 dark:bg-zinc-700 px-1.5 py-0.5 rounded">
+              <span className="shrink-0 text-xs text-slate-600 dark:text-slate-400 bg-stone-200 dark:bg-zinc-700 px-1.5 py-0.5 rounded">
                 {source.domain}
               </span>
             </div>

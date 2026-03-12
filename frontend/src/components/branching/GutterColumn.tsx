@@ -79,19 +79,22 @@ function ThreadContextMenu({ x, y, threadId, onDelete, onClose, onSummarize, onC
         onMouseDown={e => e.stopPropagation()}
       >
         <button
-          className="w-full text-left px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+          aria-label="Delete thread"
           onClick={() => setPendingDelete(true)}
         >
           Delete thread
         </button>
         <button
-          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+          aria-label="Summarize thread"
           onClick={() => { onSummarize(threadId); onClose(); }}
         >
           Summarize
         </button>
         <button
-          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
+          className="w-full text-left px-3 py-1.5 text-slate-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+          aria-label="Compact thread"
           onClick={() => { onCompact(threadId); onClose(); }}
         >
           Compact
@@ -128,7 +131,8 @@ function DescendantPill({
   return (
     <div style={{ paddingLeft: depth * 10 }}>
       <button
-        className="flex items-center gap-1 w-full px-2 py-1 rounded text-xs text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-700 text-left transition-colors cursor-pointer"
+        className="flex items-center gap-1 w-full px-2 py-1 rounded text-xs text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-700 text-left transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
+        aria-label={`Navigate to branch: ${threads[threadId]?.title ?? 'Untitled'}`}
         onClick={e => { e.stopPropagation(); onNavigate(threadId); }}
       >
         <span className="text-slate-300 dark:text-zinc-500 flex-shrink-0 text-[10px]">↳</span>
@@ -187,7 +191,7 @@ function LeadPill({ lead, thread, allThreads, messages, top, onNavigate, onDelet
       {/* The lead pill button */}
       <button
         aria-label={`→ ${thread.title.slice(0, 32)}`}
-        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer ${isMobile ? 'bg-white/90 dark:bg-zinc-800/90' : 'bg-white dark:bg-zinc-800'}`}
+        className={`flex items-center gap-1.5 w-full px-2 py-1.5 rounded-md border border-slate-200 dark:border-zinc-700 shadow-sm hover:bg-slate-50 dark:hover:bg-zinc-700 text-left text-sm transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none ${isMobile ? 'bg-white/90 dark:bg-zinc-800/90' : 'bg-white dark:bg-zinc-800'}`}
         onClick={() => onNavigate(lead.threadId)}
         onContextMenu={e => { e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY }); }}
         onMouseEnter={() => setIsHovered(true)}

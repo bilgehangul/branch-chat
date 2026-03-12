@@ -62,7 +62,8 @@ export function ChatInput({ onSend, onStop, isStreaming, rateLimitMinutes, strea
           <span>Response interrupted.</span>
           <button
             onClick={streamError.retry}
-            className="underline font-medium hover:no-underline ml-1"
+            aria-label="Retry failed response"
+            className="underline font-medium hover:no-underline ml-1 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none"
           >
             Retry
           </button>
@@ -76,16 +77,18 @@ export function ChatInput({ onSend, onStop, isStreaming, rateLimitMinutes, strea
           ref={textareaRef}
           rows={1}
           placeholder="Ask anything..."
+          aria-label="Type your message"
           disabled={isDisabled}
           onInput={handleInput}
-          className={`flex-1 resize-none rounded-lg border border-stone-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-stone-900 dark:text-slate-100 placeholder-stone-400 dark:placeholder-slate-400 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors${isDisabled ? ' opacity-50' : ''}`}
+          className={`flex-1 resize-none rounded-lg border border-stone-300 dark:border-zinc-600 bg-white dark:bg-zinc-700 text-stone-900 dark:text-slate-100 placeholder-stone-500 dark:placeholder-slate-400 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 transition-colors${isDisabled ? ' opacity-50' : ''}`}
           style={{ minHeight: '2.25rem', maxHeight: `${24 * 4}px`, overflowY: 'auto' }}
         />
         <button
           type="button"
           onClick={handleButtonClick}
+          aria-label={isStreaming ? 'Stop generating' : 'Send message'}
           disabled={isDisabled && !isStreaming}
-          className={`rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors${isStreaming ? ' bg-zinc-600 hover:bg-zinc-700' : isRateLimited ? ' bg-zinc-400 cursor-not-allowed' : ' bg-blue-600 hover:bg-blue-700'}`}
+          className={`rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 outline-none${isStreaming ? ' bg-zinc-600 hover:bg-zinc-700' : isRateLimited ? ' bg-zinc-400 cursor-not-allowed' : ' bg-blue-600 hover:bg-blue-700'}`}
         >
           {isStreaming ? 'Stop' : 'Send'}
         </button>
