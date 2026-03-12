@@ -114,6 +114,6 @@ describe('AnnotationError: inline error block rendering', () => {
     // No shimmer (animate-pulse)
     expect(container.querySelector('.animate-pulse')).toBeNull();
     // CitationBlock present
-    expect(container.querySelector('.bg-zinc-800')).toBeTruthy();
+    expect(container.querySelector('.bg-stone-50')).toBeTruthy();
   });
 });

@@ -49,8 +49,8 @@ describe('MessageBlock annotation rendering', () => {
     const bubbleDiv = messageWrapper!.querySelector('.flex.justify-start');
     expect(bubbleDiv).toBeTruthy();
 
-    // CitationBlock renders a div with bg-zinc-800 — now inside the bubble
-    const citationBlock = messageWrapper!.querySelector('.bg-zinc-800');
+    // CitationBlock renders a div with bg-stone-50 (light) / dark:bg-zinc-800 — now inside the bubble
+    const citationBlock = messageWrapper!.querySelector('.bg-stone-50');
     expect(citationBlock).toBeTruthy();
 
     // Annotation is inside the bubble (inline after its paragraph)
@@ -70,8 +70,8 @@ describe('MessageBlock annotation rendering', () => {
     const messageWrapper = container.querySelector('[data-message-id="msg-1"]');
     const bubbleDiv = messageWrapper!.querySelector('.flex.justify-start');
 
-    // SimplificationBlock renders a div with bg-indigo-950 — now inside the bubble
-    const simplBlock = messageWrapper!.querySelector('.bg-indigo-950');
+    // SimplificationBlock renders a div with bg-indigo-50 (light) / dark:bg-indigo-950 — now inside the bubble
+    const simplBlock = messageWrapper!.querySelector('.bg-indigo-50');
     expect(simplBlock).toBeTruthy();
 
     // Annotation is inside the bubble (inline after its paragraph)
@@ -104,9 +104,9 @@ describe('MessageBlock annotation rendering', () => {
 
     const messageWrapper = container.querySelector('[data-message-id="msg-1"]');
 
-    // Both annotation blocks should be rendered
-    const citationBlock = messageWrapper!.querySelector('.bg-zinc-800');
-    const simplBlock = messageWrapper!.querySelector('.bg-indigo-950');
+    // Both annotation blocks should be rendered (query light-mode classes)
+    const citationBlock = messageWrapper!.querySelector('.bg-stone-50');
+    const simplBlock = messageWrapper!.querySelector('.bg-indigo-50');
     expect(citationBlock).toBeTruthy();
     expect(simplBlock).toBeTruthy();
   });

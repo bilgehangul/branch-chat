@@ -49,6 +49,61 @@ function rehypeAddParagraphIds() {
   };
 }
 
+/** Per-annotation-type inline highlight tint classes (ANNO-01) */
+const ANNOTATION_HIGHLIGHT_CLASSES: Record<string, string> = {
+  source: 'bg-amber-100/30 dark:bg-amber-500/10',
+  simplification: 'bg-indigo-100/30 dark:bg-indigo-500/10',
+  'go-deeper': 'bg-teal-100/30 dark:bg-teal-500/10',
+};
+
+/**
+ * Wraps occurrences of annotation targetText within React children with
+ * a highlighted span. Only processes string children within the annotated paragraph.
+ */
+function highlightAnnotatedText(
+  children: React.ReactNode,
+  paragraphAnns: Annotation[],
+): React.ReactNode {
+  if (paragraphAnns.length === 0) return children;
+
+  return React.Children.map(children, (child) => {
+    if (typeof child !== 'string') return child;
+
+    let result: React.ReactNode[] = [child];
+
+    for (const ann of paragraphAnns) {
+      if (!ann.targetText) continue;
+      const tintClass = ANNOTATION_HIGHLIGHT_CLASSES[ann.type] ?? '';
+      if (!tintClass) continue;
+
+      const nextResult: React.ReactNode[] = [];
+      for (const segment of result) {
+        if (typeof segment !== 'string') {
+          nextResult.push(segment);
+          continue;
+        }
+        const idx = segment.indexOf(ann.targetText);
+        if (idx === -1) {
+          nextResult.push(segment);
+          continue;
+        }
+        if (idx > 0) nextResult.push(segment.slice(0, idx));
+        nextResult.push(
+          <span key={`hl-${ann.id}`} className={`rounded-sm px-0.5 ${tintClass}`}>
+            {ann.targetText}
+          </span>
+        );
+        if (idx + ann.targetText.length < segment.length) {
+          nextResult.push(segment.slice(idx + ann.targetText.length));
+        }
+      }
+      result = nextResult;
+    }
+
+    return result.length === 1 ? result[0] : result;
+  });
+}
+
 export const MarkdownRenderer = React.memo(function MarkdownRenderer({
   content,
   underlineMap,
@@ -140,10 +195,12 @@ export const MarkdownRenderer = React.memo(function MarkdownRenderer({
           const paragraphId = (props as Record<string, unknown>)['data-paragraph-id'];
           const paragraphNum = typeof paragraphId === 'string' ? Number(paragraphId) : -1;
           const color = underlineMap?.[paragraphNum];
+          const paragraphAnns = (annotations ?? []).filter(a => a.paragraphIndex === paragraphNum);
+          const highlightedChildren = highlightAnnotatedText(children, paragraphAnns);
           return (
             <>
               <p {...props} style={color ? { textDecoration: 'underline', textDecorationColor: color } : undefined}>
-                {children}
+                {highlightedChildren}
               </p>
               {annotationsAfter(paragraphNum)}
             </>
