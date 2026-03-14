@@ -2,6 +2,7 @@
 // Settings state management: tier, BYOK provider/model/key, search provider, modal, saved keys registry.
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { encryptApiKey, decryptApiKey, clearApiKey } from '../utils/cryptoStorage';
+import { MODEL_LISTS } from '../constants/models';
 
 export type ByokProvider = 'gemini' | 'openai' | 'anthropic';
 export type SearchProvider = 'tavily' | 'openai-search';
@@ -142,16 +143,21 @@ export function SettingsProvider({ children, userId }: SettingsProviderProps) {
       { provider, maskedKey },
     ];
 
+    // Auto-select first model for the provider if no model is currently chosen.
+    // setByokProvider clears byokModel to null, so after the add-key flow byokModel
+    // is always null here — this ensures byokCredentials in useStreamingChat is non-undefined.
+    const modelToSave = state.byokModel ?? MODEL_LISTS[provider]?.[0]?.id ?? null;
+
     const settingsData = {
       tier: 'byok' as Tier,
       byokProvider: provider,
-      byokModel: state.byokModel,
+      byokModel: modelToSave,
       byokKeyVerified: state.byokKeyVerified,
       searchProvider: state.searchProvider,
       savedKeys: newSavedKeys,
     };
     localStorage.setItem(SETTINGS_KEY(uid), JSON.stringify(settingsData));
-    setState(s => ({ ...s, tier: 'byok', savedKeys: newSavedKeys }));
+    setState(s => ({ ...s, tier: 'byok', savedKeys: newSavedKeys, byokModel: modelToSave }));
   }, [state.byokApiKey, state.byokProvider, state.byokModel, state.byokKeyVerified, state.searchProvider, state.savedKeys]);
 
   const clearByokKey = useCallback((uid: string | null) => {
