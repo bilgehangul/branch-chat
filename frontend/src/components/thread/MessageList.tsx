@@ -53,6 +53,58 @@ export const MessageList = React.memo(function MessageList({
         // Collect childLeads anchored to this message
         const leadsForMessage = msg.childLeads ?? [];
 
+        // For assistant messages with branch pills, split into per-paragraph sub-rows
+        // so each pill group aligns to the specific paragraph it was branched from.
+        const isAssistant = msg.role === 'assistant';
+        const hasPills = isAssistant && leadsForMessage.length > 0;
+
+        if (hasPills) {
+          // Count paragraphs the same way MarkdownRenderer splits content
+          const paragraphs = msg.content.split(/\n\n+/);
+          const paraCount = Math.max(paragraphs.length, 1);
+
+          // Group leads by paragraphIndex
+          const leadsByPara = new Map<number, typeof leadsForMessage>();
+          for (const lead of leadsForMessage) {
+            const existing = leadsByPara.get(lead.paragraphIndex) ?? [];
+            existing.push(lead);
+            leadsByPara.set(lead.paragraphIndex, existing);
+          }
+
+          return (
+            <React.Fragment key={msg.id}>
+              {/* Column 1: message content spans all paragraph sub-rows */}
+              <div className="min-w-0" style={{ gridRow: `span ${paraCount}` }}>
+                <MessageBlock
+                  message={msg}
+                  onTryAnother={onTryAnother}
+                  pendingAnnotation={pendingAnnotation}
+                  errorAnnotation={errorAnnotation}
+                  onCancelAnnotation={onCancelAnnotation}
+                />
+              </div>
+
+              {/* Column 2: one cell per paragraph, pills only in the matching row */}
+              {Array.from({ length: paraCount }, (_, i) => (
+                <div key={i} className="flex flex-col gap-1 items-end self-center">
+                  {leadsByPara.has(i) && (
+                    <BranchPillCell
+                      leads={leadsByPara.get(i)!}
+                      threads={threads}
+                      messages={allMessages}
+                      onNavigate={onNavigate}
+                      onDeleteThread={onDeleteThread}
+                      onSummarize={onSummarize}
+                      onCompact={onCompact}
+                    />
+                  )}
+                </div>
+              ))}
+            </React.Fragment>
+          );
+        }
+
+        // Simple single-row layout for user messages and assistant messages without pills
         return (
           <React.Fragment key={msg.id}>
             {/* Column 1: message content */}
@@ -66,20 +118,8 @@ export const MessageList = React.memo(function MessageList({
               />
             </div>
 
-            {/* Column 2: branch pills (auto-collapses when empty) */}
-            <div className="flex flex-col gap-1 items-end self-center">
-              {leadsForMessage.length > 0 && (
-                <BranchPillCell
-                  leads={leadsForMessage}
-                  threads={threads}
-                  messages={allMessages}
-                  onNavigate={onNavigate}
-                  onDeleteThread={onDeleteThread}
-                  onSummarize={onSummarize}
-                  onCompact={onCompact}
-                />
-              )}
-            </div>
+            {/* Column 2: empty (no pills) */}
+            <div />
           </React.Fragment>
         );
       })}
