@@ -5,6 +5,8 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 import { StreamingCursor } from './StreamingCursor';
 import { getModelLabel } from '../../api/config';
 import { formatRelativeDate } from '../../utils/formatRelativeDate';
+import { useSettings } from '../../contexts/SettingsContext';
+import { MODEL_LISTS } from '../../constants/models';
 
 type SimplifyMode = 'simpler' | 'example' | 'analogy' | 'technical';
 
@@ -36,11 +38,18 @@ export function MessageBlock({
   const isUser = message.role === 'user';
   const streamingClasses = message.isStreaming ? 'opacity-80 select-none pointer-events-none' : '';
 
-  // Dynamic model label from /api/config (cached after first fetch)
-  const [modelLabel, setModelLabel] = useState('AI');
+  // BYOK-aware model label: show BYOK model name when tier=byok, otherwise fetch from /api/config
+  const { tier, byokProvider, byokModel } = useSettings();
+  const [freeLabel, setFreeLabel] = useState('AI');
   useEffect(() => {
-    getModelLabel().then(setModelLabel);
-  }, []);
+    if (tier !== 'byok') {
+      getModelLabel().then(setFreeLabel);
+    }
+  }, [tier]);
+  const modelLabel =
+    tier === 'byok' && byokProvider && byokModel
+      ? (MODEL_LISTS[byokProvider]?.find(m => m.id === byokModel)?.label ?? byokModel)
+      : freeLabel;
 
   // Build underline map from childLeads: paragraphIndex -> accentColor
   const threads = useSessionStore(s => s.threads);
