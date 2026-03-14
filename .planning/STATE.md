@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 Phase: 10 of 11 (Visual Polish) -- IN PROGRESS
 Plan: 10-01, 10-02 complete (sidebar visual foundation + thread tree redesign)
 Status: Phase 10 in progress
-Last activity: 2026-03-14 - Completed quick task 26: Fix model selection not applying when choosing OpenAI model after adding API key
+Last activity: 2026-03-14 - Completed quick task 27: Fix model label showing wrong model on responses + branch pill alignment
 
 Progress: [██████████] 96% (v2.0 scope)
 
@@ -112,12 +112,13 @@ None yet.
 | 24 | Fix 5 UI bugs: text selection, action bubble, branch pill alignment, subbranch hover collapse, sidebar parent branch layout | 2026-03-12 | 8d809975 | [24-fix-5-ui-bugs-text-selection-action-bubb](./quick/24-fix-5-ui-bugs-text-selection-action-bubb/) |
 | 25 | Rewrite text selection system with position:fixed portal; fix sidebar ThreadNode collapsed by default | 2026-03-12 | 5a581ff4 | [25-rewrite-text-selection-actionbubble-from](./quick/25-rewrite-text-selection-actionbubble-from/) |
 | 26 | Fix model selection not applying when choosing OpenAI model after adding API key | 2026-03-14 | d0eb00d1 | [26-fix-model-selection-not-applying-when-ch](./quick/26-fix-model-selection-not-applying-when-ch/) |
+| 27 | Fix model label showing free-tier name in BYOK mode; align branch pills to anchor paragraph | 2026-03-14 | e29f0100 | [27-fix-model-label-showing-wrong-model-on-r](./quick/27-fix-model-label-showing-wrong-model-on-r/) |
 | Phase 11-multi-provider-settings P03 | 6 | 3 tasks | 11 files |
 | Phase 11-multi-provider-settings P02 | 8 | 3 tasks | 11 files |
 | Phase 11-multi-provider-settings P04 | 6 | 2 tasks | 7 files |
 
 ## Session Continuity
 
-Last session: 2026-03-12T17:32:03.190Z
-Stopped at: Completed 11-04-PLAN.md (Phase 11 complete)
+Last session: 2026-03-14T16:05:13Z
+Stopped at: Completed quick task 27
 Resume file: None
