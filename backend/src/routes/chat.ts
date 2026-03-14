@@ -46,7 +46,7 @@ chatRouter.post('/', async (req, res) => {
   const rawApiKey = byok?.apiKey;
   if (byok) delete (byok as Record<string, unknown>).apiKey; // scrub key before any logging
   const aiProvider = (rawApiKey && byok?.provider && byok?.model)
-    ? createByokProvider(byok.provider as 'gemini' | 'openai', byok.model, rawApiKey)
+    ? createByokProvider(byok.provider as 'gemini' | 'openai' | 'anthropic', byok.model, rawApiKey)
     : getDefaultProvider();
 
   // Open SSE connection
